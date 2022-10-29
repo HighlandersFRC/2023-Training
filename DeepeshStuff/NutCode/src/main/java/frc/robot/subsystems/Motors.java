@@ -4,30 +4,27 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.MotorDefault;
-
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.revrobotics.*;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 public class Motors extends SubsystemBase {
   /** Creates a new Motors. */
-  TalonFX motor = new TalonFX(0);
+  public final CANSparkMax motor = new CANSparkMax(1, MotorType.kBrushless);
  
   public Motors() {}
   public void init() {
     setDefaultCommand(new MotorDefault(this));
   }
   public void motorClockwise(){
-    motor.set(ControlMode.PercentOutput, 0.5);
+    motor.set(0.5);
   }
   public void motorCounterClockwise(){
-    motor.set(ControlMode.PercentOutput, -0.5);
+    motor.set(-0.5);
   }
   public void motorOff(){
-    motor.set(ControlMode.PercentOutput, 0);
+    motor.set(0);
   }
 
 

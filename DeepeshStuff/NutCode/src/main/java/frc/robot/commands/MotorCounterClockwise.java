@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.OI;
 import frc.robot.subsystems.Motors;
 
 public class MotorCounterClockwise extends CommandBase {
@@ -33,6 +34,9 @@ public class MotorCounterClockwise extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    if (OI.getDriverLeftBumper()){
+      return false;
+    }
     return true;
   }
 }
