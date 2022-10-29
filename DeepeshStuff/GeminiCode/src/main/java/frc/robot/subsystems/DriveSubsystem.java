@@ -4,9 +4,11 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
-
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.commands.DriveDefault;
+
 
 
 public class DriveSubsystem extends SubsystemBase {
@@ -15,7 +17,34 @@ public class DriveSubsystem extends SubsystemBase {
   public static TalonFX backRight = new TalonFX(2);
   public static TalonFX frontLeft = new TalonFX(3);
   public static TalonFX backLeft = new TalonFX(4);
+  
+  
   public DriveSubsystem() {}
+  public void init(){
+    setDefaultCommand(new DriveDefault(this));
+  }
+  public void setDrivePercents(double left, double right){
+    frontLeft.set(ControlMode.PercentOutput, -left);
+    backLeft.set(ControlMode.PercentOutput, -left);
+    frontRight.set(ControlMode.PercentOutput, right);
+    backRight.set(ControlMode.PercentOutput, right);
+  }
+  public void arcadeDrive(double power, double direction){
+    double right = power + direction;
+    double left = power - direction;
+    right *= Math.abs(right);
+    left *= Math.abs(left);
+    double divisor = 1;
+    if(left>1) {
+      divisor = left;
+    } else if (right>1){
+      divisor = right;
+    }
+    right /= divisor;
+    left /= divisor;
+    setDrivePercents(left, right);
+  }
+  
 
   @Override
   public void periodic() {
