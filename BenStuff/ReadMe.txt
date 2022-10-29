@@ -1,1 +1,0 @@
-This is Ben's practice code for the 2023 frc season
