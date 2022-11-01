@@ -25,7 +25,9 @@ public class DriveDefault extends CommandBase {
 
   
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    drive.setDrivePercents(0.0, 0.0);
+  }
 
   
   @Override

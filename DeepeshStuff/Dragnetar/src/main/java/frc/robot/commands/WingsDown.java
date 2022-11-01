@@ -34,7 +34,7 @@ public class WingsDown extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if(OI.driverController.getAButton()){
+    if(OI.driverController.getRightBumper()){
       return false;
     } else {
       return true;

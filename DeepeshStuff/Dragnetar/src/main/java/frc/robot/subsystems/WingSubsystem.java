@@ -17,7 +17,7 @@ public class WingSubsystem extends SubsystemBase {
  private final DoubleSolenoid wing = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 4, 3);
 
   public void wingsUp(){
-    wing.set(Value.kForward);
+    wing.set(Value.kReverse);
   }
 
   public void init(){
@@ -26,7 +26,7 @@ public class WingSubsystem extends SubsystemBase {
   }
 
   public void wingsDown(){
-    wing.set(Value.kReverse);
+    wing.set(Value.kForward);
   }
 
 public void ToggleWings() {

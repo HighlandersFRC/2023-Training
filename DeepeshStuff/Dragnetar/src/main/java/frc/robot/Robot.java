@@ -111,7 +111,7 @@ public class Robot extends TimedRobot {
     //OI.driverA.whenPressed(new TailDown(tail));
     //OI.driverY.whenPressed(new TailUp(tail));
     //OI.driverX.whenPressed(new FlapWings(wings));
-    OI.driverA.whenPressed(new WingsDown(wings));
+    OI.driverRB.whenPressed(new WingsDown(wings));
   }
 
   /** This function is called periodically during operator control. */

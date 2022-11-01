@@ -20,6 +20,10 @@ public class OI {
     public static JoystickButton driverB = new JoystickButton(driverController, 2);
     
     public static JoystickButton driverX = new JoystickButton(driverController, 3);
+    
+    public static JoystickButton driverRB = new JoystickButton(driverController, 6);
+    
+    public static JoystickButton driverLB = new JoystickButton(driverController, 5);
 
     public static double getDriverLeftX() {
         return driverController.getLeftX();
