@@ -13,21 +13,22 @@ import frc.robot.commands.DriveDefault;
 
 public class DriveSubsystem extends SubsystemBase {
   /** Creates a new DriveSubsystem. */
-  public static TalonFX frontRight = new TalonFX(1);
-  public static TalonFX backRight = new TalonFX(2);
-  public static TalonFX frontLeft = new TalonFX(3);
-  public static TalonFX backLeft = new TalonFX(4);
+  public TalonFX frontRight = new TalonFX(1);
+  public TalonFX backRight = new TalonFX(2);
+  public TalonFX frontLeft = new TalonFX(3);
+  public TalonFX backLeft = new TalonFX(4);
+  
   
   
   public DriveSubsystem() {}
   public void init(){
     setDefaultCommand(new DriveDefault(this));
+    backLeft.follow(frontLeft);
+    backRight.follow(frontRight);
   }
   public void setDrivePercents(double left, double right){
     frontLeft.set(ControlMode.PercentOutput, -left);
-    backLeft.set(ControlMode.PercentOutput, -left);
     frontRight.set(ControlMode.PercentOutput, right);
-    backRight.set(ControlMode.PercentOutput, right);
   }
   public void arcadeDrive(double power, double direction){
     double right = power + direction;

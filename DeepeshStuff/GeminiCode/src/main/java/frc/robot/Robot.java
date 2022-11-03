@@ -34,7 +34,7 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
     drive.init();
-
+    double originalYaw = Math.toRadians(NavXSensor.navX.currentYaw());
   }
 
   /**
@@ -52,6 +52,7 @@ public class Robot extends TimedRobot {
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
     SmartDashboard.putNumber("NavX reading", NavXSensor.navX.currentYaw());
+    
     
   }
 
