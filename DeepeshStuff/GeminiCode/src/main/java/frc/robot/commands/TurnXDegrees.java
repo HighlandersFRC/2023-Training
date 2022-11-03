@@ -26,7 +26,7 @@ public class TurnXDegrees extends CommandBase {
     // Use addRequirements() here to declare subsystem dependencies.
     radians = Math.toRadians(turnDegrees);
     this.drive = drive;
-    pid = new PID(4.2, 0.001, 0);
+    pid = new PID(4.4, 0.01, 0);
     pid.setContinuous(true);
     pid.setMaxOutput(0.4);
     pid.setMinOutput(-0.4);
@@ -53,6 +53,7 @@ public class TurnXDegrees extends CommandBase {
     pid.setSetPoint(target);
     System.out.println("Turn direction " + pidResult);
     System.out.println("initialize works");
+    
    
   }
 
@@ -65,7 +66,16 @@ public class TurnXDegrees extends CommandBase {
     SmartDashboard.putNumber("Target Proximity", circledTarget-currentYaw);
     System.out.println(pid.getError());
     SmartDashboard.putNumber("Turn direction " , pidResult);
-    drive.arcadeDrive(0.0, -pidResult);
+    if (Math.toDegrees(radians) == 180 || Math.toDegrees(radians) == -180) {
+      if (Math.toDegrees(radians) == 180 && pidResult > 0) {
+        drive.arcadeDrive(0.0, 0.5);
+      }
+      if (Math.toDegrees(radians) == -180 && pidResult < 0) {
+        drive.arcadeDrive(0.0, -0.5);
+      }
+    } else {
+      drive.arcadeDrive(0.0, -pidResult);
+    }
   }
 
   // Called once the command ends or is interrupted.
