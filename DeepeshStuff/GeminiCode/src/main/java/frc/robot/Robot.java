@@ -87,9 +87,12 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-    OI.buttonA.whenPressed(new TurnXDegrees(180, drive));
-    OI.buttonB.whenPressed(new TurnXDegrees(-180, drive));
-
+    TurnXDegrees turn180 = new TurnXDegrees(180, drive);
+    TurnXDegrees turnNeg180 = new TurnXDegrees(-180, drive);
+    OI.buttonA.cancelWhenPressed(turn180);
+    OI.buttonA.whenPressed(turn180);
+    OI.buttonB.cancelWhenPressed(turnNeg180);
+    OI.buttonB.whenPressed(turnNeg180);
   }
 
   /** This function is called periodically during operator control. */

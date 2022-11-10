@@ -38,7 +38,7 @@ public class DriveSubsystem extends SubsystemBase {
     double divisor = 1;
     if(left>1) {
       divisor = left;
-    } else if (right>1){
+    } else if (right > 1){
       divisor = right;
     }
     right /= divisor;
