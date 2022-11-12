@@ -29,8 +29,9 @@ public class TurnXDegrees extends CommandBase {
   public TurnXDegrees(double turnDegrees, DriveSubsystem drive) {
     // Use addRequirements() here to declare subsystem dependencies.
     radians = Math.toRadians(turnDegrees);
+    
     this.drive = drive;
-    pid = new PID(0.85, 0.04, 0.1);
+    pid = new PID(0.6, 0.04, 0.5);
     pid.setContinuous(true);
     pid.setMaxOutput(0.8);
     pid.setMinOutput(-0.8);
