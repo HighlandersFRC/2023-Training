@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.commands.DriveDefault;
+import frc.robot.commands.DriveVelocityMode;
 import frc.robot.commands.TurnXDegrees;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.NavXSensor;
@@ -89,10 +91,13 @@ public class Robot extends TimedRobot {
     }
     TurnXDegrees turn180 = new TurnXDegrees(180, drive);
     TurnXDegrees turnNeg180 = new TurnXDegrees(-180, drive);
+    DriveVelocityMode driveVelocityMode = new DriveVelocityMode(drive);
     OI.buttonA.cancelWhenPressed(turn180);
     OI.buttonA.whenPressed(turn180);
     OI.buttonB.cancelWhenPressed(turnNeg180);
     OI.buttonB.whenPressed(turnNeg180);
+    OI.buttonX.cancelWhenPressed(driveVelocityMode);
+    OI.rBumper.whenPressed(driveVelocityMode);
   }
 
   /** This function is called periodically during operator control. */
