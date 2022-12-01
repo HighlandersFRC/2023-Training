@@ -34,7 +34,7 @@ PhotoVision LimeLight Setup
 
 17: Scroll to the bottom and click "save". This should be the final setup step, if everthing worked.
 
-18: To check that it worked, go to ":5800/#/dashboard". This should come up with a video feed of you limelight.
+18: To check that it worked, go to "(LimeLight IP):5800/#/dashboard". This should come up with a video feed of you limelight.
 
                      If you had any trouble with any of this, try following the setup instructions from these sites 
 [https://docs.limelightvision.io/en/latest/getting_started.html#imaging] - basic setup and downloads, don't use the image on the download site, use the image from the photovison site (below)
