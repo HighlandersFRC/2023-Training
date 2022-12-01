@@ -54,7 +54,8 @@ public class Robot extends TimedRobot {
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
     SmartDashboard.putNumber("NavX reading", NavXSensor.navX.currentYaw());
-    
+    SmartDashboard.putNumber("Left Movement Speed", drive.frontLeft.getSelectedSensorVelocity());
+    SmartDashboard.putNumber("Right Movement Speed", drive.frontRight.getSelectedSensorVelocity());
     
   }
 
@@ -91,7 +92,7 @@ public class Robot extends TimedRobot {
     }
     TurnXDegrees turn180 = new TurnXDegrees(180, drive);
     TurnXDegrees turnNeg180 = new TurnXDegrees(-180, drive);
-    DriveVelocityMode driveVelocityMode = new DriveVelocityMode(drive);
+    DriveVelocityMode driveVelocityMode = new DriveVelocityMode(drive, 0, true);
     OI.buttonA.cancelWhenPressed(turn180);
     OI.buttonA.whenPressed(turn180);
     OI.buttonB.cancelWhenPressed(turnNeg180);

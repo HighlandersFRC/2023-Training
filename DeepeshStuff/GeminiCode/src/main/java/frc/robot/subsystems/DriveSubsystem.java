@@ -39,14 +39,15 @@ public class DriveSubsystem extends SubsystemBase {
   }
   public void setDriveVelocity(double leftFPS, double rightFPS){
     
-    frontLeft.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
-    SmartDashboard.putNumber("Left Movement Speed", TP100MS_To_FPS(frontLeft.getSelectedSensorVelocity()));
+    SmartDashboard.putNumber("Left Movement Speed", frontLeft.getSelectedSensorVelocity());
+    SmartDashboard.putNumber("Left Theoretical Speed", FPS_To_TP100MS(-leftFPS));
 
-    frontLeft.set(ControlMode.Velocity, FPS_To_TP100MS(-leftFPS));
-    frontRight.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
-    SmartDashboard.putNumber("Right Movement Speed", TP100MS_To_FPS(frontRight.getSelectedSensorVelocity()));
+    frontLeft.set(ControlMode.Velocity, FPS_To_TP100MS( -leftFPS));
+
+    SmartDashboard.putNumber("Right Movement Speed", frontRight.getSelectedSensorVelocity());
+    SmartDashboard.putNumber("Right Theoretical Speed", FPS_To_TP100MS(rightFPS));
     
-    frontRight.set(ControlMode.Velocity, FPS_To_TP100MS(rightFPS));
+    frontRight.set(ControlMode.Velocity, FPS_To_TP100MS( rightFPS));
 
   }
   public void setMotorPID(TalonFX talon, double P, double I, double D, double F){

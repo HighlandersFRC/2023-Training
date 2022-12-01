@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.OI;
 import frc.robot.subsystems.DriveSubsystem;
@@ -13,9 +14,14 @@ import frc.robot.subsystems.DriveSubsystem;
 public class DriveVelocityMode extends CommandBase {
   /** Creates a new DriveVelocityMode. */
   DriveSubsystem drive;
-  public DriveVelocityMode(DriveSubsystem drive) {
+  double forwardSpeedAuton;
+  boolean teleop;
+  public DriveVelocityMode(DriveSubsystem drive, double forwardSpeedAuton, boolean teleop) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.drive = drive;
+    this.forwardSpeedAuton = forwardSpeedAuton;
+    this.teleop = teleop;
+
     addRequirements(drive);
   }
 
@@ -23,15 +29,19 @@ public class DriveVelocityMode extends CommandBase {
   @Override
   public void initialize() {
     System.out.println("Velocity Mode ran");
-    drive.setMotorPID(drive.frontLeft, 0.17, 0, 0, 0);
-    drive.setMotorPID(drive.frontRight, 0.17, 0, 0, 0);
+    drive.setMotorPID(drive.frontLeft, 0.047, 0, 0.0, 0.04547);
+    drive.setMotorPID(drive.frontRight, 0.047, 0, 0.0, 0.04547);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    System.out.println("Velocity Mode ran");
-    drive.driveVelocityMode(2, 0);
+    if (!teleop) {
+      drive.driveVelocityMode(forwardSpeedAuton, 0);
+    } else {
+      drive.driveVelocityMode(4.5 * OI.getDriverLeftY(), 4.5 * OI.getDriverRightX());
+    }
+    //SmartDashboard.setPersistent(key);
   }
 
   // Called once the command ends or is interrupted.

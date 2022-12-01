@@ -22,7 +22,6 @@ public class TurnXDegrees extends CommandBase {
   double originalYaw;
   double target;
   double circledTarget;
-  boolean has180Run;
   int correctLoops;
 
 
@@ -46,7 +45,6 @@ public class TurnXDegrees extends CommandBase {
   @Override
   public void initialize() {
     correctLoops = 0;
-    has180Run = false;
     originalYaw = Math.toRadians(NavXSensor.navX.currentYaw());
     currentYaw = Math.toRadians(NavXSensor.navX.currentYaw());
     target = originalYaw + radians;
@@ -79,12 +77,10 @@ public class TurnXDegrees extends CommandBase {
     if (Math.toDegrees(radians) == 180 && pidResult > 0 && Math.abs(pid.getError()) > Math.toRadians(90)) {
       
       drive.arcadeDrive(0.0, 0.5);
-      has180Run = true;
       
     } else if (Math.toDegrees(radians) == -180 && pidResult < 0 && Math.abs(pid.getError()) > Math.toRadians(90)) {
       
       drive.arcadeDrive(0.0, -0.5);
-      has180Run = true;
       
     } else {
       drive.arcadeDrive(0.0, -pidResult);
