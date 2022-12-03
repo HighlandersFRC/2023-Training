@@ -1,6 +1,6 @@
 PhotoVision LimeLight Setup
 
-1:Download belena etcher (flash tool) and the latest image (gloworm-Release_.zip) from this website [https://docs.photonvision.org/en/latest/docs/getting-started/installation/gloworm.html#gloworm-installation]
+1:Download belena etcher (flash tool) and the latest image (gloworm-Release_.zip) from this website [https://docs.photonvision.org/en/latest/docs/getting-started/installation/install/gloworm.html]
 
 2: Run balena etcher (which you downloaded earlier) as admininstrator
 
