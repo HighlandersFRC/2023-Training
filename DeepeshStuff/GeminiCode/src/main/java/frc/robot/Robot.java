@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.commands.DriveDefault;
+import frc.robot.commands.DriveForwardXMeters;
 import frc.robot.commands.DriveVelocityMode;
 import frc.robot.commands.TurnXDegrees;
 import frc.robot.subsystems.DriveSubsystem;
@@ -36,7 +36,6 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
     drive.init();
-    double originalYaw = Math.toRadians(NavXSensor.navX.currentYaw());
   }
 
   /**
@@ -54,9 +53,10 @@ public class Robot extends TimedRobot {
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
     SmartDashboard.putNumber("NavX reading", NavXSensor.navX.currentYaw());
-    SmartDashboard.putNumber("Left Movement Speed", drive.frontLeft.getSelectedSensorVelocity());
-    SmartDashboard.putNumber("Right Movement Speed", drive.frontRight.getSelectedSensorVelocity());
-    
+    SmartDashboard.putNumber("Left Movement Speed", Constants.TP100MS_To_MPS(drive.frontLeft.getSelectedSensorVelocity()));
+    SmartDashboard.putNumber("Right Movement Speed", Constants.TP100MS_To_MPS(drive.frontRight.getSelectedSensorVelocity()));
+    SmartDashboard.putNumber("Right Power", drive.frontRight.getMotorOutputPercent());
+    SmartDashboard.putNumber("Right Power", drive.frontLeft.getMotorOutputPercent());
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
@@ -92,6 +92,7 @@ public class Robot extends TimedRobot {
     }
     TurnXDegrees turn180 = new TurnXDegrees(180, drive);
     TurnXDegrees turnNeg180 = new TurnXDegrees(-180, drive);
+    DriveForwardXMeters driveForwardXMeters = new DriveForwardXMeters(drive, 1);
     DriveVelocityMode driveVelocityMode = new DriveVelocityMode(drive, 0, true);
     OI.buttonA.cancelWhenPressed(turn180);
     OI.buttonA.whenPressed(turn180);
@@ -99,6 +100,8 @@ public class Robot extends TimedRobot {
     OI.buttonB.whenPressed(turnNeg180);
     OI.buttonX.cancelWhenPressed(driveVelocityMode);
     OI.rBumper.whenPressed(driveVelocityMode);
+    OI.buttonY.whenPressed(driveForwardXMeters);
+    OI.lBumper.cancelWhenPressed(driveForwardXMeters);
   }
 
   /** This function is called periodically during operator control. */
