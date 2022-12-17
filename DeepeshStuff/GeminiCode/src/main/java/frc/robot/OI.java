@@ -9,17 +9,37 @@ public class OI {
     public static JoystickButton buttonA = new JoystickButton(driverController, 1);
     public static JoystickButton buttonB = new JoystickButton(driverController, 2);
     public static JoystickButton buttonX = new JoystickButton(driverController, 3);
+    public static JoystickButton buttonY = new JoystickButton(driverController, 4);
     public static JoystickButton rBumper = new JoystickButton(driverController, 6);
+    public static JoystickButton lBumper = new JoystickButton(driverController, 5);
+    
     public static double  getDriverLeftY(){
-        return driverController.getLeftY();
+        if (Math.abs(driverController.getLeftY()) < 0.2 ){
+            return 0;
+        } else {
+            return driverController.getLeftY();
+        }
+        
     }
     public static double getDriverLeftX(){
-        return driverController.getLeftX();
+        if (Math.abs(driverController.getLeftX()) < 0.2 ){
+            return 0;
+        } else {
+            return driverController.getLeftX();
+        }
     }
     public static double getDriverRightY(){
-        return driverController.getRightY();
+        if (Math.abs(driverController.getRightY()) < 0.2 ){
+            return 0;
+        } else {
+            return driverController.getRightY();
+        }
     }
     public static double getDriverRightX(){
-        return driverController.getRightX();
+        if (Math.abs(driverController.getRightX()) < 0.2 ){
+            return 0;
+        } else {
+            return driverController.getRightX();
+        }
     }
 }

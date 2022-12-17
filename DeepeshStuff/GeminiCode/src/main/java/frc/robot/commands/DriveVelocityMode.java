@@ -4,10 +4,9 @@
 
 package frc.robot.commands;
 
-import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.OI;
 import frc.robot.subsystems.DriveSubsystem;
 
@@ -29,8 +28,9 @@ public class DriveVelocityMode extends CommandBase {
   @Override
   public void initialize() {
     System.out.println("Velocity Mode ran");
-    drive.setMotorPID(drive.frontLeft, 0.047, 0, 0.0, 0.04547);
-    drive.setMotorPID(drive.frontRight, 0.047, 0, 0.0, 0.04547);
+    drive.setMotorPID(drive.frontLeft, 0.047, 0, 0.0, 0.04547, 0, 1);
+
+    drive.setMotorPID(drive.frontRight, 0.047, 0, 0.0, 0.04547, 0, 1);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -39,7 +39,7 @@ public class DriveVelocityMode extends CommandBase {
     if (!teleop) {
       drive.driveVelocityMode(forwardSpeedAuton, 0);
     } else {
-      drive.driveVelocityMode(4.5 * OI.getDriverLeftY(), 4.5 * OI.getDriverRightX());
+      drive.driveVelocityMode(Constants.MAX_SPEED_METERS_PER_SECOND * OI.getDriverLeftY(), Constants.MAX_SPEED_METERS_PER_SECOND * OI.getDriverRightX());
     }
     //SmartDashboard.setPersistent(key);
   }
@@ -51,6 +51,10 @@ public class DriveVelocityMode extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+      if (teleop) {
+        return false;
+      } else {
+        return true;
+      }
   }
 }
