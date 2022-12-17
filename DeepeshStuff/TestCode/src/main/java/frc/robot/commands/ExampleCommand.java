@@ -4,31 +4,32 @@
 
 package frc.robot.commands;
 
+import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.OI;
-import frc.robot.subsystems.DriveSubsystem;
 
-public class DriveDefault extends CommandBase {
-  /** Creates a new DriveDefault. */
-  DriveSubsystem drive;
-  public DriveDefault(DriveSubsystem drive) {
+/** An example command that uses an example subsystem. */
+public class ExampleCommand extends CommandBase {
+  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
+  private final ExampleSubsystem m_subsystem;
+
+  /**
+   * Creates a new ExampleCommand.
+   *
+   * @param subsystem The subsystem used by this command.
+   */
+  public ExampleCommand(ExampleSubsystem subsystem) {
+    m_subsystem = subsystem;
     // Use addRequirements() here to declare subsystem dependencies.
-    this.drive = drive;
-    addRequirements(drive);
+    addRequirements(subsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-  
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-    drive.init();
-    drive.arcadeDrive(OI.getDriverLeftY(), OI.getDriverRightX());
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
