@@ -14,11 +14,11 @@ PhotoVision LimeLight Setup
 
 7: Flash! click the flash button, and wait for your LimeLight to flash.
 
-8: Unplug the USB-microUSB from the LimeLight, and plug it in to a router via ethernet.
+8: Unplug the USB-microUSB from the LimeLight, and plug it in to the robot radio via ethernet cable.
 
-9: Now find it's IP address. This can be done by pluggin it in, via ethernet cable, to your router. You can then go to your router's IP address (in the google search bar, example 12.34.56.78) and enter your username and password. You can go through the devices on the network until you find one named something like "gloworm (gloworm.lan)". It should have it's IP address listed under it's information.
+9: Now go to http://gloworm.local:5800/
 
-10: Now go to (LimeLight IP):5800/#/settings (google search bar, example 10.12.34.11:5800/#/settings)
+10: Click on the Settings tab
 
 11: Go to Networking, and for Team Number, enter you team number (example 1234)
 
