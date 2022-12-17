@@ -6,6 +6,8 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FollowerType;
+import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
+import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -27,23 +29,36 @@ public class DriveSubsystem extends SubsystemBase {
   public DriveSubsystem() {}
   public void init(){
     setDefaultCommand(new DriveDefault(this));
+     frontRight.configFactoryDefault();
+     frontLeft.configFactoryDefault();
+     backLeft.configFactoryDefault();
+     backRight.configFactoryDefault();
+
+     frontRight.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 35, 35, 0.5));
+     frontLeft.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 35, 35, 0.5));
+     backRight.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 35, 35, 0.5));
+     backLeft.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 35, 35, 0.5));
+     frontRight.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 35, 35, 0.5));
+     frontLeft.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 35, 35, 0.5));
+     backRight.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 35, 35, 0.5));
+     backLeft.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 35, 35, 0.5));
+
+
+    frontLeft.follow(frontRight, FollowerType.AuxOutput1);
     backLeft.follow(frontLeft);
     backRight.follow(frontRight);
-    frontLeft.follow(frontRight, FollowerType.AuxOutput1);
-    backLeft.follow(frontRight, FollowerType.AuxOutput1);
-
   }
   
   public void setDriveVelocity(double leftFPS, double rightFPS){
     
     SmartDashboard.putNumber("Left Theoretical Speed", -leftFPS);
 
-    frontLeft.set(ControlMode.Velocity, Constants.MPS_To_TP100MS( -leftFPS));
+     frontLeft.set(ControlMode.Velocity, Constants.MPS_To_TP100MS( -leftFPS));
 
     SmartDashboard.putNumber("Right Theoretical Speed", rightFPS);
     
     
-    frontRight.set(ControlMode.Velocity, Constants.MPS_To_TP100MS( rightFPS));
+     frontRight.set(ControlMode.Velocity, Constants.MPS_To_TP100MS( rightFPS));
 
   }
   public void setDrivePosition(double leftMeters, double rightMeters) {
@@ -61,11 +76,9 @@ public class DriveSubsystem extends SubsystemBase {
     talon.configPeakOutputReverse(-peakPercentOut);
   }
   public void setDrivePercents(double left, double right){
-    frontLeft.set(ControlMode.PercentOutput,  -left);
-    frontRight.set(ControlMode.PercentOutput,  right);
-    
-
-  }
+     frontLeft.set(ControlMode.PercentOutput,  -left);
+     frontRight.set(ControlMode.PercentOutput,  right);
+    }
   public void arcadeDrive(double power, double direction){
     double right = power + direction;
     double left = power - direction;
@@ -73,9 +86,9 @@ public class DriveSubsystem extends SubsystemBase {
     left *= Math.abs(left);
     double divisor = 1;
     if(left>1) {
-      divisor = left;
+      divisor = Math.abs(left);
     } else if (right > 1){
-      divisor = right;
+      divisor = Math.abs(right);
     }
     right /= divisor;
     left /= divisor;

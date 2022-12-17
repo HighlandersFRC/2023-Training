@@ -5,14 +5,11 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.commands.DriveForwardXMeters;
-import frc.robot.commands.DriveVelocityMode;
-import frc.robot.commands.TurnXDegrees;
-import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.NavXSensor;
+import frc.robot.commands.MotorsClockwise;
+import frc.robot.commands.MotorsCounterClockwise;
+import frc.robot.subsystems.Motors;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -24,8 +21,7 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
-  DriveSubsystem drive = new DriveSubsystem();
-
+  Motors motors = new Motors();
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -35,7 +31,6 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
-    drive.init();
   }
 
   /**
@@ -52,11 +47,6 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
-    SmartDashboard.putNumber("NavX reading", NavXSensor.navX.currentYaw());
-    SmartDashboard.putNumber("Left Movement Speed", Constants.TP100MS_To_MPS(drive.frontLeft.getSelectedSensorVelocity()));
-    SmartDashboard.putNumber("Right Movement Speed", Constants.TP100MS_To_MPS(drive.frontRight.getSelectedSensorVelocity()));
-    SmartDashboard.putNumber("Right Power", drive.frontRight.getMotorOutputPercent());
-    SmartDashboard.putNumber("Left Power", drive.frontLeft.getMotorOutputPercent());
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
@@ -90,25 +80,13 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-    TurnXDegrees turn180 = new TurnXDegrees(180, drive);
-    TurnXDegrees turnNeg180 = new TurnXDegrees(-180, drive);
-    DriveForwardXMeters driveForwardXMeters = new DriveForwardXMeters(drive, 2);
-    DriveVelocityMode driveVelocityMode = new DriveVelocityMode(drive, 0, true);
-    OI.buttonA.cancelWhenPressed(turn180);
-    OI.buttonA.whenPressed(turn180);
-    OI.buttonB.cancelWhenPressed(turnNeg180);
-    OI.buttonB.whenPressed(turnNeg180);
-    OI.buttonX.cancelWhenPressed(driveVelocityMode);
-    OI.rBumper.whenPressed(driveVelocityMode);
-    OI.buttonY.whenPressed(driveForwardXMeters);
-    OI.lBumper.cancelWhenPressed(driveForwardXMeters);
+    OI.buttonA.whenPressed(new MotorsClockwise(motors));
+    OI.buttonB.whenPressed(new MotorsCounterClockwise(motors));
   }
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {
-    
-  }
+  public void teleopPeriodic() {}
 
   @Override
   public void testInit() {

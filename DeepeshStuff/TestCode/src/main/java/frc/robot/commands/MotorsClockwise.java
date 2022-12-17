@@ -6,29 +6,27 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.OI;
-import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.Motors;
 
-public class DriveDefault extends CommandBase {
-  /** Creates a new DriveDefault. */
-  DriveSubsystem drive;
-  public DriveDefault(DriveSubsystem drive) {
+public class MotorsClockwise extends CommandBase {
+  /** Creates a new MotorsClockwise. */
+  Motors motors;
+  public MotorsClockwise(Motors motors) {
     // Use addRequirements() here to declare subsystem dependencies.
-    this.drive = drive;
-    addRequirements(drive);
+    this.motors = motors;
+    addRequirements(motors);
+
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-  
+    motors.motorsClockwise();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-    drive.init();
-    drive.arcadeDrive(OI.getDriverLeftY(), OI.getDriverRightX());
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
@@ -37,6 +35,10 @@ public class DriveDefault extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    if (OI.buttonA.get()) {
+      return false;
+    } else {
+      return true;
+    }
   }
 }
