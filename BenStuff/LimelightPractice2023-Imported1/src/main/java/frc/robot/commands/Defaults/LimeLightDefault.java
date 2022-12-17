@@ -17,7 +17,7 @@ addRequirements(limeLight);
 
   @Override
   public void execute() {
-   System.out.println(limeLight.getNetworkTablesTarget());
+  //  System.out.println(limeLight.getNetworkTablesTarget());
   }
 
   @Override

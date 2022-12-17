@@ -1,6 +1,8 @@
 
 package frc.robot;
 
+import org.photonvision.PhotonCamera;
+
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -49,9 +51,26 @@ private final LimeLight limeLight = new LimeLight();
     }
   }
 
+  PhotonCamera camera = new PhotonCamera("photonvision");
+
   @Override
   public void teleopPeriodic() {
+    
 
+      // var result = camera.getLatestResult();
+      // System.out.println(result.getTargets());
+      // if (result.hasTargets()) {
+        
+
+      //   System.out.println("Target Found");
+        
+      // } else {
+
+      //     System.out.println("No Targets");
+      //     //System.out.println(result);
+
+      // }
+  
   }
 
   @Override
