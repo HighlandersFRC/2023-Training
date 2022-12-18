@@ -8,10 +8,10 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.OI;
 import frc.robot.subsystems.DriveSubsystem;
 
-public class DriveDefault extends CommandBase {
+public class ArcadeDrive extends CommandBase {
   /** Creates a new DriveDefault. */
   DriveSubsystem drive;
-  public DriveDefault(DriveSubsystem drive) {
+  public ArcadeDrive(DriveSubsystem drive) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.drive = drive;
     addRequirements(drive);
