@@ -2,12 +2,14 @@
 package frc.robot.subsystems;
 
 import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -21,29 +23,15 @@ public class LimeLight extends SubsystemBase {
 
 
 
-
-  NetworkTableEntry latencyMillisEntry;
-  NetworkTableEntry hasTargetEntry;
-  NetworkTableEntry targetAreaEntry;
-  NetworkTableEntry targetPitchEntry;
-  NetworkTableEntry targetYawEntry;
+// //creating variables that hold the x and y values for the target within the video frame
   NetworkTableEntry targetPixelsXEntry;
   NetworkTableEntry targetPixelsYEntry;
+
   NetworkTableInstance inst = NetworkTableInstance.getDefault();
   NetworkTable limeLightTable = inst.getTable("/photonvision/LimeLight");
 
   
 PhotonCamera camera = new PhotonCamera(inst, "LimeLight");
-
-// public boolean getPVHasTarget() {
-//   PhotonPipelineResult result = camera.getLatestResult();
-//   return result.hasTargets();
-// }
-
-// public double getPVLatencyMillis() {
-//   PhotonPipelineResult result = camera.getLatestResult();
-//   return result.getLatencyMillis();
-// }
 
 public double getLatencyMillis() {
   PhotonPipelineResult result = camera.getLatestResult();
@@ -92,6 +80,38 @@ public double getTargetPixelsY() {
   return targetPixelsYEntry.getDouble(0.0);
 }
 
+//pose estimate does not work yet
+public double getCameraToTarget(String type) {
+  PhotonPipelineResult result = camera.getLatestResult();
+if(result.getBestTarget() == null) {
+  return -1;
+} else {
+    PhotonTrackedTarget target = result.getBestTarget();
+    Transform3d camToTarget = target.getBestCameraToTarget();
+switch (type) {
+  case "X": return camToTarget.getX();
+  case "Y": return camToTarget.getY();
+  case "Z": return camToTarget.getZ();
+  case "Angle": return camToTarget.getRotation().getAngle();
+  case "Norm": return camToTarget.getTranslation().getNorm();
+  default: return -1;
+  }
+ }
+}
+
+
+public double getDistanceToTarget(double cameraHeightMeters, double targetHeightMeters, double cameraPitchRadians) {
+  PhotonPipelineResult result = camera.getLatestResult();
+  if(result.getBestTarget() == null) {return 0.0;} else {
+  double range = PhotonUtils.calculateDistanceToTargetMeters(
+          cameraHeightMeters,
+          targetHeightMeters,
+          cameraPitchRadians,
+          Units.degreesToRadians(result.getBestTarget().getPitch())
+          );
+          return range;
+  }
+}
 
   public LimeLight() {}
 
@@ -108,5 +128,11 @@ public double getTargetPixelsY() {
     SmartDashboard.putNumber("Target Pixels X", getTargetPixelsX());
     SmartDashboard.putNumber("Target Pixels Y", getTargetPixelsY());
     SmartDashboard.putNumber("Yaw", getTargetYaw());
+    SmartDashboard.putNumber("Distance to Target (Meters)", getDistanceToTarget(Units.inchesToMeters(26), Units.inchesToMeters(47), Units.degreesToRadians(0))); // enter target and camera heights off the ground
+    SmartDashboard.putNumber("Pose X", getCameraToTarget("X"));
+    SmartDashboard.putNumber("Pose Y", getCameraToTarget("Y"));
+    SmartDashboard.putNumber("Pose z", getCameraToTarget("Z"));
+    SmartDashboard.putNumber("Pose Angle", getCameraToTarget("Angle"));
+    SmartDashboard.putNumber("Pose Norm", getCameraToTarget("Norm"));
   }
 }
