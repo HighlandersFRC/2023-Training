@@ -35,40 +35,25 @@ public class DriveForwardXMeters extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    drive.init();
     loops = 0;
     initialYaw = NavXSensor.navX.currentYaw();
     p = (0.5 * 1023)/Constants.metersToTicks(0.4);  
-    
-
-    drive.init();
-    drive.frontLeft.follow(drive.frontRight, FollowerType.AuxOutput1);
     drive.frontRight.configRemoteFeedbackFilter(drive.frontLeft, 0);
-    drive.frontRight.setSelectedSensorPosition(0);
     drive.frontRight.configSensorTerm(SensorTerm.Sum0, FeedbackDevice.IntegratedSensor);
     drive.frontRight.configSensorTerm(SensorTerm.Sum1, FeedbackDevice.RemoteSensor0);
-    drive.frontLeft.setSelectedSensorPosition(0);
     drive.frontRight.configSensorTerm(SensorTerm.Diff0, FeedbackDevice.IntegratedSensor);
     drive.frontRight.configSensorTerm(SensorTerm.Diff1, FeedbackDevice.RemoteSensor0);
     drive.frontRight.configSelectedFeedbackSensor(FeedbackDevice.SensorSum, 0, 0);
     drive.frontRight.configSelectedFeedbackSensor(FeedbackDevice.SensorDifference, 1, 0);
     drive.frontRight.configSelectedFeedbackCoefficient(0.5);
-    // drive.backRight.configRemoteFeedbackFilter(drive.backLeft, 0);
-    // drive.backRight.setSelectedSensorPosition(0);
-    // drive.backRight.configSensorTerm(SensorTerm.Sum0, FeedbackDevice.IntegratedSensor);
-    // drive.backRight.configSensorTerm(SensorTerm.Sum1, FeedbackDevice.RemoteSensor0);
-    // drive.backLeft.setSelectedSensorPosition(0);
-    // drive.backRight.configSensorTerm(SensorTerm.Diff0, FeedbackDevice.IntegratedSensor);
-    // drive.backRight.configSensorTerm(SensorTerm.Diff1, FeedbackDevice.RemoteSensor0);
-    // drive.backRight.configSelectedFeedbackSensor(FeedbackDevice.SensorSum, 0, 0);
-    // drive.backRight.configSelectedFeedbackSensor(FeedbackDevice.SensorDifference, 1, 0);
-    // drive.backRight.configSelectedFeedbackCoefficient(0.5);
-    
-    drive.setMotorPID(drive.frontRight, p, 0, 0, 0, 0, 1);
+    drive.frontRight.configAuxPIDPolarity(false);
+    drive.setMotorPID(drive.frontRight, p, 0, 0.001, 0, 0, 0.3);
     drive.setMotorPID(drive.frontRight, p, 0, 0, 0, 1, 1);
-    
-    // drive.setMotorPID(drive.backRight, p, 0, 0, 0, 0, 1);
-    // drive.setMotorPID(drive.backRight, p, 0, 0, 0, 1, 1);
-    drive.setDrivePosition(meters / 2, meters / 2);
+    drive.setMotorPID(drive.frontLeft, 0, 0, 0, 0, 0, 1);
+    drive.setMotorPID(drive.frontLeft, 0, 0, 0, 0, 1, 1);
+
+    drive.setDrivePosition(drive.frontRight, meters, 0);
     
   }
 
@@ -77,10 +62,9 @@ public class DriveForwardXMeters extends CommandBase {
   public void execute() {
     currentYaw = NavXSensor.navX.currentYaw();
     SmartDashboard.putBoolean("running", true);
-    SmartDashboard.putNumber("right error", Constants.ticksToMeters(drive.frontRight.getClosedLoopError()));
-    SmartDashboard.putNumber("left error", Constants.ticksToMeters(drive.frontLeft.getClosedLoopError()));
-    SmartDashboard.putNumber("Drive Heading", currentYaw-initialYaw);
-    leftError = drive.frontLeft.getClosedLoopError();
+    SmartDashboard.putNumber("error", Constants.ticksToMeters(drive.frontRight.getClosedLoopError()));    SmartDashboard.putNumber("Drive Heading", currentYaw-initialYaw);
+    SmartDashboard.putNumber("left position", Constants.ticksToMeters(drive.frontLeft.getSelectedSensorPosition()));
+    SmartDashboard.putNumber("Right position", Constants.ticksToMeters(drive.frontRight.getSelectedSensorPosition())); 
     rightError = drive.frontRight.getClosedLoopError();
 
   }
@@ -89,14 +73,15 @@ public class DriveForwardXMeters extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     SmartDashboard.putBoolean("running", false);
+    drive.setDrivePercents(0.0, 0.0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (Math.abs(rightError) < Constants.FALCON_ERROR_THRESHOLD &&  Math.abs(leftError) < Constants.FALCON_ERROR_THRESHOLD){
+    if (Math.abs(rightError) < Constants.FALCON_ERROR_THRESHOLD_TICKS){
       loops++;
-      if (loops > 50){
+      if (loops > 20){
       return true;
       } else {
         return false;

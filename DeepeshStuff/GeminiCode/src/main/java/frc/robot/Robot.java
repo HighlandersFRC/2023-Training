@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.DriveForwardXMeters;
 import frc.robot.commands.DriveVelocityMode;
 import frc.robot.commands.TurnXDegrees;
@@ -53,18 +54,25 @@ public class Robot extends TimedRobot {
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
     SmartDashboard.putNumber("NavX reading", NavXSensor.navX.currentYaw());
-    SmartDashboard.putNumber("Left Movement Speed", Constants.TP100MS_To_MPS(drive.frontLeft.getSelectedSensorVelocity()));
-    SmartDashboard.putNumber("Right Movement Speed", Constants.TP100MS_To_MPS(drive.frontRight.getSelectedSensorVelocity()));
+    SmartDashboard.putNumber("Left Movement Speed", Constants.TP100MS_To_MPS(drive._frontLeft.getIntegratedSensorVelocity()));
+    SmartDashboard.putNumber("Right Movement Speed", Constants.TP100MS_To_MPS(drive._frontRight.getIntegratedSensorVelocity()));
     SmartDashboard.putNumber("Right Power", drive.frontRight.getMotorOutputPercent());
     SmartDashboard.putNumber("Left Power", drive.frontLeft.getMotorOutputPercent());
+    SmartDashboard.putNumber("left position", Constants.ticksToMeters(drive.frontLeft.getSelectedSensorPosition()));
+    SmartDashboard.putNumber("Right position", Constants.ticksToMeters(drive.frontRight.getSelectedSensorPosition())); 
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    drive.setDrivePercents(0, 0);
+  }
 
   @Override
-  public void disabledPeriodic() {}
+  public void disabledPeriodic() {
+    SmartDashboard.putNumber("left position", Constants.ticksToMeters(drive.frontLeft.getSelectedSensorPosition()));
+    SmartDashboard.putNumber("Right position", Constants.ticksToMeters(drive.frontRight.getSelectedSensorPosition())); 
+  }
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
@@ -92,16 +100,15 @@ public class Robot extends TimedRobot {
     }
     TurnXDegrees turn180 = new TurnXDegrees(180, drive);
     TurnXDegrees turnNeg180 = new TurnXDegrees(-180, drive);
-    DriveForwardXMeters driveForwardXMeters = new DriveForwardXMeters(drive, 2);
-    DriveVelocityMode driveVelocityMode = new DriveVelocityMode(drive, 0, true);
+    DriveForwardXMeters driveForwardXMeters = new DriveForwardXMeters(drive, 4);
+    ArcadeDrive arcadeDrive = new ArcadeDrive(drive);
     OI.buttonA.cancelWhenPressed(turn180);
     OI.buttonA.whenPressed(turn180);
     OI.buttonB.cancelWhenPressed(turnNeg180);
     OI.buttonB.whenPressed(turnNeg180);
-    OI.buttonX.cancelWhenPressed(driveVelocityMode);
-    OI.rBumper.whenPressed(driveVelocityMode);
     OI.buttonY.whenPressed(driveForwardXMeters);
     OI.lBumper.cancelWhenPressed(driveForwardXMeters);
+    OI.rBumper.toggleWhenPressed(arcadeDrive);
   }
 
   /** This function is called periodically during operator control. */

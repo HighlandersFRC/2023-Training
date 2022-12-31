@@ -6,22 +6,24 @@ package frc.robot.commands;
 
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.FollowerType;
+import com.ctre.phoenix.motorcontrol.SensorTerm;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.OI;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.NavXSensor;
 
 public class DriveVelocityMode extends CommandBase {
   /** Creates a new DriveVelocityMode. */
   DriveSubsystem drive;
-  double forwardSpeedAuton;
-  boolean teleop;
-  public DriveVelocityMode(DriveSubsystem drive, double forwardSpeedAuton, boolean teleop) {
+  double p;
+  double f;
+  public DriveVelocityMode(DriveSubsystem drive) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.drive = drive;
-    this.forwardSpeedAuton = forwardSpeedAuton;
-    this.teleop = teleop;
 
     addRequirements(drive);
   }
@@ -29,22 +31,19 @@ public class DriveVelocityMode extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    drive.init();
-    System.out.println("Velocity Mode ran");
-    drive.setMotorPID(drive.frontLeft, 0.047, 0, 0.0, 0.04547, 0, 1);
-    drive.setMotorPID(drive.frontRight, 0.047, 0, 0.0, 0.04547, 0, 1);
-    drive.setMotorPID(drive.backLeft, 0.047, 0, 0.0, 0.04547, 0, 1);
-    drive.setMotorPID(drive.backRight, 0.047, 0, 0.0, 0.04547, 0, 1);
+    p = (0.5 * 1023)/Constants.metersToTicks(0.2);  
+    drive.setMotorPID(drive.frontRight, p, 0, 0, 0.004748, 0, 1);
+    drive.setMotorPID(drive.frontRight, 0, 0, 0, 0, 1, 1);
+    drive.setMotorPID(drive.frontLeft, p, 0, 0, 0.004748, 0, 1);
+    drive.setMotorPID(drive.frontLeft, 0, 0, 0, 0, 1, 1);
+    
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (!teleop) {
-      drive.driveVelocityMode(forwardSpeedAuton, 0);
-    } else {
-      drive.driveVelocityMode(Constants.MAX_SPEED_METERS_PER_SECOND * OI.getDriverLeftY(), Constants.MAX_SPEED_METERS_PER_SECOND * OI.getDriverRightX());
-    }
+    
+      drive.driveVelocityMode(OI.getDriverLeftY(), OI.getDriverRightX());
     //SmartDashboard.setPersistent(key);
   }
 
@@ -55,10 +54,6 @@ public class DriveVelocityMode extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-      if (teleop) {
-        return false;
-      } else {
-        return true;
-      }
+      return false;
   }
 }

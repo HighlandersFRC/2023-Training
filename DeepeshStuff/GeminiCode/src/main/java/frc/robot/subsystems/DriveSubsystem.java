@@ -5,15 +5,19 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.FollowerType;
+import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
+import com.ctre.phoenix.motorcontrol.TalonFXSensorCollection;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.commands.DriveDefault;
+import frc.robot.commands.ArcadeDrive;
+import frc.robot.commands.DriveVelocityMode;
 
 
 
@@ -23,17 +27,27 @@ public class DriveSubsystem extends SubsystemBase {
   public TalonFX backRight = new TalonFX(2);
   public TalonFX frontLeft = new TalonFX(3);
   public TalonFX backLeft = new TalonFX(4);
-  
+  public TalonFXSensorCollection _frontRight = new TalonFXSensorCollection(frontRight);
+  public TalonFXSensorCollection _frontLeft = new TalonFXSensorCollection(frontLeft);
+  public TalonFXSensorCollection _backLeft = new TalonFXSensorCollection(backLeft);
+  public TalonFXSensorCollection _backRight = new TalonFXSensorCollection(backRight);
   
   
   public DriveSubsystem() {}
   public void init(){
-    setDefaultCommand(new DriveDefault(this));
+    setDefaultCommand(new DriveVelocityMode(this));
+     setDrivePercents(0, 0);
+     frontLeft.setInverted(true);
+     backLeft.setInverted(InvertType.FollowMaster);
      frontRight.configFactoryDefault();
      frontLeft.configFactoryDefault();
      backLeft.configFactoryDefault();
      backRight.configFactoryDefault();
-
+     _backLeft.setIntegratedSensorPosition(0, 0);
+     _frontLeft.setIntegratedSensorPosition(0, 0);
+     _backRight.setIntegratedSensorPosition(0, 0);
+     _frontRight.setIntegratedSensorPosition(0, 0);
+    
      frontRight.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 35, 35, 0.5));
      frontLeft.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 35, 35, 0.5));
      backRight.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 35, 35, 0.5));
@@ -49,22 +63,15 @@ public class DriveSubsystem extends SubsystemBase {
     backRight.follow(frontRight);
   }
   
-  public void setDriveVelocity(double leftFPS, double rightFPS){
-    
-    SmartDashboard.putNumber("Left Theoretical Speed", -leftFPS);
-
-     frontLeft.set(ControlMode.Velocity, Constants.MPS_To_TP100MS( -leftFPS));
-
-    SmartDashboard.putNumber("Right Theoretical Speed", rightFPS);
-    
-    
-     frontRight.set(ControlMode.Velocity, Constants.MPS_To_TP100MS( rightFPS));
-
+  public void setDriveVelocity(double leftMPS, double rightMPS){
+    SmartDashboard.putNumber("Left Theoretical Speed", leftMPS);
+     frontLeft.set(ControlMode.Velocity, Constants.MPS_To_TP100MS(leftMPS));
+    SmartDashboard.putNumber("Right Theoretical Speed", rightMPS);
+     frontRight.set(ControlMode.Velocity, Constants.MPS_To_TP100MS(rightMPS));
   }
-  public void setDrivePosition(double leftMeters, double rightMeters) {
-    frontLeft.set(ControlMode.Position, frontLeft.getSelectedSensorPosition() + Constants.metersToTicks(-leftMeters));
-    frontRight.set(ControlMode.Position, frontRight.getSelectedSensorPosition() + Constants.metersToTicks(rightMeters));
-    
+
+  public void setDrivePosition(TalonFX talon, double pid0Target, double pid1Target) {
+    frontRight.set(ControlMode.Position, (frontRight.getSelectedSensorPosition() + Constants.metersToTicks(-pid0Target)), DemandType.AuxPID, pid1Target);
   }
   
   public void setMotorPID(TalonFX talon, double P, double I, double D, double F, int slotidx, double peakPercentOut){
@@ -72,13 +79,14 @@ public class DriveSubsystem extends SubsystemBase {
     talon.config_kI(slotidx, I);
     talon.config_kD(slotidx, D);
     talon.config_kF(slotidx, F);
-    talon.configPeakOutputForward(peakPercentOut);
-    talon.configPeakOutputReverse(-peakPercentOut);
+    talon.configClosedLoopPeakOutput(slotidx, peakPercentOut);
   }
+
   public void setDrivePercents(double left, double right){
-     frontLeft.set(ControlMode.PercentOutput,  -left);
+     frontLeft.set(ControlMode.PercentOutput,  left);
      frontRight.set(ControlMode.PercentOutput,  right);
-    }
+  }
+
   public void arcadeDrive(double power, double direction){
     double right = power + direction;
     double left = power - direction;
@@ -94,27 +102,22 @@ public class DriveSubsystem extends SubsystemBase {
     left /= divisor;
     setDrivePercents(left, right);
   }
+
   public void driveVelocityMode(double power, double direction){
     double right = power + direction;
     double left = power - direction;
-    double quotient = 1;
-      right /= Constants.MAX_SPEED_METERS_PER_SECOND;
-      left /= Constants.MAX_SPEED_METERS_PER_SECOND;
-      right *= Math.abs(right);
-      left *= Math.abs(left);
-      right *= Constants.MAX_SPEED_METERS_PER_SECOND;
-      left *= Constants.MAX_SPEED_METERS_PER_SECOND;
-    if (Math.abs(left) > Constants.MAX_SPEED_METERS_PER_SECOND && left > right){
-      quotient = Math.abs(left);
-      left *=Constants.MAX_SPEED_METERS_PER_SECOND;
-      right *=Constants.MAX_SPEED_METERS_PER_SECOND;
-    } else if (Math.abs(right) > Constants.MAX_SPEED_METERS_PER_SECOND && right >= left) {
-      quotient = Math.abs(right);
-      left *=Constants.MAX_SPEED_METERS_PER_SECOND;
-      right *=Constants.MAX_SPEED_METERS_PER_SECOND;
+    right *= Math.abs(right);
+    left *= Math.abs(left);
+    double divisor = 1;
+    if(left>1) {
+      divisor = Math.abs(left);
+    } else if (right > 1){
+      divisor = Math.abs(right);
     }
-    left /= quotient;
-    right /= quotient;
+    right /= divisor;
+    left /= divisor;
+    left *= Constants.MAX_SPEED_METERS_PER_SECOND;
+    right *= Constants.MAX_SPEED_METERS_PER_SECOND;
 
     setDriveVelocity(left, right);
   }
