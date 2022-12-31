@@ -51,26 +51,8 @@ private final LimeLight limeLight = new LimeLight();
     }
   }
 
-  PhotonCamera camera = new PhotonCamera("photonvision");
-
   @Override
-  public void teleopPeriodic() {
-    
-
-      // var result = camera.getLatestResult();
-      // System.out.println(result.getTargets());
-      // if (result.hasTargets()) {
-        
-
-      //   System.out.println("Target Found");
-        
-      // } else {
-
-      //     System.out.println("No Targets");
-      //     //System.out.println(result);
-
-      // }
-  
+  public void teleopPeriodic() {  
   }
 
   @Override
