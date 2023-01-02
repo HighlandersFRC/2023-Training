@@ -12,7 +12,10 @@ import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.DriveForwardXMeters;
 import frc.robot.commands.DriveVelocityMode;
 import frc.robot.commands.TurnXDegrees;
+import frc.robot.commands.magIntake;
+import frc.robot.commands.magOutake;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.NavXSensor;
 
 /**
@@ -26,7 +29,7 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
   DriveSubsystem drive = new DriveSubsystem();
-
+  IntakeSubsystem intake = new IntakeSubsystem();
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -37,6 +40,7 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
     drive.init();
+    intake.init();
   }
 
   /**
@@ -109,13 +113,14 @@ public class Robot extends TimedRobot {
     OI.buttonY.whenPressed(driveForwardXMeters);
     OI.lBumper.cancelWhenPressed(driveForwardXMeters);
     OI.rBumper.toggleWhenPressed(arcadeDrive);
+    OI.lTrigger.whenPressed(new magOutake(intake));
+    OI.rTrigger.whenPressed(new magIntake(intake));
+
   }
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {
-    
-  }
+  public void teleopPeriodic() {}
 
   @Override
   public void testInit() {

@@ -2,6 +2,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.tools.TriggerButton;
 
 
 public class OI {
@@ -12,6 +13,9 @@ public class OI {
     public static JoystickButton buttonY = new JoystickButton(driverController, 4);
     public static JoystickButton rBumper = new JoystickButton(driverController, 6);
     public static JoystickButton lBumper = new JoystickButton(driverController, 5);
+    public static TriggerButton rTrigger = new TriggerButton(driverController, 3);
+    public static TriggerButton lTrigger = new TriggerButton(driverController, 2);
+
     
     public static double  getDriverLeftY(){
         if (Math.abs(driverController.getLeftY()) < 0.2 ){
