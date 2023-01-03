@@ -8,20 +8,20 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.OI;
 import frc.robot.subsystems.IntakeSubsystem;
 
-public class magIntake extends CommandBase {
-  /** Creates a new magIntake. */
+public class Outake extends CommandBase {
+  /** Creates a new magOutake. */
   IntakeSubsystem intake;
-  public magIntake(IntakeSubsystem intake) {
-    // Use addRequirements() here to declare subsystem dependencies.
+  public Outake(IntakeSubsystem intake) {
     this.intake = intake;
+    // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(intake);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    intake.setPID(0.0001, 0, 0, 0);
-    intake.magIntake(3000);
+    intake.outake();
+    intake.retractPistons();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -35,9 +35,10 @@ public class magIntake extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (OI.rTrigger.get()){
+    if (OI.lTrigger.get()){
       return false;
     }else{
       return true;
-    }  }
+    }
+  }
 }

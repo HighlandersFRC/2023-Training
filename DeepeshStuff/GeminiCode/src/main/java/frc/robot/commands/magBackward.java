@@ -4,37 +4,46 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.IntakeSubsystem;
+import com.ctre.phoenix.motorcontrol.ControlMode;
 
-public class magDefault extends CommandBase {
-  /** Creates a new magDefault. */
-  IntakeSubsystem intake;
-  public magDefault(IntakeSubsystem intake) {
-    this.intake = intake;
+import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.OI;
+import frc.robot.subsystems.MagSubsystem;
+
+public class magBackward extends CommandBase {
+  MagSubsystem mag; 
+  /** Creates a new magBackward. */
+  public magBackward(MagSubsystem mag) {
+    this.mag = mag;
+    addRequirements(mag); 
     // Use addRequirements() here to declare subsystem dependencies.
-  addRequirements(intake);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    mag.setPercent(-0.3);
+    System.out.println("magBackward ran");
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-  intake.setPID(0, 0, 0, 0);
-  intake.magStop();
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    System.out.println("magBackward ended");
+    mag.setPercent(0);
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    if (OI.lTrigger.getAsBoolean()){
+      return false;
+    }else{
+      return true;
+    }
   }
 }

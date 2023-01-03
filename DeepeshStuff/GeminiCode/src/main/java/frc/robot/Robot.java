@@ -12,10 +12,12 @@ import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.DriveForwardXMeters;
 import frc.robot.commands.DriveVelocityMode;
 import frc.robot.commands.TurnXDegrees;
-import frc.robot.commands.magIntake;
-import frc.robot.commands.magOutake;
+import frc.robot.commands.magBackward;
+import frc.robot.commands.Intake;
+import frc.robot.commands.Outake;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.MagSubsystem;
 import frc.robot.subsystems.NavXSensor;
 
 /**
@@ -29,6 +31,7 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
   DriveSubsystem drive = new DriveSubsystem();
+  MagSubsystem mag = new MagSubsystem(); 
   IntakeSubsystem intake = new IntakeSubsystem();
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -57,6 +60,7 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+    mag.beamBreaksOnDashboard(); 
     SmartDashboard.putNumber("NavX reading", NavXSensor.navX.currentYaw());
     SmartDashboard.putNumber("Left Movement Speed", Constants.TP100MS_To_MPS(drive._frontLeft.getIntegratedSensorVelocity()));
     SmartDashboard.putNumber("Right Movement Speed", Constants.TP100MS_To_MPS(drive._frontRight.getIntegratedSensorVelocity()));
@@ -76,6 +80,7 @@ public class Robot extends TimedRobot {
   public void disabledPeriodic() {
     SmartDashboard.putNumber("left position", Constants.ticksToMeters(drive.frontLeft.getSelectedSensorPosition()));
     SmartDashboard.putNumber("Right position", Constants.ticksToMeters(drive.frontRight.getSelectedSensorPosition())); 
+    mag.beamBreaksOnDashboard(); 
   }
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
@@ -113,8 +118,9 @@ public class Robot extends TimedRobot {
     OI.buttonY.whenPressed(driveForwardXMeters);
     OI.lBumper.cancelWhenPressed(driveForwardXMeters);
     OI.rBumper.toggleWhenPressed(arcadeDrive);
-    OI.lTrigger.whenPressed(new magOutake(intake));
-    OI.rTrigger.whenPressed(new magIntake(intake));
+    OI.lTrigger.whenPressed(new Outake(intake));
+    OI.rTrigger.whenPressed(new Intake(intake));
+    OI.lTrigger.whenPressed(new magBackward(mag));
 
   }
 

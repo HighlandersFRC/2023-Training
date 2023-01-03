@@ -11,67 +11,26 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.commands.magDefault;
+import frc.robot.commands.IntakeDefault;
 
 public class IntakeSubsystem extends SubsystemBase {
   /** Creates a new IntakeSubsystem. */
   // public CANSparkMax neo3 = new CANSparkMax(11, MotorType.kBrushless);// doesnt connect to a neo yet
-  public CANSparkMax neo2 = new CANSparkMax(12, MotorType.kBrushless);//the neo controlling the middle part of the mag
-  public CANSparkMax neo1 = new CANSparkMax(14, MotorType.kBrushless);//the neo controlling the bottom part of the mag
   public TalonFX intakeTalon = new TalonFX(8);
-  public VictorSPX victor = new VictorSPX(7);
-  public IntakeSubsystem() 
-  {}
+  public IntakeSubsystem() {}
   public void init(){
-    setPID(0, 0, 0, 0);
-    setDefaultCommand(new magDefault(this));
+    setDefaultCommand(new IntakeDefault(this));
   }
-  public void setPID(double P,double I,double D,double F){
-    neo1.getPIDController().setP(P);
-    neo1.getPIDController().setI(I);
-    neo1.getPIDController().setD(D);
-    neo1.getPIDController().setFF(F);
-    neo2.getPIDController().setP(P);
-    neo2.getPIDController().setI(I);
-    neo2.getPIDController().setD(D);
-    neo2.getPIDController().setFF(F);
-    intakeTalon.config_kP(0, P);
-    intakeTalon.config_kI(0, I);
-    intakeTalon.config_kD(0, D);
-    intakeTalon.config_kF(0, F);
-    victor.config_kP(0, P);
-    victor.config_kI(0, I);
-    victor.config_kD(0, D);
-    victor.config_kF(0, F);
-    // neo3.getPIDController().setP(P);
-    // neo3.getPIDController().setI(I);
-    // neo3.getPIDController().setD(D);
-    // neo3.getPIDController().setFF(F);
+  public void intake(){
+    intakeTalon.set(ControlMode.PercentOutput, 0.5);
   }
-  public void setSetpoint(double setPoint, boolean velocity){
-    if (velocity){
-      neo1.getPIDController().setReference(setPoint, ControlType.kVelocity);
-      neo2.getPIDController().setReference(setPoint, ControlType.kVelocity);
-      intakeTalon.set(ControlMode.Velocity, setPoint*-256);
-      victor.set(ControlMode.Velocity, setPoint);
-      // neo3.getPIDController().setReference(setPoint, ControlType.kVelocity);
-    }else {
-      neo1.getPIDController().setReference(setPoint, ControlType.kPosition);
-      neo2.getPIDController().setReference(setPoint, ControlType.kPosition);
-      intakeTalon.set(ControlMode.Position, setPoint*-256);
-      victor.set(ControlMode.Position, setPoint);
-      // neo3.getPIDController().setReference(setPoint, ControlType.kPosition);
-    }
+  public void stopIntake(){
+    intakeTalon.set(ControlMode.PercentOutput, 0);
   }
-  public void magIntake(double RPM){
-    setSetpoint(RPM, true);
-  }
-  public void magStop(){
-    setSetpoint(0, true);
-  }
-  public void magOutake(double RPM){
-    setSetpoint(RPM, true);
+  public void outake(){
+    intakeTalon.set(ControlMode.PercentOutput, 0.5);
   }
   @Override
   public void periodic() {

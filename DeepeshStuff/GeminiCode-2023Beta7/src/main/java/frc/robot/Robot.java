@@ -12,10 +12,11 @@ import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.DriveForwardXMeters;
 import frc.robot.commands.DriveVelocityMode;
 import frc.robot.commands.TurnXDegrees;
-import frc.robot.commands.magIntake;
-import frc.robot.commands.magOutake;
+import frc.robot.commands.Intake;
+import frc.robot.commands.Outake;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.MagSubsystem;
 import frc.robot.subsystems.NavXSensor;
 
 /**
@@ -30,6 +31,7 @@ public class Robot extends TimedRobot {
   private RobotContainer m_robotContainer;
   DriveSubsystem drive = new DriveSubsystem();
   IntakeSubsystem intake = new IntakeSubsystem();
+  MagSubsystem mag = new MagSubsystem();
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -41,6 +43,7 @@ public class Robot extends TimedRobot {
     m_robotContainer = new RobotContainer();
     drive.init();
     intake.init();
+    
   }
 
   /**
@@ -57,6 +60,7 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+    mag.beamBreaksOnDashboard();
     SmartDashboard.putNumber("NavX reading", NavXSensor.navX.currentYaw());
     SmartDashboard.putNumber("Left Movement Speed", Constants.TP100MS_To_MPS(drive._frontLeft.getIntegratedSensorVelocity()));
     SmartDashboard.putNumber("Right Movement Speed", Constants.TP100MS_To_MPS(drive._frontRight.getIntegratedSensorVelocity()));
@@ -106,15 +110,15 @@ public class Robot extends TimedRobot {
     TurnXDegrees turnNeg180 = new TurnXDegrees(-180, drive);
     DriveForwardXMeters driveForwardXMeters = new DriveForwardXMeters(drive, 4);
     ArcadeDrive arcadeDrive = new ArcadeDrive(drive);
-    OI.buttonA.cancelWhenPressed(turn180);
-    OI.buttonA.whenPressed(turn180);
-    OI.buttonB.cancelWhenPressed(turnNeg180);
-    OI.buttonB.whenPressed(turnNeg180);
-    OI.buttonY.whenPressed(driveForwardXMeters);
-    OI.lBumper.cancelWhenPressed(driveForwardXMeters);
-    OI.rBumper.toggleWhenPressed(arcadeDrive);
-    OI.lTrigger.whenPressed(new magOutake(intake));
-    OI.rTrigger.whenPressed(new magIntake(intake));
+    turn180.until(OI.buttonA);
+    OI.buttonA.onTrue(turn180);
+    turnNeg180.until(OI.buttonB);
+    OI.buttonB.onTrue(turnNeg180);
+    OI.buttonY.onTrue(driveForwardXMeters);
+    driveForwardXMeters.until(OI.buttonY);
+    OI.rBumper.toggleOnTrue(arcadeDrive);
+    OI.lTrigger.onTrue(new Outake(intake));
+    OI.rTrigger.onTrue(new Intake(intake));
 
   }
 

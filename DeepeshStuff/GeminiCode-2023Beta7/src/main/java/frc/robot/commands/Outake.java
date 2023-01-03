@@ -8,10 +8,10 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.OI;
 import frc.robot.subsystems.IntakeSubsystem;
 
-public class magOutake extends CommandBase {
+public class Outake extends CommandBase {
   /** Creates a new magOutake. */
   IntakeSubsystem intake;
-  public magOutake(IntakeSubsystem intake) {
+  public Outake(IntakeSubsystem intake) {
     this.intake = intake;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(intake);
@@ -20,8 +20,7 @@ public class magOutake extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    intake.setPID(0.0001, 0, 0, 0);
-    intake.magOutake(-3000);
+    intake.outake();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
