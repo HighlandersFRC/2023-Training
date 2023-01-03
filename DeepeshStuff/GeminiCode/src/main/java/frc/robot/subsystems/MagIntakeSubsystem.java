@@ -5,30 +5,37 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.commands.magDefault;
+import frc.robot.commands.IntakeDefault;
 
-public class MagSubsystem extends SubsystemBase {
-  /** Creates a new MagSubsystem. */
+
+
+
+
+public class MagIntakeSubsystem extends SubsystemBase {
+  /** Creates a new MagIntakeSubsyste. */
+  public MagIntakeSubsystem() {}
+  public DoubleSolenoid intakePiston = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 0, 1); 
+  public TalonFX intakeTalon = new TalonFX(8);
   public CANSparkMax neo2 = new CANSparkMax(12, MotorType.kBrushless);//the neo controlling the middle part of the mag
   public CANSparkMax neo1 = new CANSparkMax(14, MotorType.kBrushless);//the neo controlling the bottom part of the mag
   public VictorSPX victor = new VictorSPX(7);
-  public MagSubsystem() {}
-  public void init(){
-    setDefaultCommand(new magDefault(this));
-    setPercent(0);
-  }
   public DigitalInput beamBreak1 = new DigitalInput(3);
   public DigitalInput beamBreak2 = new DigitalInput(1);
   public DigitalInput beamBreak3 = new DigitalInput(6);
-
+  public void init(){
+    setDefaultCommand(new IntakeDefault(this));
+  }
   public Boolean getBeam(DigitalInput num) {
 
     if (num.get()) {
@@ -55,6 +62,21 @@ public class MagSubsystem extends SubsystemBase {
     }
     
   
+  public void extendPistons(){
+    intakePiston.set(Value.kForward);
+  }
+  public void retractPistons(){
+    intakePiston.set(Value.kReverse);
+  }  
+  public void intake(){
+   intakeTalon.set(ControlMode.PercentOutput, -0.5); 
+  }
+  public void stopIntake(){
+   intakeTalon.set(ControlMode.PercentOutput, 0); 
+  }
+  public void outake(){
+   intakeTalon.set(ControlMode.PercentOutput, 0.5); 
+  }
   @Override
   public void periodic() {
     // This method will be called once per scheduler run

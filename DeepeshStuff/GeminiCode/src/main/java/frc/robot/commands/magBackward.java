@@ -8,21 +8,23 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.OI;
-import frc.robot.subsystems.MagSubsystem;
+import frc.robot.subsystems.MagIntakeSubsystem;
 
 public class magBackward extends CommandBase {
-  MagSubsystem mag; 
+  MagIntakeSubsystem magintake;
   /** Creates a new magBackward. */
-  public magBackward(MagSubsystem mag) {
-    this.mag = mag;
-    addRequirements(mag); 
+  public magBackward(MagIntakeSubsystem magintake) {
+    this.magintake = magintake;
+    addRequirements(magintake); 
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    mag.setPercent(-0.3);
+    magintake.outake();
+    magintake.retractPistons();
+    magintake.setPercent(-0.3);
     System.out.println("magBackward ran");
   }
 
@@ -34,13 +36,13 @@ public class magBackward extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     System.out.println("magBackward ended");
-    mag.setPercent(0);
+    magintake.setPercent(0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (OI.lTrigger.getAsBoolean()){
+    if (OI.driverController.getLeftTriggerAxis() > 0.2){
       return false;
     }else{
       return true;

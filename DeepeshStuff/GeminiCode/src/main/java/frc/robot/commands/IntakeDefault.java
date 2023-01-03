@@ -5,15 +5,15 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.MagIntakeSubsystem;
 
 public class IntakeDefault extends CommandBase {
   /** Creates a new magDefault. */
-  IntakeSubsystem intake;
-  public IntakeDefault(IntakeSubsystem intake) {
-    this.intake = intake;
+  MagIntakeSubsystem magintake;
+  public IntakeDefault(MagIntakeSubsystem magintake) {
+    this.magintake = magintake;
     // Use addRequirements() here to declare subsystem dependencies.
-  addRequirements(intake);
+  addRequirements(magintake);
   }
 
   // Called when the command is initially scheduled.
@@ -24,8 +24,11 @@ public class IntakeDefault extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-  intake.stopIntake();
-  intake.retractPistons(); 
+  magintake.stopIntake();
+  magintake.retractPistons(); 
+  magintake.setPercent(0);
+
+  
   }
 
   // Called once the command ends or is interrupted.
