@@ -4,19 +4,14 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.commands.ArcadeDrive;
-import frc.robot.commands.DriveForwardXMeters;
-import frc.robot.commands.DriveVelocityMode;
-import frc.robot.commands.TurnXDegrees;
-import frc.robot.commands.magBackward;
-import frc.robot.commands.magDefault;
-import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.MagIntakeSubsystem;
-import frc.robot.subsystems.NavXSensor;
+import com.revrobotics.*;
+import com.revrobotics.Rev2mDistanceSensor.Port;
+
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -28,8 +23,11 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
-  DriveSubsystem drive = new DriveSubsystem();
-  MagIntakeSubsystem magintake = new MagIntakeSubsystem();
+  private Rev2mDistanceSensor distanceSensor = new Rev2mDistanceSensor(Port.kMXP);
+  private DigitalInput beamBreak = new DigitalInput(0);
+  public boolean getBeamBreak(){
+    return beamBreak.get();
+  }
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -39,8 +37,7 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
-    drive.init();
-    magintake.init();
+     distanceSensor.setAutomaticMode(true);
   }
 
   /**
@@ -57,28 +54,17 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
-    magintake.beamBreaksOnDashboard(); 
-    SmartDashboard.putNumber("NavX reading", NavXSensor.navX.currentYaw());
-    SmartDashboard.putNumber("Left Movement Speed", Constants.TP100MS_To_MPS(drive._frontLeft.getIntegratedSensorVelocity()));
-    SmartDashboard.putNumber("Right Movement Speed", Constants.TP100MS_To_MPS(drive._frontRight.getIntegratedSensorVelocity()));
-    SmartDashboard.putNumber("Right Power", drive.frontRight.getMotorOutputPercent());
-    SmartDashboard.putNumber("Left Power", drive.frontLeft.getMotorOutputPercent());
-    SmartDashboard.putNumber("left position", Constants.ticksToMeters(drive.frontLeft.getSelectedSensorPosition()));
-    SmartDashboard.putNumber("Right position", Constants.ticksToMeters(drive.frontRight.getSelectedSensorPosition())); 
+    SmartDashboard.putBoolean("Beam Break", beamBreak.get());
+    SmartDashboard.putBoolean("Valid", distanceSensor.isRangeValid());
+    SmartDashboard.putNumber("Distance", distanceSensor.getRange());
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
-  public void disabledInit() {
-    drive.setDrivePercents(0, 0);
-  }
+  public void disabledInit() {}
 
   @Override
-  public void disabledPeriodic() {
-    SmartDashboard.putNumber("left position", Constants.ticksToMeters(drive.frontLeft.getSelectedSensorPosition()));
-    SmartDashboard.putNumber("Right position", Constants.ticksToMeters(drive.frontRight.getSelectedSensorPosition())); 
-    magintake.beamBreaksOnDashboard(); 
-  }
+  public void disabledPeriodic() {}
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
@@ -104,19 +90,7 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-    TurnXDegrees turn180 = new TurnXDegrees(180, drive);
-    TurnXDegrees turnNeg180 = new TurnXDegrees(-180, drive);
-    DriveForwardXMeters driveForwardXMeters = new DriveForwardXMeters(drive, 4);
-    ArcadeDrive arcadeDrive = new ArcadeDrive(drive);
-    OI.buttonA.cancelWhenPressed(turn180);
-    OI.buttonA.whenPressed(turn180);
-    OI.buttonB.cancelWhenPressed(turnNeg180);
-    OI.buttonB.whenPressed(turnNeg180);
-    OI.buttonY.whenPressed(driveForwardXMeters);
-    OI.lBumper.cancelWhenPressed(driveForwardXMeters);
-    OI.rBumper.toggleWhenPressed(arcadeDrive);
-    OI.lTrigger.whenPressed(new magBackward(magintake));
-    OI.rTrigger.whenPressed(new magDefault(magintake));
+   
   }
 
   /** This function is called periodically during operator control. */

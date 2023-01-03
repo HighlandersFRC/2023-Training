@@ -12,10 +12,11 @@ import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.DriveForwardXMeters;
 import frc.robot.commands.DriveVelocityMode;
 import frc.robot.commands.TurnXDegrees;
-import frc.robot.commands.magBackward;
-import frc.robot.commands.magDefault;
+import frc.robot.commands.Intake;
+import frc.robot.commands.Outake;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.MagIntakeSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.MagSubsystem;
 import frc.robot.subsystems.NavXSensor;
 
 /**
@@ -29,7 +30,8 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
   DriveSubsystem drive = new DriveSubsystem();
-  MagIntakeSubsystem magintake = new MagIntakeSubsystem();
+  IntakeSubsystem intake = new IntakeSubsystem();
+  MagSubsystem mag = new MagSubsystem();
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -40,7 +42,8 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
     drive.init();
-    magintake.init();
+    intake.init();
+    
   }
 
   /**
@@ -57,7 +60,7 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
-    magintake.beamBreaksOnDashboard(); 
+    mag.beamBreaksOnDashboard();
     SmartDashboard.putNumber("NavX reading", NavXSensor.navX.currentYaw());
     SmartDashboard.putNumber("Left Movement Speed", Constants.TP100MS_To_MPS(drive._frontLeft.getIntegratedSensorVelocity()));
     SmartDashboard.putNumber("Right Movement Speed", Constants.TP100MS_To_MPS(drive._frontRight.getIntegratedSensorVelocity()));
@@ -77,7 +80,6 @@ public class Robot extends TimedRobot {
   public void disabledPeriodic() {
     SmartDashboard.putNumber("left position", Constants.ticksToMeters(drive.frontLeft.getSelectedSensorPosition()));
     SmartDashboard.putNumber("Right position", Constants.ticksToMeters(drive.frontRight.getSelectedSensorPosition())); 
-    magintake.beamBreaksOnDashboard(); 
   }
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
@@ -108,15 +110,16 @@ public class Robot extends TimedRobot {
     TurnXDegrees turnNeg180 = new TurnXDegrees(-180, drive);
     DriveForwardXMeters driveForwardXMeters = new DriveForwardXMeters(drive, 4);
     ArcadeDrive arcadeDrive = new ArcadeDrive(drive);
-    OI.buttonA.cancelWhenPressed(turn180);
-    OI.buttonA.whenPressed(turn180);
-    OI.buttonB.cancelWhenPressed(turnNeg180);
-    OI.buttonB.whenPressed(turnNeg180);
-    OI.buttonY.whenPressed(driveForwardXMeters);
-    OI.lBumper.cancelWhenPressed(driveForwardXMeters);
-    OI.rBumper.toggleWhenPressed(arcadeDrive);
-    OI.lTrigger.whenPressed(new magBackward(magintake));
-    OI.rTrigger.whenPressed(new magDefault(magintake));
+    turn180.until(OI.buttonA);
+    OI.buttonA.onTrue(turn180);
+    turnNeg180.until(OI.buttonB);
+    OI.buttonB.onTrue(turnNeg180);
+    OI.buttonY.onTrue(driveForwardXMeters);
+    driveForwardXMeters.until(OI.buttonY);
+    OI.rBumper.toggleOnTrue(arcadeDrive);
+    OI.lTrigger.onTrue(new Outake(intake));
+    OI.rTrigger.onTrue(new Intake(intake));
+
   }
 
   /** This function is called periodically during operator control. */
