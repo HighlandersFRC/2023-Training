@@ -19,7 +19,7 @@ public class LimeLight extends SubsystemBase {
 
 
 
-// //creating variables that hold the x and y values for the target within the video frame
+//creating variables that hold the x and y values for the target within the video frame
   NetworkTableEntry targetPixelsXEntry;
   NetworkTableEntry targetPixelsYEntry;
 
@@ -76,7 +76,7 @@ public double getTargetPixelsY() {
   return targetPixelsYEntry.getDouble(0.0); // returns Y value of target in frame (mins and maxs are the resolution)
 }
 
-//pose estimate DOES NOT WORK YET!
+//pose estimation DOES NOT WORK YET!
 public double getCameraToTarget(String type) {
   PhotonPipelineResult result = camera.getLatestResult(); // creates object which holds latest result data
 if(result.getBestTarget() == null) { // makes sure result isn't null
@@ -134,6 +134,6 @@ public double getDistanceToTarget(double cameraHeightMeters, double targetHeight
     SmartDashboard.putNumber("Pose Y", getCameraToTarget("Y")); // puts pose Y value on SmartDashboard/ShuffleBoard
     SmartDashboard.putNumber("Pose z", getCameraToTarget("Z")); // puts pose Z value on SmartDashboard/ShuffleBoard
     SmartDashboard.putNumber("Pose Angle", getCameraToTarget("Angle")); // puts pose angle value on SmartDashboard/ShuffleBoard
-    SmartDashboard.putNumber("Pose Norm", getCameraToTarget("Norm")); // puts blank pose translation norm on SmartDashboard/ShuffleBoard
+    SmartDashboard.putNumber("Pose Norm", getCameraToTarget("Norm")); // puts pose translation norm on SmartDashboard/ShuffleBoard
   }
 }
