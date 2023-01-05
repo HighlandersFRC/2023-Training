@@ -26,7 +26,7 @@ public class IntakeDefault extends CommandBase {
   public void execute() {
   magintake.stopIntake();
   magintake.retractPistons(); 
-  magintake.setPercent(0);
+  magintake.setMagPercent(0);
 
   
   }

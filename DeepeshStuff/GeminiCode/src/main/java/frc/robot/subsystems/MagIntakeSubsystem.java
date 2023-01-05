@@ -28,7 +28,7 @@ public class MagIntakeSubsystem extends SubsystemBase {
   public DoubleSolenoid intakePiston = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 0, 1); 
   public TalonFX intakeTalon = new TalonFX(8);
   public CANSparkMax neo2 = new CANSparkMax(12, MotorType.kBrushless);//the neo controlling the middle part of the mag
-  public CANSparkMax neo1 = new CANSparkMax(14, MotorType.kBrushless);//the neo controlling the bottom part of the mag
+  public CANSparkMax neo1 = new CANSparkMax(14, MotorType.kBrushless);//14the neo controlling the bottom part of the mag
   public VictorSPX victor = new VictorSPX(7);
   public DigitalInput beamBreak1 = new DigitalInput(3);
   public DigitalInput beamBreak2 = new DigitalInput(1);
@@ -55,12 +55,15 @@ public class MagIntakeSubsystem extends SubsystemBase {
     SmartDashboard.putBoolean("beamBreak3", getBeam(beamBreak3));
     
   }
-  public void setPercent(double setPoint ){
+  public void setMagPercent(double setPoint ){
       neo1.set(setPoint);
       neo2.set(setPoint);
-      victor.set(ControlMode.PercentOutput, setPoint); 
-    }
-    
+      victor.set(ControlMode.PercentOutput, 1.1*setPoint);
+  }
+  public void setNEOPercent(double setPoint ){
+    neo1.set(setPoint);
+    neo2.set(setPoint);
+  }
   
   public void extendPistons(){
     intakePiston.set(Value.kForward);
@@ -69,13 +72,13 @@ public class MagIntakeSubsystem extends SubsystemBase {
     intakePiston.set(Value.kReverse);
   }  
   public void intake(){
-   intakeTalon.set(ControlMode.PercentOutput, -0.5); 
+   intakeTalon.set(ControlMode.PercentOutput, -0.7); 
   }
   public void stopIntake(){
    intakeTalon.set(ControlMode.PercentOutput, 0); 
   }
   public void outake(){
-   intakeTalon.set(ControlMode.PercentOutput, 0.5); 
+   intakeTalon.set(ControlMode.PercentOutput, 0.7); 
   }
   @Override
   public void periodic() {

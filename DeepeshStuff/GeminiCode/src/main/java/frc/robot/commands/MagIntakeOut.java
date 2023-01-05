@@ -10,10 +10,10 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.OI;
 import frc.robot.subsystems.MagIntakeSubsystem;
 
-public class magBackward extends CommandBase {
+public class MagIntakeOut extends CommandBase {
   MagIntakeSubsystem magintake;
   /** Creates a new magBackward. */
-  public magBackward(MagIntakeSubsystem magintake) {
+  public MagIntakeOut(MagIntakeSubsystem magintake) {
     this.magintake = magintake;
     addRequirements(magintake); 
     // Use addRequirements() here to declare subsystem dependencies.
@@ -22,9 +22,8 @@ public class magBackward extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    magintake.outake();
     magintake.retractPistons();
-    magintake.setPercent(-0.3);
+    magintake.setMagPercent(-0.3);
     System.out.println("magBackward ran");
   }
 
@@ -36,7 +35,7 @@ public class magBackward extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     System.out.println("magBackward ended");
-    magintake.setPercent(0);
+    magintake.setMagPercent(0);
   }
 
   // Returns true when the command should end.
