@@ -4,11 +4,9 @@
 
 package frc.robot.commands;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.OI;
-import frc.robot.Robot;
 import frc.robot.subsystems.MagIntakeSubsystem;
 
 public class MagIntakeOut extends CommandBase {
@@ -17,8 +15,6 @@ public class MagIntakeOut extends CommandBase {
   boolean beam2;
   boolean beam3;
   boolean plcHldr;
-  boolean plcHldr1;
-  boolean plcHldr2;
   /** Creates a new magBackward. */
   public MagIntakeOut(MagIntakeSubsystem magintake) {
     this.magintake = magintake;
@@ -33,8 +29,6 @@ public class MagIntakeOut extends CommandBase {
     magintake.setMagPercent(-0.3);
     System.out.println("magBackward ran");
     plcHldr = true;
-    plcHldr1 = true;
-    plcHldr2 = true;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
