@@ -12,8 +12,8 @@ import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.DriveForwardXMeters;
 import frc.robot.commands.DriveVelocityMode;
 import frc.robot.commands.TurnXDegrees;
-import frc.robot.commands.magBackward;
-import frc.robot.commands.magDefault;
+import frc.robot.commands.MagIntakeOut;
+import frc.robot.commands.MagIntakeIn;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.MagIntakeSubsystem;
 import frc.robot.subsystems.NavXSensor;
@@ -115,8 +115,8 @@ public class Robot extends TimedRobot {
     OI.buttonY.whenPressed(driveForwardXMeters);
     OI.lBumper.cancelWhenPressed(driveForwardXMeters);
     OI.rBumper.toggleWhenPressed(arcadeDrive);
-    OI.lTrigger.whenPressed(new magBackward(magintake));
-    OI.rTrigger.whenPressed(new magDefault(magintake));
+    OI.lTrigger.whenPressed(new MagIntakeOut(magintake));
+    OI.rTrigger.whenPressed(new MagIntakeIn(magintake));
   }
 
   /** This function is called periodically during operator control. */
