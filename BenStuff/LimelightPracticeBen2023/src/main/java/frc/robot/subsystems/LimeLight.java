@@ -19,7 +19,7 @@ public class LimeLight extends SubsystemBase {
 
 
 
-//creating variables that hold the x and y values for the target within the video frame
+//creating variables that hold the x and y values for the target within the video frame 
   NetworkTableEntry targetPixelsXEntry;
   NetworkTableEntry targetPixelsYEntry;
 
