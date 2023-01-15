@@ -38,41 +38,41 @@ public class ColorSensor extends SubsystemBase {
 setDefaultCommand(new ColorSensorDefault(this)); // sets default command 
 }
 
-public final PicoColorSensor pico = new PicoColorSensor();
+public final PicoColorSensor pico = new PicoColorSensor(); // create pico color sensor object
 
-public Boolean getSensor0Attached() {
+public Boolean getSensor0Attached() { // returns if the sensor0 is connected
   Boolean detected = pico.isSensor0Connected();
   return detected;
 }
 
-public Boolean getSensor1Attached() {
+public Boolean getSensor1Attached() { // returns if the sensor1 is connected
   Boolean detected = pico.isSensor1Connected();
   return detected;
 }
 
-public int getDistance0() {
+public int getDistance0() { // returns distance for sensor0, ranges from 70(nothing near it) to 2048(pressed right up against object) note this can only accurately detect stuff within a couple centimeters
   int prox = pico.getProximity0();
   return prox;
 }
 
-public int getDistance1() {
+public int getDistance1() {// returns distance for sensor1, ranges from 70(nothing near it) to 2048(pressed right up against object) note this can only accurately detect stuff within a couple centimeters
   int prox = pico.getProximity1();
   return prox;
 }
 
   public ColorSensor() {}
 
-  public RawColor getSensor0Color() {
+  public RawColor getSensor0Color() { // returns raw color RGB values for sensor0
     RawColor sensor0Color = pico.getRawColor0();
     return sensor0Color;
   }
 
-  public RawColor getSensor1Color() {
+  public RawColor getSensor1Color() { // returns raw color RGB values for sensor1
     RawColor sensor1Color = pico.getRawColor1();
     return sensor1Color;
   }
 
-  public int getSpecificColor(RawColor raw, String color) {
+  public int getSpecificColor(RawColor raw, String color) { // returns the red blue or green value from a raw color
     switch (color) {
       case "red":
         return raw.red/128;
@@ -86,47 +86,36 @@ public int getDistance1() {
     }
   }
 
-  public double[] getRGB(RawColor raw) {
+  public double[] getRGB(RawColor raw) { // returns RGB values from raw color
     double[] rgb = {raw.red, raw.green, raw.green};
     return rgb;
       }
-        
 
-
-  
-//   public double[] getHSVValues(RawColor raw) {
-// double[] hsv = RGBtoHSV(raw.red, raw.green, raw.blue);
-// return hsv;
-    
-//   }
-
-  double[] nothing = {0.0, 0.0, 0.0};
-
-public boolean sensorHasCube(double h, boolean detecting) {
+public boolean sensorHasCube(double h, boolean detecting) { // returns if sensor is detecting a cube, given the hue and proximity(boolean if it is close enough, use get0Detecting() or get1Detecting())
 if(h < 0.5 && h > 0.38 && detecting) {
   return true;
 } else return false;
 }
 
-public boolean sensorHasCone(double h, boolean detecting) {
+public boolean sensorHasCone(double h, boolean detecting) { // returns if sensor is detecting a cone, given the hue and proximity(boolean if it is close enough, use get0Detecting() or get1Detecting())
   if(h < 0.77 && h > 0.71 && detecting) {
     return true;
   } else return false;
 }
 
-public boolean get0Detecting() {
+public boolean get0Detecting() { // returns if sensor0 is close enough to an object to accurately read the color, can also be used as a rudimentary beam break
   if(pico.getProximity0() > 100) {
     return true;
   } else return false;
 }
 
-public boolean get1Detecting() {
+public boolean get1Detecting() { // returns if sensor1 is close enough to an object to accurately read the color, can also be used as a rudimentary beam break
   if(pico.getProximity1() > 100) {
     return true;
   } else return false;
 }
 
-public double getH(RawColor raw) {
+public double getH(RawColor raw) { // returns the hue from raw color
 float[] hsv = java.awt.Color.RGBtoHSB(raw.red, raw.green, raw.blue, null);
 return hsv[0];
 }
@@ -134,24 +123,24 @@ return hsv[0];
 
   @Override
   public void periodic() {
-    SmartDashboard.putBoolean("sensor 0 connected", getSensor0Attached());
-    SmartDashboard.putBoolean("sensor 1 connected", getSensor1Attached());
-    SmartDashboard.putNumber("Distance 0", getDistance0()); 
-    SmartDashboard.putNumber("Distance 1", getDistance1()); 
-    SmartDashboard.putNumber("Sensor 0 Red", getSpecificColor(getSensor0Color(), "red"));
-    SmartDashboard.putNumber("Sensor 0 Green", getSpecificColor(getSensor0Color(), "green"));
-    SmartDashboard.putNumber("Sensor 0 Blue", getSpecificColor(getSensor0Color(), "blue"));
-    SmartDashboard.putNumber("Sensor 1 Red", getSpecificColor(getSensor1Color(), "red"));
-    SmartDashboard.putNumber("Sensor 1 Green", getSpecificColor(getSensor1Color(), "green"));
-    SmartDashboard.putNumber("Sensor 1 Blue", getSpecificColor(getSensor1Color(), "blue"));
-    SmartDashboard.putBoolean("sensor 0 found object", get0Detecting());
-    SmartDashboard.putBoolean("sensor 1 found object", get1Detecting());
-    SmartDashboard.putBoolean("sensor 0 found cube", sensorHasCube(getH(getSensor0Color()), get0Detecting()));
-    SmartDashboard.putBoolean("sensor 0 found cone", sensorHasCone(getH(getSensor0Color()), get0Detecting()));
-    SmartDashboard.putBoolean("sensor 1 found cube", sensorHasCube(getH(getSensor1Color()), get1Detecting()));
-    SmartDashboard.putBoolean("sensor 1 found cone", sensorHasCone(getH(getSensor1Color()), get1Detecting()));
-    SmartDashboard.putNumber("H 0", getH(getSensor0Color())); 
-    SmartDashboard.putNumber("H 1", getH(getSensor1Color())); 
+    SmartDashboard.putBoolean("sensor 0 connected", getSensor0Attached()); // prints if sensor0 is connected
+    SmartDashboard.putBoolean("sensor 1 connected", getSensor1Attached()); // prints if sensor1 is connected
+    SmartDashboard.putNumber("Distance 0", getDistance0()); // prints the distance from sensor0 to object (no units yet)
+    SmartDashboard.putNumber("Distance 1", getDistance1()); // prints the distance from sensor1 to object (no units yet)
+    SmartDashboard.putNumber("Sensor 0 Red", getSpecificColor(getSensor0Color(), "red")); // prints red value from sensor0
+    SmartDashboard.putNumber("Sensor 0 Green", getSpecificColor(getSensor0Color(), "green")); // prints green value from sensor0
+    SmartDashboard.putNumber("Sensor 0 Blue", getSpecificColor(getSensor0Color(), "blue")); // prints blue value from sensor0
+    SmartDashboard.putNumber("Sensor 1 Red", getSpecificColor(getSensor1Color(), "red")); // prints red value from sensor1
+    SmartDashboard.putNumber("Sensor 1 Green", getSpecificColor(getSensor1Color(), "green")); // prints green value from sensor1
+    SmartDashboard.putNumber("Sensor 1 Blue", getSpecificColor(getSensor1Color(), "blue")); // prints blue value from sensor1
+    SmartDashboard.putBoolean("sensor 0 found object", get0Detecting()); // prints if sensor0 has object close enough to accurately read color
+    SmartDashboard.putBoolean("sensor 1 found object", get1Detecting()); // prints if sensor1 has object close enough to accurately read color
+    SmartDashboard.putBoolean("sensor 0 found cube", sensorHasCube(getH(getSensor0Color()), get0Detecting())); // prints if sensor0 is detecting a cube
+    SmartDashboard.putBoolean("sensor 0 found cone", sensorHasCone(getH(getSensor0Color()), get0Detecting())); // prints if sensor0 is detecting a cone
+    SmartDashboard.putBoolean("sensor 1 found cube", sensorHasCube(getH(getSensor1Color()), get1Detecting())); // prints if sensor1 is detecting a cube
+    SmartDashboard.putBoolean("sensor 1 found cone", sensorHasCone(getH(getSensor1Color()), get1Detecting())); // prints if sensor1 is detecting a cone
+    SmartDashboard.putNumber("H 0", getH(getSensor0Color())); // prints hue from sensor0
+    SmartDashboard.putNumber("H 1", getH(getSensor1Color())); // prints hue from sensor1
 
     // Color detectedColor = colorSensor.getColor(); // creates variable which holds detected color in hex
     // String colorString; // creates string that will eventually be printed out
