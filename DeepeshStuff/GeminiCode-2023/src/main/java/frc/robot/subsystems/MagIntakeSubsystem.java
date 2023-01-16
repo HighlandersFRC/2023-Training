@@ -67,29 +67,31 @@ public class MagIntakeSubsystem extends SubsystemBase {
       ballCount++;
     }
   }
-  public Boolean getBeam(DigitalInput num) {
+  // public Boolean getBeam(DigitalInput num) {
 
-    if (num.get()) {
-      return true;
-    } else if(!num.get()) {
-      return false;
-    } else {
-      return null;
-    }
-  }
+  //   if (num.get()) {
+  //     return true;
+  //   } else if(!num.get()) {
+  //     return false;
+  //   } else {
+  //     return null;
+  //   }
+  // }
 
   
   public void beamBreaksOnDashboard(){
+    System.out.println(beamBreak1.get());
+    System.out.println(beamBreak2.get());
+    System.out.println(beamBreak3.get());
+    SmartDashboard.putBoolean("beamBreak1", !beamBreak1.get());
+    SmartDashboard.putBoolean("beamBreak2", !beamBreak2.get());
+    SmartDashboard.putBoolean("beamBreak3", !beamBreak3.get());
 
-    SmartDashboard.putBoolean("beamBreak1", getBeam(beamBreak1));
-    SmartDashboard.putBoolean("beamBreak2", getBeam(beamBreak2));
-    SmartDashboard.putBoolean("beamBreak3", getBeam(beamBreak3));
-    
   }
   public void setMagPercent(double setPoint ){
       neo1.set(setPoint);
       neo2.set(setPoint);
-      victor.set(ControlMode.PercentOutput, 1.1*setPoint);
+      victor.set(ControlMode.PercentOutput, 0.6*setPoint);
   }
   public void setNEOPercent(double setPoint ){
     neo1.set(setPoint);

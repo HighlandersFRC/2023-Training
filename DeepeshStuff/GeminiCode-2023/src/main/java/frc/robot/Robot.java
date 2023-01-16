@@ -109,15 +109,15 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-    turn180.until(OI.buttonA);
+    // turn180.until(OI.buttonA);
     OI.buttonA.onTrue(turn180);
-    turnNeg180.until(OI.buttonB);
+    // turnNeg180.until(OI.buttonB);
     OI.buttonB.onTrue(turnNeg180);
     OI.buttonY.onTrue(driveForwardXMeters);
-    driveForwardXMeters.until(OI.lBumper);
-    OI.rBumper.toggleOnTrue(arcadeDrive);
-    OI.lTrigger.onTrue(magIntakeOut);
-    OI.rTrigger.onTrue(magIntakeIn);
+    // driveForwardXMeters.until(OI.lBumper);
+    OI.lBumper.onTrue(magIntakeOut);
+    OI.rTrigger.toggleOnTrue(arcadeDrive);
+    OI.rBumper.onTrue(magIntakeIn);
   }
 
   /** This function is called periodically during operator control. */
