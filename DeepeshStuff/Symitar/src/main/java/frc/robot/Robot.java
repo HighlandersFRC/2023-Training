@@ -7,11 +7,16 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.commands.ArmForward;
-import frc.robot.commands.ArmReverse;
+import frc.robot.commands.Grab;
+import frc.robot.commands.GrabberIn;
+import frc.robot.commands.GrabberOut;
+import frc.robot.commands.LetGo;
+import frc.robot.commands.Shift;
 import frc.robot.commands.setArmPostition;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.Grabber;
+import frc.robot.subsystems.Shifter;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -25,6 +30,8 @@ public class Robot extends TimedRobot {
   private RobotContainer m_robotContainer;
   DriveSubsystem drive = new DriveSubsystem();
   ArmSubsystem arm = new ArmSubsystem();
+  Grabber grabber = new Grabber();
+  Shifter shifter = new Shifter();
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -36,8 +43,8 @@ public class Robot extends TimedRobot {
     m_robotContainer = new RobotContainer();
     drive.init();
     arm.init();
-    arm.armMaster.setSelectedSensorPosition(0.0);
-    arm.displayPIDF();
+    grabber.init();
+    shifter.init();
   }
 
   /**
@@ -55,9 +62,11 @@ public class Robot extends TimedRobot {
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
     arm.whenFwdLimitCloses();
-    SmartDashboard.putNumber("Arm Encoder", /*Constants.ARM_TICKS_TO_DEGREES(*/arm.armMaster.getSelectedSensorPosition());//);
     arm.whenRevLimitCloses();
+    SmartDashboard.putNumber("Arm Encoder", Constants.ARM_TICKS_TO_DEGREES(arm.armMaster.getSelectedSensorPosition()));
     SmartDashboard.putBoolean("Reverse Limit", arm.armMaster.getSensorCollection().isRevLimitSwitchClosed());
+    SmartDashboard.putBoolean("High Gear?", shifter.high);
+    SmartDashboard.putBoolean("Low Gear?", shifter.low);
     SmartDashboard.putBoolean("Forward Limit", arm.armMaster.getSensorCollection().isFwdLimitSwitchClosed());
   }
 
@@ -68,7 +77,7 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledPeriodic() {
     
-    SmartDashboard.putNumber("Arm Encoder", /*Constants.ARM_TICKS_TO_DEGREES(*/arm.armMaster.getSelectedSensorPosition());//);
+    SmartDashboard.putNumber("Arm Encoder", Constants.ARM_TICKS_TO_DEGREES(arm.armMaster.getSelectedSensorPosition()));
   }
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
@@ -97,18 +106,20 @@ public class Robot extends TimedRobot {
     }
 
     OI.b.onTrue(new setArmPostition(arm, 60));
-    OI.a.onTrue(new setArmPostition(arm, 0));
+    OI.a.onTrue(new setArmPostition(arm, 5));
     OI.x.onTrue(new setArmPostition(arm, 90));
-    OI.y.onTrue(new setArmPostition(arm, 180));
-    OI.rb.onTrue(new ArmForward(arm));
-    OI.lb.onTrue(new ArmReverse(arm));
-
+    OI.y.onTrue(new setArmPostition(arm, 175));
+    OI.rb.onTrue(new Grab(grabber));
+    OI.lb.onTrue(new LetGo(grabber));
+    OI.rt.onTrue(new GrabberIn(grabber));
+    OI.lt.onTrue(new GrabberOut(grabber));
+    OI.menu.onTrue(new Shift(shifter));
   }
 
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    SmartDashboard.putNumber("Arm Encoder", /*Constants.ARM_TICKS_TO_DEGREES(*/arm.armMaster.getSelectedSensorPosition());//);
+    SmartDashboard.putNumber("Arm Encoder", Constants.ARM_TICKS_TO_DEGREES(arm.armMaster.getSelectedSensorPosition()));
   }
 
 

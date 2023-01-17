@@ -22,7 +22,8 @@ public class ArmSubsystem extends SubsystemBase {
   public TalonSRX armMaster = new TalonSRX(5);
   TalonSRX armSlave = new TalonSRX(4);
   public DoubleSolenoid brake = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 4, 5);
-  
+  boolean hit0 = false;
+  boolean hit180 = false;
 
   public ArmSubsystem() {}
   public void engageBreak(){
@@ -41,6 +42,8 @@ public class ArmSubsystem extends SubsystemBase {
     armMaster.configReverseLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen);
     armMaster.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen);
     setArmPercent(0);
+    armMaster.setSelectedSensorPosition(0.0);
+    displayPIDF();
   }
   public void setArmVelocity(double TP100MS){
     if (TP100MS > 100000){
@@ -55,13 +58,19 @@ public class ArmSubsystem extends SubsystemBase {
   }
   
   public void whenFwdLimitCloses(){
-    if (armMaster.getSensorCollection().isFwdLimitSwitchClosed()){
-      armMaster.setSelectedSensorPosition(Constants.ARM_DEGREES_TO_TICKS(-10.0));
+    if (armMaster.getSensorCollection().isFwdLimitSwitchClosed()&&!hit0){
+      armMaster.setSelectedSensorPosition(Constants.ARM_DEGREES_TO_TICKS(3.0));
+      hit0 = true;
+    } else {
+      hit0 = false;
     }
   }
   public void whenRevLimitCloses(){
-    if (armMaster.getSensorCollection().isRevLimitSwitchClosed()){
-      armMaster.setSelectedSensorPosition(Constants.ARM_DEGREES_TO_TICKS(185.0));
+    if (armMaster.getSensorCollection().isRevLimitSwitchClosed()&&!hit180){
+      armMaster.setSelectedSensorPosition(Constants.ARM_DEGREES_TO_TICKS(177.0));
+      hit180 = true;
+    } else {
+      hit180 = false;
     }
   }
   public void setArmPercent(double power){

@@ -9,7 +9,6 @@ public class PIDF {
     private double IValue;
     private double DValue;
     private double Fvalue;
-    private double weight;
     private double radius;
 
     // Dictates the inputs and outputs
@@ -25,7 +24,7 @@ public class PIDF {
     public PIDF(double kp, double ki, double kd, double kf, double radiusToCenterOfMassInInches) {
         //Update this with only radians and inches
         //Only use this if you need to compensate for rotational gravitational torque
-        //Start tuning with kF as 0.00001
+        //Start tuning with kF as 0.00001 
         PValue = kp;
         IValue = ki;
         DValue = kd;
