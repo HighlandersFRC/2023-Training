@@ -78,7 +78,7 @@ public class MagIntakeIn extends CommandBase {
     magintake.extendPistons();
     beam3delay=0.5;
     beam3timeHolder=100000;
-    beam1delay=0.1;
+    beam1delay=0.5;
     beam1timeHolder=100000;
     plcHldr7=false;
     plcHldr9=false;
@@ -150,9 +150,9 @@ public class MagIntakeIn extends CommandBase {
             plcHldr1 = true;
           }
           if(ballAt1){
-            magintake.setMagPercent(0.2);
+            magintake.setMagPercent(0.4);
           }else if(currentTime-ball1time<=delay){
-            magintake.setMagPercent(0.2);
+            magintake.setMagPercent(0.4);
           }else{
             magintake.setMagPercent(0.0);
           }
@@ -162,9 +162,9 @@ public class MagIntakeIn extends CommandBase {
           plcHldr2 = true;
         }
         if(ballAt1){
-          magintake.setMagPercent(0.3);
-        }else if(currentTime-ball1time<=delay){
-          magintake.setMagPercent(0.3);
+          magintake.setMagPercent(0.4);
+        }else if(currentTime-ball2time<=delay+0.2){
+          magintake.setMagPercent(0.4);
         }else{
           magintake.setMagPercent(0.0);
         }
@@ -174,9 +174,9 @@ public class MagIntakeIn extends CommandBase {
           plcHldr3 = true;
         }
         if(ballAt1){
-          magintake.setMagPercent(0.3);
-        }else if(currentTime-ball1time<=delay){
-          magintake.setMagPercent(0.3);
+          magintake.setMagPercent(0.4);
+        }else if(currentTime-ball3time<=delay + 0.3){
+          magintake.setMagPercent(0.4);
         }else{
           magintake.setMagPercent(0.0);
         }
@@ -186,9 +186,9 @@ public class MagIntakeIn extends CommandBase {
           plcHldr4 = true;
         }
         if(ballAt1){
-          magintake.setMagPercent(0.3);
-        }else if(currentTime-ball1time<=delay){
-          magintake.setMagPercent(0.3);
+          magintake.setMagPercent(0.4);
+        }else if(currentTime-ball4time<=delay){
+          magintake.setMagPercent(0.4);
         }else{
           magintake.setMagPercent(0.0);
         }
@@ -199,10 +199,10 @@ public class MagIntakeIn extends CommandBase {
             plcHldr5 = true;
           }
         }
-          if (currentTime-ball5time >= 0.5){
+          if (currentTime-ball5time >= 0.8){
             magintake.setMagPercent(0.0);
           }else {
-            magintake.setMagPercent(0.3);
+            magintake.setMagPercent(0.4);
           }
         
       }
@@ -222,10 +222,10 @@ public class MagIntakeIn extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (OI.driverController.getRightTriggerAxis() > 0.3){
-      return false;
-    }else{
+    if (OI.driverController.getRightBumperReleased()){
       return true;
+    }else{
+      return false;
     }  
   }
 }

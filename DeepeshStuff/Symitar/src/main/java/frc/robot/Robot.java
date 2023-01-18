@@ -3,19 +3,20 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot;
-
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.commands.ArcadeDrive;
-import frc.robot.commands.DriveForwardXMeters;
-import frc.robot.commands.TurnXDegrees;
-import frc.robot.commands.MagIntakeOut;
-import frc.robot.commands.MagIntakeIn;
+import frc.robot.commands.Grab;
+import frc.robot.commands.GrabberIn;
+import frc.robot.commands.GrabberOut;
+import frc.robot.commands.LetGo;
+import frc.robot.commands.Shift;
+import frc.robot.commands.setArmPostition;
+import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.MagIntakeSubsystem;
-import frc.robot.subsystems.NavXSensor;
+import frc.robot.subsystems.Grabber;
+import frc.robot.subsystems.Shifter;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -28,13 +29,9 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
   DriveSubsystem drive = new DriveSubsystem();
-  MagIntakeSubsystem magintake = new MagIntakeSubsystem();
-  TurnXDegrees turn180 = new TurnXDegrees(180, drive);
-  TurnXDegrees turnNeg180 = new TurnXDegrees(-180, drive);
-  DriveForwardXMeters driveForwardXMeters = new DriveForwardXMeters(drive, 4);
-  ArcadeDrive arcadeDrive = new ArcadeDrive(drive);
-  MagIntakeOut magIntakeOut = new MagIntakeOut(magintake);
-  MagIntakeIn magIntakeIn = new MagIntakeIn(magintake);
+  ArmSubsystem arm = new ArmSubsystem();
+  Grabber grabber = new Grabber();
+  Shifter shifter = new Shifter();
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -45,7 +42,9 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
     drive.init();
-    magintake.init();
+    arm.init();
+    grabber.init();
+    shifter.init();
   }
 
   /**
@@ -62,27 +61,23 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
-    magintake.beamBreaksOnDashboard(); 
-    SmartDashboard.putNumber("NavX reading", NavXSensor.navX.currentYaw());
-    SmartDashboard.putNumber("Left Movement Speed", Constants.TP100MS_To_MPS(drive._frontLeft.getIntegratedSensorVelocity()));
-    SmartDashboard.putNumber("Right Movement Speed", Constants.TP100MS_To_MPS(drive._frontRight.getIntegratedSensorVelocity()));
-    SmartDashboard.putNumber("Right Power", drive.frontRight.getMotorOutputPercent());
-    SmartDashboard.putNumber("Left Power", drive.frontLeft.getMotorOutputPercent());
-    SmartDashboard.putNumber("left position", Constants.ticksToMeters(drive.frontLeft.getSelectedSensorPosition()));
-    SmartDashboard.putNumber("Right position", Constants.ticksToMeters(drive.frontRight.getSelectedSensorPosition())); 
+    arm.whenFwdLimitCloses();
+    arm.whenRevLimitCloses();
+    SmartDashboard.putNumber("Arm Encoder", Constants.ARM_TICKS_TO_DEGREES(arm.armMaster.getSelectedSensorPosition()));
+    SmartDashboard.putBoolean("Reverse Limit", arm.armMaster.getSensorCollection().isRevLimitSwitchClosed());
+    SmartDashboard.putBoolean("High Gear?", shifter.high);
+    SmartDashboard.putBoolean("Low Gear?", shifter.low);
+    SmartDashboard.putBoolean("Forward Limit", arm.armMaster.getSensorCollection().isFwdLimitSwitchClosed());
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
-  public void disabledInit() {
-    drive.setDrivePercents(0, 0);
-  }
+  public void disabledInit() {}
 
   @Override
   public void disabledPeriodic() {
-    SmartDashboard.putNumber("left position", Constants.ticksToMeters(drive.frontLeft.getSelectedSensorPosition()));
-    SmartDashboard.putNumber("Right position", Constants.ticksToMeters(drive.frontRight.getSelectedSensorPosition())); 
-    magintake.beamBreaksOnDashboard(); 
+    
+    SmartDashboard.putNumber("Arm Encoder", Constants.ARM_TICKS_TO_DEGREES(arm.armMaster.getSelectedSensorPosition()));
   }
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
@@ -109,25 +104,30 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-    // turn180.until(OI.buttonA);
-    OI.buttonA.onTrue(turn180);
-    // turnNeg180.until(OI.buttonB);
-    OI.buttonB.onTrue(turnNeg180);
-    OI.buttonY.onTrue(driveForwardXMeters);
-    // driveForwardXMeters.until(OI.lBumper);
-    OI.lBumper.onTrue(magIntakeOut);
-    OI.rTrigger.toggleOnTrue(arcadeDrive);
-    OI.rBumper.onTrue(magIntakeIn);
+
+    OI.b.onTrue(new setArmPostition(arm, 60));
+    OI.a.onTrue(new setArmPostition(arm, 5));
+    OI.x.onTrue(new setArmPostition(arm, 90));
+    OI.y.onTrue(new setArmPostition(arm, 175));
+    OI.rb.onTrue(new Grab(grabber));
+    OI.lb.onTrue(new LetGo(grabber));
+    OI.rt.onTrue(new GrabberIn(grabber));
+    OI.lt.onTrue(new GrabberOut(grabber));
+    OI.menu.onTrue(new Shift(shifter));
   }
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    SmartDashboard.putNumber("Arm Encoder", Constants.ARM_TICKS_TO_DEGREES(arm.armMaster.getSelectedSensorPosition()));
+  }
+
 
   @Override
   public void testInit() {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
+    
   }
 
   /** This function is called periodically during test mode. */
