@@ -65,7 +65,7 @@ public class MagIntakeIn extends CommandBase {
     plcHldr7=false;
     plcHldr8=false;
     plcHldr9=false;
-    delay = 0.5;
+    delay = 0.8;
     addRequirements(magintake); 
   }
   
@@ -163,7 +163,7 @@ public class MagIntakeIn extends CommandBase {
         }
         if(ballAt1){
           magintake.setMagPercent(0.4);
-        }else if(currentTime-ball2time<=delay+0.2){
+        }else if(currentTime-ball2time<=delay){
           magintake.setMagPercent(0.4);
         }else{
           magintake.setMagPercent(0.0);
@@ -175,7 +175,7 @@ public class MagIntakeIn extends CommandBase {
         }
         if(ballAt1){
           magintake.setMagPercent(0.4);
-        }else if(currentTime-ball3time<=delay + 0.3){
+        }else if(currentTime-ball3time<=delay){
           magintake.setMagPercent(0.4);
         }else{
           magintake.setMagPercent(0.0);
@@ -199,7 +199,7 @@ public class MagIntakeIn extends CommandBase {
             plcHldr5 = true;
           }
         }
-          if (currentTime-ball5time >= 0.8){
+          if (currentTime-ball5time >= 0.4){
             magintake.setMagPercent(0.0);
           }else {
             magintake.setMagPercent(0.4);
