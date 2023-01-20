@@ -18,9 +18,9 @@ public class setArmPostition extends CommandBase {
   double currentTime;
   double onTargetTime;
   ArmSubsystem arm;
-  double endAccuracy = Math.toRadians(1);
+  double endAccuracy = Math.toRadians(3);
   double endDelay = 0.5;
-  PIDF pid = new PIDF(0.15, 0.0, 0.0, 0.00001,  20);
+  PIDF pid = new PIDF(0.95, 0.001, 0.15, 0.00002,  16);
   public setArmPostition(ArmSubsystem arm, double degrees) {
     // Use addRequirements() here to declare subsystem dependencies.
     pid.setMinOutput(-1);;

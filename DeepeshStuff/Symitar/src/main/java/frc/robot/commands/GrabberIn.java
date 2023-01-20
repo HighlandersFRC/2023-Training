@@ -4,50 +4,41 @@
 
 package frc.robot.commands;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator.Validity;
-
-import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
 import frc.robot.OI;
-import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.Grabber;
 
-public class ArmReverse extends CommandBase {
-  /** Creates a new ArmReverse. */
-  
-  ArmSubsystem arm;
-  public ArmReverse(ArmSubsystem arm) {
-    this.arm = arm;
+public class GrabberIn extends CommandBase {
+  /** Creates a new SetGrabberPercent. */
+  Grabber grabber;
+  public GrabberIn(Grabber grabber) {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(arm);
+    this.grabber = grabber;
+    addRequirements(grabber);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    System.out.println("Reverse Started");
-    arm.brake.set(Value.kReverse);
+    grabber.setIntakePercent(-0.5);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-    
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    System.out.println("Rev Ended");
+    grabber.setIntakePercent(0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (Math.abs(arm.armMaster.getClosedLoopError()) >= Constants.ARM_DEGREES_TO_TICKS(1)){
+    if(OI.driverController.getRightTriggerAxis()>= 0.2){
       return false;
-    } else {
+    } else{
       return true;
     }
   }
