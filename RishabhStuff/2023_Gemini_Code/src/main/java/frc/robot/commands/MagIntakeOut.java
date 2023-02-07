@@ -5,7 +5,6 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.tools.OI;
 import frc.robot.subsystems.MagIntakeSubsystem;
 public class MagIntakeOut extends CommandBase {
   MagIntakeSubsystem magintake;
@@ -49,10 +48,6 @@ public class MagIntakeOut extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (OI.driverController.getLeftBumperReleased()){
-      return true;
-    }else{
-      return false;
-    }
+    return false;
   }
 }

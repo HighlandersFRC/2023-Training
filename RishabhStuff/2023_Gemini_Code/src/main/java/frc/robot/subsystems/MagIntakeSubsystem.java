@@ -34,6 +34,7 @@ public class MagIntakeSubsystem extends SubsystemBase {
   public boolean plcHldr3 = false;
   public boolean plcHldr4 = false;
   public boolean plcHldr5 = false;
+  public boolean beam1;
   public int ballCount = 0;
   public void init(){
     setDefaultCommand(new IntakeDefault(this));
@@ -63,11 +64,11 @@ public class MagIntakeSubsystem extends SubsystemBase {
       ballCount++;
     }
   }
-
+  
   public void beamBreaksOnDashboard(){
-    SmartDashboard.putBoolean("beamBreak1", !beamBreak1.get());
-    SmartDashboard.putBoolean("beamBreak2", !beamBreak2.get());
-    SmartDashboard.putBoolean("beamBreak3", !beamBreak3.get());
+    SmartDashboard.putBoolean("beamBreak1", beamBreak1.get());
+    SmartDashboard.putBoolean("beamBreak2", beamBreak2.get());
+    SmartDashboard.putBoolean("beamBreak3", beamBreak3.get());
 
   }
   public void setMagPercent(double setPoint ){
@@ -78,6 +79,11 @@ public class MagIntakeSubsystem extends SubsystemBase {
   public void setNEOPercent(double setPoint ){
     neo1.set(setPoint);
     neo2.set(setPoint);
+  }
+  public void shootMagPercent(double percent){
+    neo1.set(percent);
+    neo2.set(percent);
+    victor.set(ControlMode.PercentOutput, percent);
   }
   
   public void extendPistons(){

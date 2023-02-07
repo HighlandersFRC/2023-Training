@@ -5,23 +5,23 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.HoodSubsystem;
 
-public class Test2Flywheel extends CommandBase {
-  ShooterSubsystem shooter;
-  double percent;
-  /** Creates a new Test2Flywheel. */
-  public Test2Flywheel(ShooterSubsystem shooter, double percent) {
-    this.shooter = shooter;
-    this.percent = percent;
+public class ExtendHood extends CommandBase {
+  HoodSubsystem hood;
+  double position;
+  /** Creates a new ExtendHood. */
+  public ExtendHood(HoodSubsystem hood, double position) {
+    this.hood = hood;
+    this.position = position;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(shooter);
+    addRequirements(hood);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    shooter.set2FlywheelPercent(percent);
+    hood.setHoodPosition(position);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -31,12 +31,16 @@ public class Test2Flywheel extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    shooter.stop2Flywheel();
+    hood.setHoodPercent(0.0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    if (hood.getHoodCurrent() > 20 || hood.getHoodCurrent() < -20){
+      return true;
+    } else {
+      return false;
+    }
   }
 }

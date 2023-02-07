@@ -5,33 +5,32 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.MagIntakeSubsystem;
 
-public class testFlywheel extends CommandBase {
-  ShooterSubsystem shooter;
-  double percent = 0.0;
-  /** Creates a new testFlywheel. */
-  public testFlywheel(ShooterSubsystem shooter, double percent) {
-    this.shooter = shooter;
-    this.percent = percent;
+public class ShootMag extends CommandBase {
+  MagIntakeSubsystem magintake;
+  /** Creates a new ShootMag. */
+  public ShootMag(MagIntakeSubsystem magintake) {
+    this.magintake = magintake;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(shooter);
+    addRequirements(magintake);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    shooter.setFlywheelPercent(percent);
+    magintake.ballCount = 0;
+    magintake.shootMagPercent(0.6);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+  }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    shooter.stopFlywheel();
   }
 
   // Returns true when the command should end.

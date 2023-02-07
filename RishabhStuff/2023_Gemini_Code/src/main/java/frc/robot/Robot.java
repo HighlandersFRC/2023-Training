@@ -9,14 +9,13 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.MagIntakeOut;
-import frc.robot.commands.ShootBalls;
-import frc.robot.commands.SpinFlywheel;
-import frc.robot.commands.Test2Flywheel;
-import frc.robot.commands.testFlywheel;
+import frc.robot.commands.ShootingSequence;
+import frc.robot.commands.StopShooting;
 import frc.robot.commands.velocityDrive;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.MagIntakeIn;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.HoodSubsystem;
 import frc.robot.subsystems.MagIntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.tools.OI;
@@ -34,10 +33,9 @@ public class Robot extends TimedRobot {
   DriveSubsystem drive = new DriveSubsystem();
   MagIntakeSubsystem magintake = new MagIntakeSubsystem();
   ShooterSubsystem shooter = new ShooterSubsystem();
-  MagIntakeOut magIntakeOut = new MagIntakeOut(magintake);
-  MagIntakeIn magIntakeIn = new MagIntakeIn(magintake);
   ArcadeDrive arcadeDrive = new ArcadeDrive(drive);
   velocityDrive velocityDrive = new velocityDrive(drive);
+  HoodSubsystem hood = new HoodSubsystem();
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -50,6 +48,7 @@ public class Robot extends TimedRobot {
     drive.init();
     magintake.init();
     shooter.init();
+    hood.init();
   }
 
   /**
@@ -72,6 +71,10 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Right Movement Speed", Constants.TicksPer100MS_To_MPS(drive.rightFront.getIntegratedSensorVelocity()));
     drive.outputDriveMode();
     SmartDashboard.putNumber("Shooter Speed", Constants.TicksPer100mstoRPM(shooter.encoderMaster.getIntegratedSensorVelocity()));
+    hood.outputSwitches();
+    hood.encoderPosition();
+    hood.whenLowerLimitSwitchPressed();
+    hood.whenUpperLimitSwitchPressed();
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
@@ -82,7 +85,6 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledPeriodic() {
-    magintake.beamBreaksOnDashboard(); 
   }
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
@@ -109,13 +111,17 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-    OI.lBumper.onTrue(magIntakeOut);
-    OI.rBumper.onTrue(magIntakeIn);
-    // OI.buttonY.toggleOnTrue(velocityDrive);
-    OI.buttonX.whileTrue(new ShootBalls(shooter, magintake, 2000));
-    OI.buttonA.whileTrue(new ShootBalls(shooter, magintake, 1500));
-    OI.buttonB.whileTrue(new ShootBalls(shooter, magintake, 1000));
-    OI.buttonY.whileTrue(new ShootBalls(shooter, magintake, 500));
+    OI.lt.whileTrue(new MagIntakeOut(magintake));
+    OI.rt.whileTrue(new MagIntakeIn(magintake));
+    OI.rBumper.toggleOnTrue(velocityDrive);
+    OI.buttonA.whileTrue(new ShootingSequence(magintake, shooter, hood, 500, -25));
+    OI.buttonX.whileTrue(new ShootingSequence(magintake, shooter, hood, 1000, -20));
+    OI.buttonY.whileTrue(new ShootingSequence(magintake, shooter, hood, 1500, -15));
+    OI.buttonB.whileTrue(new ShootingSequence(magintake, shooter, hood, 2000, -10));
+    OI.buttonA.onFalse(new StopShooting(magintake, shooter, hood));
+    OI.buttonX.onFalse(new StopShooting(magintake, shooter, hood));
+    OI.buttonY.onFalse(new StopShooting(magintake, shooter, hood));
+    OI.buttonB.onFalse(new StopShooting(magintake, shooter, hood));
   }
 
   /** This function is called periodically during operator control. */

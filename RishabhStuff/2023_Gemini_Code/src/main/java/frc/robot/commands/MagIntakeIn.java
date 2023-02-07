@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.MagIntakeSubsystem;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.tools.OI;
 public class MagIntakeIn extends CommandBase {
   int plcHldr;
   boolean ballAt1;
@@ -207,15 +206,12 @@ public class MagIntakeIn extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     magintake.stopIntake();
+    magintake.setMagPercent(0.0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (OI.driverController.getRightBumperReleased()){
-      return true;
-    }else{
-      return false;
-    } 
+    return false;
   }
 }

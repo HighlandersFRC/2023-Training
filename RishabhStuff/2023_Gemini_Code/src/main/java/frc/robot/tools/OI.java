@@ -1,6 +1,9 @@
 package frc.robot.tools;
+import java.util.function.BooleanSupplier;
+
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.Constants;
 import frc.robot.tools.TriggerButton;
 
 public class OI {
@@ -11,8 +14,18 @@ public class OI {
     public static JoystickButton buttonY = new JoystickButton(driverController, 4);
     public static JoystickButton rBumper = new JoystickButton(driverController, 6);
     public static JoystickButton lBumper = new JoystickButton(driverController, 5);
-    public static TriggerButton rTrigger = new TriggerButton(driverController, 3);
-    public static TriggerButton lTrigger = new TriggerButton(driverController, 2);
+    public static BooleanSupplier rtSupplier = () -> getRTPercent() > Constants.OperatorConstants.RIGHT_TRIGGER_DEADZONE;
+    public static BooleanSupplier ltSupplier = () -> getLTPercent() > Constants.OperatorConstants.LEFT_TRIGGER_DEADZONE;
+    public static TriggerButton rt = new TriggerButton(rtSupplier);
+    public static TriggerButton lt = new TriggerButton(ltSupplier);
+
+    public static double getRTPercent() {
+        return driverController.getRightTriggerAxis();
+    }
+
+    public static double getLTPercent() {
+        return driverController.getLeftTriggerAxis();
+    }
     
     
     public static double  getDriverLeftY(){

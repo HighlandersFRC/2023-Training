@@ -5,28 +5,31 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.HoodSubsystem;
 import frc.robot.subsystems.MagIntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
-public class ShootBalls extends CommandBase {
+public class StopShooting extends CommandBase {
+  MagIntakeSubsystem magintake;
   ShooterSubsystem shooter;
-  MagIntakeSubsystem mag;
-  double rpm;
-  /** Creates a new ShootBalls. */
-  public ShootBalls(ShooterSubsystem shooter, MagIntakeSubsystem mag, double rpm) {
+  HoodSubsystem hood;
+  /** Creates a new StopShooting. */
+  public StopShooting(MagIntakeSubsystem magintake, ShooterSubsystem shooter, HoodSubsystem hood) {
+    this.magintake = magintake;
     this.shooter = shooter;
-    this.mag = mag;
-    this.rpm = rpm;
+    this.hood = hood;
     // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(magintake);
     addRequirements(shooter);
-    addRequirements(mag);
+    addRequirements(hood);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    mag.setMagPercent(0.4);
-    shooter.setFlywheelVelocity(rpm);
+    magintake.setMagPercent(0.0);
+    shooter.setFlywheelPercent(0.0);
+    hood.setHoodPosition(0.0);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -35,10 +38,7 @@ public class ShootBalls extends CommandBase {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    mag.setMagPercent(0.0);
-    shooter.setFlywheelPercent(0.0);
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
