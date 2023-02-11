@@ -4,41 +4,29 @@
 
 package frc.robot.commands;
 
-
-
+import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.MagIntakeSubsystem;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.OI;
-import frc.robot.subsystems.MagIntakeSubsystem;
-
 public class MagIntakeIn extends CommandBase {
-  /** Creates a new magDefault. */
   int plcHldr;
   boolean ballAt1;
   double ball1time;
   boolean previous1;
-  
-  
   double ball2time;
   boolean ballPassed2;
-  
   boolean ballAt2;
   boolean previous3;
   double ball3time;
-  
   boolean plcHldr6;
   boolean ballAt3;
   boolean previous4;
-  
   double ball4time;
   boolean plcHldr7;
   boolean ran;
   boolean previous5;
   double ball5time;
-  
   double currentTime;
-  MagIntakeSubsystem magintake;
   boolean plcHldr1;
   boolean plcHldr2;
   boolean plcHldr3;
@@ -51,6 +39,8 @@ public class MagIntakeIn extends CommandBase {
   boolean plcHldr9;
   double beam1timeHolder;
   double beam1delay;
+  MagIntakeSubsystem magintake;
+  /** Creates a new MagIntakeIn. */
   public MagIntakeIn(MagIntakeSubsystem magintake) {
     this.magintake = magintake;
     ballPassed2 = false;
@@ -66,10 +56,9 @@ public class MagIntakeIn extends CommandBase {
     plcHldr8=false;
     plcHldr9=false;
     delay = 0.8;
-    addRequirements(magintake); 
+    addRequirements(magintake);
   }
-  
-  
+
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
@@ -217,15 +206,12 @@ public class MagIntakeIn extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     magintake.stopIntake();
+    magintake.setMagPercent(0.0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (OI.driverController.getRightBumperReleased()){
-      return true;
-    }else{
-      return false;
-    }  
+    return false;
   }
 }
