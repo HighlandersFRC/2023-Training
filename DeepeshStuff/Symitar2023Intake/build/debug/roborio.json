@@ -1,0 +1,9 @@
+[
+  {
+    "type": "java",
+    "name": "frcJava",
+    "port": 8349,
+    "target": "10.44.99.2",
+    "project": "Symitar2023Intake"
+  }
+]
