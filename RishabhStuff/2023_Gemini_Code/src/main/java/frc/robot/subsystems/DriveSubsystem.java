@@ -60,6 +60,8 @@ public class DriveSubsystem extends SubsystemBase {
     frontRight.set(ControlMode.PercentOutput, right);
   }
   public void setDriveVelocity(double leftMPS, double rightMPS){
+    rightMPS = rightMPS * 0.3;
+    leftMPS = leftMPS * 0.3;
     frontRight.set(ControlMode.Velocity, Constants.MPS_To_TicksPer100MS(rightMPS));
     frontLeft.set(ControlMode.Velocity, Constants.MPS_To_TicksPer100MS(leftMPS));
   }
@@ -83,7 +85,7 @@ public class DriveSubsystem extends SubsystemBase {
     }
     right /= divisor;
     left /= divisor;
-    setDrivePercents(left, right);
+    setDrivePercents(left * 0.4, right * 0.4);
   }
   public void setSpeed(){
     setDriveVelocity(Constants.setDriveSpeed, Constants.setDriveSpeed);
