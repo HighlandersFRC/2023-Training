@@ -2,9 +2,14 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.commands.IntakeCone;
+import frc.robot.commands.IntakeCube;
+import frc.robot.commands.SetBlue;
+import frc.robot.commands.SetRed;
 import frc.robot.subsystems.BeamBreak;
 
 public class Robot extends TimedRobot {
@@ -12,21 +17,29 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
 
-  BeamBreak beamBreaks = new BeamBreak();
   
-public DigitalInput beamBreak1 = new DigitalInput(0);
+  public static Spark aFrameLeds = new Spark(1);
+  public static Spark swerveLeds = new Spark(0);
+  public static DigitalInput beamBreak1 = new DigitalInput(0);
+
+  BeamBreak beamBreak = new BeamBreak();
 
   @Override
   public void robotInit() {
     m_robotContainer = new RobotContainer();
-    beamBreaks.init();
-    beamBreaks.periodic();
+    beamBreak.init();
+    beamBreak.periodic();
+    OI.buttonA.whileTrue(new IntakeCube(beamBreak));
+    OI.buttonY.whileTrue(new IntakeCone(beamBreak));
+    OI.buttonB.whileTrue(new SetRed(beamBreak));
+    OI.buttonX.whileTrue(new SetBlue(beamBreak));
   }
 
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
-    SmartDashboard.putBoolean("B break", beamBreak1.get());
+    SmartDashboard.putNumber("Swerve Leds", swerveLeds.get());
+    SmartDashboard.putBoolean("Beam Break", beamBreak1.get());
   }
 
   @Override
