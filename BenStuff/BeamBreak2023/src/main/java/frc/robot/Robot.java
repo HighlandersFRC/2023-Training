@@ -8,14 +8,18 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.IntakeCone;
 import frc.robot.commands.IntakeCube;
+import frc.robot.commands.IntakeMotor;
+import frc.robot.commands.RunMotor;
 import frc.robot.commands.SetBlue;
 import frc.robot.commands.SetRed;
 import frc.robot.subsystems.BeamBreak;
+import frc.robot.subsystems.MotorTest;
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
+  private final MotorTest motorTest = new MotorTest();
 
   
   public static Spark aFrameLeds = new Spark(1);
@@ -26,6 +30,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotInit() {
+    motorTest.init();
     m_robotContainer = new RobotContainer();
     beamBreak.init();
     beamBreak.periodic();
@@ -33,6 +38,7 @@ public class Robot extends TimedRobot {
     OI.buttonY.whileTrue(new IntakeCone(beamBreak));
     OI.buttonB.whileTrue(new SetRed(beamBreak));
     OI.buttonX.whileTrue(new SetBlue(beamBreak));
+    OI.rt.whileTrue(new RunMotor(motorTest));
   }
 
   @Override

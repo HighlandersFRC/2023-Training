@@ -2,11 +2,11 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
-import frc.robot.commands.BeamBreakDefault;
+import frc.robot.commands.Defaults.BeamBreakDefault;
 
 public class BeamBreak extends SubsystemBase {
   
-  public boolean isBlue = true;
+  public boolean isBlue = false;
   
 public void setLightsToIntake() {
   Robot.aFrameLeds.set(0.35);
