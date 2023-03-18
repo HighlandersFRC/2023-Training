@@ -15,14 +15,14 @@ public class DistanceSensor extends SubsystemBase {
   public DistanceSensor() {}
   
   public void init(){
-    distanceSensor.setAutomaticMode(true);
+    distanceSensor.setAutomaticMode(true); //enables distance sensor
   }
 
-  private final Rev2mDistanceSensor distanceSensor = new Rev2mDistanceSensor(Port.kOnboard);
+  private final Rev2mDistanceSensor distanceSensor = new Rev2mDistanceSensor(Port.kOnboard);//need distance sensor library, Rev2mDistanceSensor Port
   public void outputSensor(){
-    SmartDashboard.putNumber("Distance Sensor", distanceSensor.getRange());
-    SmartDashboard.putBoolean("Cone", cone());
-    SmartDashboard.putBoolean("sensor enabled", distanceSensor.isEnabled());
+    SmartDashboard.putNumber("Distance Sensor", distanceSensor.getRange());//outputs distance
+    SmartDashboard.putBoolean("Cone", cone());// true = cone in intake
+    SmartDashboard.putBoolean("sensor enabled", distanceSensor.isEnabled());//true = sensor enabled
   }
   public boolean cone(){
     if (distanceSensor.getRange() < 8){
@@ -30,6 +30,7 @@ public class DistanceSensor extends SubsystemBase {
     } else {
       return false;
     }
+    // if the distance is less than the value, a cone is in the intake
   }
   @Override
   public void periodic() {
