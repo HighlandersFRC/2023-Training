@@ -22,7 +22,7 @@ public class DistanceSensor extends SubsystemBase {
   public void outputSensor(){
     SmartDashboard.putNumber("Distance Sensor", distanceSensor.getRange());
     SmartDashboard.putBoolean("Cone", cone());
-    SmartDashboard.putBoolean("sensor", distanceSensor.isEnabled());
+    SmartDashboard.putBoolean("sensor enabled", distanceSensor.isEnabled());
   }
   public boolean cone(){
     if (distanceSensor.getRange() < 8){
