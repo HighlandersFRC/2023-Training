@@ -5,45 +5,33 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.MagIntakeSubsystem;
-public class MagIntakeOut extends CommandBase {
-  MagIntakeSubsystem magintake;
-  boolean beam1;
-  boolean beam2;
-  boolean beam3;
-  boolean plcHldr;
-  /** Creates a new MagIntakeOut. */
-  public MagIntakeOut(MagIntakeSubsystem magintake) {
-    this.magintake = magintake;
+import frc.robot.subsystems.HoodSubsystem;
+
+public class RetractHood extends CommandBase {
+  HoodSubsystem hood;
+  double percent;
+  /** Creates a new RetractHood. */
+  public RetractHood(HoodSubsystem hood, double percent) {
+    this.hood = hood;
+    this.percent = percent;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(magintake);
+    addRequirements(hood);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    magintake.extendPistons();
-    magintake.outake();
-    magintake.setMagPercent(-0.3);
-    System.out.println("magBackward ran");
-    plcHldr = true;
+    hood.setHoodPercent(percent);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-    beam1 = !magintake.beamBreak1.get();
-    if (!beam1&&plcHldr){
-      magintake.ballLeaves();
-    }
-    plcHldr = beam1;
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    System.out.println("magBackward ended");
-    magintake.setMagPercent(0);
+    hood.setHoodPercent(0.0);
   }
 
   // Returns true when the command should end.

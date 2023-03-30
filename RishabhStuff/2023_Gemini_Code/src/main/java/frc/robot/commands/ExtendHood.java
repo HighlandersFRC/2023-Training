@@ -9,11 +9,11 @@ import frc.robot.subsystems.HoodSubsystem;
 
 public class ExtendHood extends CommandBase {
   HoodSubsystem hood;
-  double position;
+  double percent;
   /** Creates a new ExtendHood. */
-  public ExtendHood(HoodSubsystem hood, double position) {
+  public ExtendHood(HoodSubsystem hood, double percent) {
     this.hood = hood;
-    this.position = position;
+    this.percent = percent;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(hood);
   }
@@ -21,7 +21,8 @@ public class ExtendHood extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    hood.setHoodPosition(position);
+   // hood.setHoodPosition(position);
+   hood.setHoodPercent(percent);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

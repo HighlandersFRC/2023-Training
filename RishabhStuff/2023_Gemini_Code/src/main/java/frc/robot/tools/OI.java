@@ -18,6 +18,9 @@ public class OI {
     public static BooleanSupplier ltSupplier = () -> getLTPercent() > Constants.OperatorConstants.LEFT_TRIGGER_DEADZONE;
     public static TriggerButton rt = new TriggerButton(rtSupplier);
     public static TriggerButton lt = new TriggerButton(ltSupplier);
+    public static JoystickButton menuButton = new JoystickButton(driverController, 8);
+    public static JoystickButton viewButton = new JoystickButton(driverController, 7);
+
 
     public static double getRTPercent() {
         return driverController.getRightTriggerAxis();

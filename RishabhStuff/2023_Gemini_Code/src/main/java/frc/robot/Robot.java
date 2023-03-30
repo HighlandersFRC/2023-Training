@@ -5,10 +5,13 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.MagIntakeOut;
+import frc.robot.commands.RetractHood;
 import frc.robot.commands.ShootingSequence;
+import frc.robot.commands.SpinMag;
 import frc.robot.commands.StopShooting;
 import frc.robot.commands.velocityDrive;
 import frc.robot.commands.ArcadeDrive;
+import frc.robot.commands.ExtendHood;
 import frc.robot.commands.MagIntakeIn;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.HoodSubsystem;
@@ -83,6 +86,7 @@ public class Robot extends TimedRobot {
     OI.lt.whileTrue(new MagIntakeOut(magintake));
     OI.rt.whileTrue(new MagIntakeIn(magintake));
     OI.rBumper.toggleOnTrue(velocityDrive);
+    OI.lBumper.whileTrue(new SpinMag(magintake, 0.2));
     OI.buttonA.whileTrue(new ShootingSequence(magintake, shooter, hood, 1500, -0));
     OI.buttonX.whileTrue(new ShootingSequence(magintake, shooter, hood, 1500, -15));
     OI.buttonY.whileTrue(new ShootingSequence(magintake, shooter, hood, 2000, -5));
@@ -91,6 +95,8 @@ public class Robot extends TimedRobot {
     OI.buttonX.onFalse(new StopShooting(magintake, shooter, hood));
     OI.buttonY.onFalse(new StopShooting(magintake, shooter, hood));
     OI.buttonB.onFalse(new StopShooting(magintake, shooter, hood));
+    OI.menuButton.whileTrue(new ExtendHood(hood, 0.2));
+    OI.viewButton.whileTrue(new RetractHood(hood, -0.2));
   }
 
   @Override
