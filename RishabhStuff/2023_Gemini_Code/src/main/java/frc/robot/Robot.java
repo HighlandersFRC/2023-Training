@@ -15,6 +15,7 @@ import frc.robot.commands.ExtendHood;
 import frc.robot.commands.MagIntakeIn;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.HoodSubsystem;
+import frc.robot.subsystems.Lights;
 import frc.robot.subsystems.MagIntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.tools.OI;
@@ -29,6 +30,7 @@ public class Robot extends TimedRobot {
   ArcadeDrive arcadeDrive = new ArcadeDrive(drive);
   velocityDrive velocityDrive = new velocityDrive(drive);
   HoodSubsystem hood = new HoodSubsystem();
+  Lights lights = new Lights();
 
   @Override
   public void robotInit() {
@@ -38,6 +40,7 @@ public class Robot extends TimedRobot {
     magintake.init();
     shooter.init();
     hood.init();
+    lights.init();
   }
 
 
