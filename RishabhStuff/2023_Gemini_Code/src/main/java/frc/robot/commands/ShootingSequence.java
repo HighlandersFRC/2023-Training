@@ -36,7 +36,7 @@ public class ShootingSequence extends SequentialCommandGroup {
       new ParallelRaceGroup(
         new SpinFlywheel(shooter, rpm),
         new ExtendHood(hood, position),
-        new WaitCommand(0.6)
+        new WaitCommand(1.0)
       ),
       new ShootMag(magintake));
   }

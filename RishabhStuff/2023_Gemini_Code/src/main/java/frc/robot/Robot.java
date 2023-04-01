@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.MagIntakeOut;
 import frc.robot.commands.RetractHood;
+import frc.robot.commands.SetLightColor;
 import frc.robot.commands.ShootingSequence;
 import frc.robot.commands.SpinMag;
 import frc.robot.commands.StopShooting;
@@ -24,13 +25,13 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
-  DriveSubsystem drive = new DriveSubsystem();
-  MagIntakeSubsystem magintake = new MagIntakeSubsystem();
-  ShooterSubsystem shooter = new ShooterSubsystem();
-  ArcadeDrive arcadeDrive = new ArcadeDrive(drive);
-  velocityDrive velocityDrive = new velocityDrive(drive);
-  HoodSubsystem hood = new HoodSubsystem();
-  Lights lights = new Lights();
+  private DriveSubsystem drive = new DriveSubsystem();
+  private MagIntakeSubsystem magintake = new MagIntakeSubsystem();
+  private ShooterSubsystem shooter = new ShooterSubsystem();
+  private ArcadeDrive arcadeDrive = new ArcadeDrive(drive);
+  private velocityDrive velocityDrive = new velocityDrive(drive);
+  private HoodSubsystem hood = new HoodSubsystem();
+  private Lights lights = new Lights();
 
   @Override
   public void robotInit() {
@@ -88,16 +89,21 @@ public class Robot extends TimedRobot {
     }
     OI.lt.whileTrue(new MagIntakeOut(magintake));
     OI.rt.whileTrue(new MagIntakeIn(magintake));
+    OI.lt.whileTrue(new SetLightColor(lights, -0.15));
     OI.rBumper.toggleOnTrue(velocityDrive);
     OI.lBumper.whileTrue(new SpinMag(magintake, 0.2));
     OI.buttonA.whileTrue(new ShootingSequence(magintake, shooter, hood, 1500, -0));
-    OI.buttonX.whileTrue(new ShootingSequence(magintake, shooter, hood, 1500, -15));
-    OI.buttonY.whileTrue(new ShootingSequence(magintake, shooter, hood, 2000, -5));
-    OI.buttonB.whileTrue(new ShootingSequence(magintake, shooter, hood, 2000, -20));
+    OI.buttonX.whileTrue(new ShootingSequence(magintake, shooter, hood, 2000, -10));
+    OI.buttonY.whileTrue(new ShootingSequence(magintake, shooter, hood, 2500, -5));
+    OI.buttonB.whileTrue(new ShootingSequence(magintake, shooter, hood, 2000, -5));
     OI.buttonA.onFalse(new StopShooting(magintake, shooter, hood));
     OI.buttonX.onFalse(new StopShooting(magintake, shooter, hood));
     OI.buttonY.onFalse(new StopShooting(magintake, shooter, hood));
     OI.buttonB.onFalse(new StopShooting(magintake, shooter, hood));
+    OI.buttonA.whileTrue(new SetLightColor(lights, 0.77));
+    OI.buttonX.whileTrue(new SetLightColor(lights, 0.77));
+    OI.buttonY.whileTrue(new SetLightColor(lights, 0.77));
+    OI.buttonB.whileTrue(new SetLightColor(lights, 0.77));
     OI.menuButton.whileTrue(new ExtendHood(hood, 0.2));
     OI.viewButton.whileTrue(new RetractHood(hood, -0.2));
   }

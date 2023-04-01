@@ -19,7 +19,7 @@ public class LightsDefault extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    lights.setLights(-0.99);
+    lights.setLights(-0.23);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
