@@ -16,4 +16,11 @@ public final class Constants {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
   }
+
+  public static double DegreesToTicks(double degrees){
+    return (4096 * degrees) / 360;
+  }
+  public static double TicksToDegrees(double ticks){
+    return (360 * ticks) / 4096;
+  }
 }
