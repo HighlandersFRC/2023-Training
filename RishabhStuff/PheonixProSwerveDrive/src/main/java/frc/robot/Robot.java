@@ -31,6 +31,7 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+    drive.init();
   }
 
   /**
@@ -81,10 +82,10 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
 
-    OI.buttonA.whileTrue(new MoveWheelToAngle(drive, 90));
-    OI.buttonB.whileTrue(new MoveWheelToAngle(drive, 180));
-    OI.buttonY.whileTrue(new MoveWheelToAngle(drive, 270));
-    OI.buttonX.whileTrue(new MoveWheelToAngle(drive, 0));
+    OI.buttonA.whileTrue(new MoveWheelToAngle(drive, 45));
+    OI.buttonB.whileTrue(new MoveWheelToAngle(drive, 90));
+    OI.buttonY.whileTrue(new MoveWheelToAngle(drive, 180));
+    OI.buttonX.whileTrue(new MoveWheelToAngle(drive, 270));
   }
 
   /** This function is called periodically during operator control. */

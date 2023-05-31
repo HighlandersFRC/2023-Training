@@ -15,12 +15,14 @@ package frc.robot;
 public final class Constants {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
+    public static final double RIGHT_TRIGGER_DEADZONE = 0.1;
+    public static final double LEFT_TRIGGER_DEADZONE = 0.1;
   }
 
-  public static double DegreesToTicks(double degrees){
-    return (4096 * degrees) / 360;
+  public static double DegreesToRotations(double degrees){
+    return degrees / 360;
   }
-  public static double TicksToDegrees(double ticks){
-    return (360 * ticks) / 4096;
+  public static double RotationsToDegrees(double rotations){
+    return rotations * 360;
   }
 }

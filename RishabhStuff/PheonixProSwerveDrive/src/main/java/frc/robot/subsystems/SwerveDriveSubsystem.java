@@ -4,47 +4,47 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenixpro.StatusSignalValue;
 import com.ctre.phoenixpro.configs.TalonFXConfiguration;
-import com.ctre.phoenixpro.controls.PositionVoltage;
-import com.ctre.phoenixpro.hardware.CANcoder;
+import com.ctre.phoenixpro.controls.NeutralOut;
+import com.ctre.phoenixpro.controls.PositionTorqueCurrentFOC;
 import com.ctre.phoenixpro.hardware.TalonFX;
-import com.ctre.phoenixpro.signals.FeedbackSensorSourceValue;
-
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.commands.MoveWheelToAngle;
+import frc.robot.commands.WheelToAngleDefault;
 
 public class SwerveDriveSubsystem extends SubsystemBase {
-  private final TalonFX angleMotor = new TalonFX(8);
+  private final TalonFX angleMotor = new TalonFX(10, "Canivore");
   private final TalonFXConfiguration angleMotorConfig = new TalonFXConfiguration();
-
-  private final CANcoder canCoder = new CANcoder(4, "rio");
   
-  private final PositionVoltage voltage = new PositionVoltage(0, true, 0, 0, false);
-
+  private final PositionTorqueCurrentFOC torqueCurrentFOC = new PositionTorqueCurrentFOC(0, 0, 0, false);
+  private final NeutralOut brake = new NeutralOut();
   /** Creates a new SwerveDriveSubsystem. */
   public SwerveDriveSubsystem() {}
 
   public void init(){
-    angleMotor.getConfigurator().apply(angleMotorConfig);
-
-    angleMotorConfig.Slot0.kP = 1.0;
+    angleMotorConfig.Slot0.kP = 20.0;
     angleMotorConfig.Slot0.kI = 0.0;
-    angleMotorConfig.Slot0.kD = 0.0;
+    angleMotorConfig.Slot0.kD = 1.5;
 
-    angleMotorConfig.Voltage.PeakForwardVoltage = 8;
-    angleMotorConfig.Voltage.PeakReverseVoltage = -8;
+    angleMotorConfig.TorqueCurrent.PeakForwardTorqueCurrent = 700;
+    angleMotorConfig.TorqueCurrent.PeakReverseTorqueCurrent = -700;
 
-    angleMotorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
-    angleMotorConfig.Feedback.FeedbackRemoteSensorID = 4;
+    angleMotor.getConfigurator().apply(angleMotorConfig);
+    setDefaultCommand(new WheelToAngleDefault(this));
+    angleMotor.setRotorPosition(0);
   }
 
   public void wheelToAngle(double degrees){
-    angleMotor.setControl(voltage.withPosition(Constants.DegreesToTicks(degrees)));
+    angleMotor.setControl(torqueCurrentFOC.withPosition(Constants.DegreesToRotations(degrees)));
   }
 
-  public StatusSignalValue<Double> getAngleValue(double value){
-    return canCoder.getAbsolutePosition();
+  public void stopMotor(){
+    angleMotor.setControl(brake);
+  }
+
+  public void moveMotor(double power){
+    angleMotor.set(power);
   }
 
   @Override
