@@ -18,7 +18,7 @@ public final class Constants {
     public static final double RIGHT_TRIGGER_DEADZONE = 0.1;
     public static final double LEFT_TRIGGER_DEADZONE = 0.1;
   }
-
+  public static final double module1Angle = 45;
   public static double DegreesToRotations(double degrees){
     return degrees / 360;
   }
