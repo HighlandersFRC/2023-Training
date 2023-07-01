@@ -34,6 +34,8 @@ public static void setUpDriveMotors() {
     right *= Math.abs(right);
     setDrivePercents(left, right);
   }
+
+  
   public void arcadeDrive(double power, double direction) {
     power *= Math.abs(power);
     direction *= Math.abs(direction);

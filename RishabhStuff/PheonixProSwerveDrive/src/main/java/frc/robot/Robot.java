@@ -7,8 +7,9 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.commands.DriveDefault;
 import frc.robot.commands.MoveWheelToAngle;
-import frc.robot.subsystems.SwerveDriveSubsystem;
+import frc.robot.subsystems.Drive;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -21,7 +22,7 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
 
-  public SwerveDriveSubsystem drive = new SwerveDriveSubsystem();
+  public Drive drive = new Drive();
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -48,6 +49,7 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+    
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
@@ -82,10 +84,11 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
 
-    OI.buttonA.whileTrue(new MoveWheelToAngle(drive, 45));
-    OI.buttonB.whileTrue(new MoveWheelToAngle(drive, 90));
-    OI.buttonY.whileTrue(new MoveWheelToAngle(drive, 180));
-    OI.buttonX.whileTrue(new MoveWheelToAngle(drive, 270));
+    OI.buttonA.whileTrue(new MoveWheelToAngle(drive, 1));
+    OI.buttonB.whileTrue(new MoveWheelToAngle(drive, 2));
+    OI.buttonY.whileTrue(new MoveWheelToAngle(drive, 4));
+    OI.buttonX.whileTrue(new MoveWheelToAngle(drive, 6));
+
   }
 
   /** This function is called periodically during operator control. */

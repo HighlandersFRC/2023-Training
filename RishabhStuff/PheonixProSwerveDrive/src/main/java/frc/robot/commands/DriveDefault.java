@@ -5,12 +5,13 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.SwerveDriveSubsystem;
+import frc.robot.OI;
+import frc.robot.subsystems.Drive;
 
-public class WheelToAngleDefault extends CommandBase {
-  SwerveDriveSubsystem drive;
-  /** Creates a new WheelToAngleDefault. */
-  public WheelToAngleDefault(SwerveDriveSubsystem drive) {
+public class DriveDefault extends CommandBase {
+  Drive drive;
+  /** Creates a new DriveDefault. */
+  public DriveDefault(Drive drive) {
     this.drive = drive;
     addRequirements(drive);
     // Use addRequirements() here to declare subsystem dependencies.
@@ -23,8 +24,7 @@ public class WheelToAngleDefault extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    // drive.wheelToAngle(0);
-    drive.wheelToAngle(0);
+    drive.drive(OI.getDriverLeftY(), OI.getDriverLeftX());
   }
 
   // Called once the command ends or is interrupted.

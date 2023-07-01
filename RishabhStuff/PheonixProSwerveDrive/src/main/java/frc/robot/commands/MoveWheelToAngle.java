@@ -5,13 +5,13 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.SwerveDriveSubsystem;
+import frc.robot.subsystems.Drive;
 
 public class MoveWheelToAngle extends CommandBase {
-  SwerveDriveSubsystem drive;
+  Drive drive;
   double degrees;
   /** Creates a new MoveWheelToAngle. */
-  public MoveWheelToAngle(SwerveDriveSubsystem drive, double degrees) {
+  public MoveWheelToAngle(Drive drive, double degrees) {
     this.drive = drive;
     this.degrees = degrees;
     addRequirements(drive);
@@ -21,9 +21,9 @@ public class MoveWheelToAngle extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    System.out.println("works");
-    drive.wheelToAngle(degrees);
-    // drive.moveMotor(degrees);
+    // drive.drive(degrees);
+    drive.moveWheel(degrees);
+    
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -32,11 +32,7 @@ public class MoveWheelToAngle extends CommandBase {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    System.out.println("end");
-    // drive.moveMotor(0.0);
-    // drive.stopMotor();
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override

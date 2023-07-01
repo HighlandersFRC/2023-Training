@@ -18,11 +18,24 @@ public final class Constants {
     public static final double RIGHT_TRIGGER_DEADZONE = 0.1;
     public static final double LEFT_TRIGGER_DEADZONE = 0.1;
   }
-  public static final double module1Angle = 45;
-  public static double DegreesToRotations(double degrees){
+
+  public static final double GEAR_RATIO = 6.75;
+
+  public static final double STEER_GEAR_RATIO = 150/7;
+
+  public static final double TOP_SPEED = 2;
+
+  public static final double WHEEL_DIAMETER = 0.1016;
+
+  public static final double WHEEL_CIRCUMFRENCE = Math.PI * WHEEL_DIAMETER;
+
+  public static final double Wheel_Rotations_In_A_Meter = 1 / WHEEL_CIRCUMFRENCE;
+
+  public static double degreesToRotations(double degrees){
     return degrees / 360;
   }
-  public static double RotationsToDegrees(double rotations){
+
+  public static double rotationsToDegrees(double rotations){
     return rotations * 360;
   }
 }
