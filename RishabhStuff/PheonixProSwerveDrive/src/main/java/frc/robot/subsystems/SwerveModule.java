@@ -20,14 +20,14 @@ import frc.robot.Tools.Vector;
 public class SwerveModule extends SubsystemBase {
   private final TalonFX angleMotor;
   private final TalonFX driveMotor;
-  private final int moduleNumber = 0;
+  private final int moduleNumber;
   private final CANcoder canCoder;
 
   PositionTorqueCurrentFOC positionTorqueFOCRequest = new PositionTorqueCurrentFOC(0, 0, 0, false);
   VelocityTorqueCurrentFOC velocityTorqueFOCRequest = new VelocityTorqueCurrentFOC(0, 0, 1, false);
   /** Creates a new SwerveModule. */
-  public SwerveModule(int moduleNum, TalonFX mAngleMotor, TalonFX mDriveMotor, CANcoder mCanCoder) {
-    moduleNum = moduleNumber;
+  public SwerveModule(int mModuleNum, TalonFX mAngleMotor, TalonFX mDriveMotor, CANcoder mCanCoder) {
+    moduleNumber = mModuleNum;
     angleMotor = mAngleMotor;
     driveMotor = mDriveMotor;
     canCoder = mCanCoder;
