@@ -132,13 +132,13 @@ public class SwerveModule extends SubsystemBase {
   }
   
   public void drive(Vector vector){
-    if(Math.abs(vector.getI()) < 0.0001 && Math.abs(vector.getJ()) < 0.0001) {
+    if(Math.abs(vector.i) < 0.0001 && Math.abs(vector.j) < 0.0001) {
       driveMotor.set(0.0);
       angleMotor.set(0.0);
     }
     else {
-      double angleWanted = -Math.atan2(vector.getJ(), vector.getI());
-      double wheelPower = Math.sqrt(Math.pow(vector.getI(), 2) + Math.pow(vector.getJ(), 2));
+      double angleWanted = -Math.atan2(vector.j, vector.i);
+      double wheelPower = Math.sqrt(Math.pow(vector.i, 2) + Math.pow(vector.i, 2));
 
       if (wheelPower > Constants.TOP_SPEED){
         wheelPower = Constants.TOP_SPEED;

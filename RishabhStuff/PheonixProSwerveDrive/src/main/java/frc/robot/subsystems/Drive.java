@@ -86,7 +86,9 @@ public class Drive extends SubsystemBase {
     double finalX = controllerX * Constants.TOP_SPEED;
     double finalY = controllerY * Constants.TOP_SPEED;
 
-    Vector controllerVector = new Vector(finalX, finalY);
+    Vector controllerVector = new Vector();
+    controllerVector.i = finalX;
+    controllerVector.j = finalY;
 
     // backRight.drive(controllerVector);
     // backLeft.drive(controllerVector);
