@@ -18,6 +18,14 @@ public final class Constants {
     public static final double RIGHT_TRIGGER_DEADZONE = 0.1;
     public static final double LEFT_TRIGGER_DEADZONE = 0.1;
   }
+  
+  public static final double ROBOT_LENGTH = inchesToMeters(29);
+
+  public static final double ROBOT_WIDTH = inchesToMeters(25);
+
+  public static final double SWERVE_MODULE_OFFSET = inchesToMeters(2.5);
+
+  public static final double ROBOT_RADIUS = metersToInches(15.375);
 
   public static final double GEAR_RATIO = 6.75;
 
@@ -37,5 +45,13 @@ public final class Constants {
 
   public static double rotationsToDegrees(double rotations){
     return rotations * 360;
+  }
+
+  public static double inchesToMeters(double inches){
+    return inches * 0.0254;
+  }
+
+  public static double metersToInches(double meters){
+    return meters / 0.0254;
   }
 }

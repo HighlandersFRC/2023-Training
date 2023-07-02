@@ -33,6 +33,28 @@ public class SwerveModule extends SubsystemBase {
     canCoder = mCanCoder;
   }
 
+  private double torqueAngle(){
+    double length = Constants.ROBOT_LENGTH/2, width = Constants.ROBOT_WIDTH/2, angle;
+    length -= Constants.SWERVE_MODULE_OFFSET;
+    width -= Constants.SWERVE_MODULE_OFFSET;
+
+    switch(moduleNumber){
+      case 2:
+      angle =  Math.atan2(length, -width);
+      case 3:
+      angle =  Math.atan2(-length, -width);
+      case 4:
+      angle =  Math.atan2(-length, width);
+      default: 
+      angle = Math.atan2(length, width);
+    }
+
+    System.out.println("Module "+moduleNumber+"'s Torque Angle is " + angle);
+
+    return angle;
+    
+  }
+
   public void init(){
     TalonFXConfiguration angleMotorConfig = new TalonFXConfiguration();
     TalonFXConfiguration driveMotorConfig = new TalonFXConfiguration();
