@@ -33,26 +33,29 @@ public class SwerveModule extends SubsystemBase {
     canCoder = mCanCoder;
   }
 
-  private double torqueAngle(){
+  public double torqueAngle(){
     double length = Constants.ROBOT_LENGTH/2, width = Constants.ROBOT_WIDTH/2, angle;
     length -= Constants.SWERVE_MODULE_OFFSET;
     width -= Constants.SWERVE_MODULE_OFFSET;
 
     switch(moduleNumber){
+      case 1:
+      angle = Math.atan(-width/-length);
+      break;
       case 2:
-      angle =  Math.atan2(length, -width);
+      angle =  Math.PI + Math.atan(-width/length);
+      break;
       case 3:
-      angle =  Math.atan2(-length, -width);
+      angle =  Math.PI + Math.atan(width/width);
+      break;
       case 4:
-      angle =  Math.atan2(-length, width);
+      angle =  2 * Math.PI + Math.atan(width/-length);
+      break;
       default: 
-      angle = Math.atan2(length, width);
+      angle = 1;
     }
-
-    System.out.println("Module "+moduleNumber+"'s Torque Angle is " + angle);
-
+    SmartDashboard.putNumber("Module" + moduleNumber, Math.toDegrees(angle));
     return angle;
-    
   }
 
   public void init(){

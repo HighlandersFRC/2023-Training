@@ -105,5 +105,9 @@ public class Drive extends SubsystemBase {
     SmartDashboard.putBoolean("Is Inverted", backRightAngleMotor.getInverted());
     SmartDashboard.putNumber("Front Right Coder", Constants.rotationsToDegrees(frontRightCanCoder.getAbsolutePosition().getValue()));
     // This method will be called once per scheduler run
+    frontLeft.torqueAngle();
+    frontRight.torqueAngle();
+    backLeft.torqueAngle();
+    backRight.torqueAngle();
   }
 }
