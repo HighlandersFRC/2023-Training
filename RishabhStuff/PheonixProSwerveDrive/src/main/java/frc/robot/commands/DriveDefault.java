@@ -24,7 +24,7 @@ public class DriveDefault extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    drive.drive(OI.getDriverLeftY(), OI.getDriverLeftX());
+    drive.drive(OI.getDriverLeftY(), OI.getDriverLeftX(), OI.getDriverRightX());
   }
 
   // Called once the command ends or is interrupted.

@@ -73,7 +73,7 @@ public class Drive extends SubsystemBase {
     return position;
   }
 
-  public void drive(double forwardStrafe, double sidewaysStrafe){
+  public void drive(double forwardStrafe, double sidewaysStrafe, double turnAmount){
     // double position = getJoystickPosition(OI.getDriverLeftY(), OI.getDriverLeftX());
     // double speed = position * Constants.TOP_SPEED;
     // double angle = getJoystickAngle(-OI.getDriverLeftY(), OI.getDriverLeftX());
@@ -82,6 +82,7 @@ public class Drive extends SubsystemBase {
 
     double controllerX = -(Math.copySign(forwardStrafe * forwardStrafe, forwardStrafe));
     double controllerY = (Math.copySign(sidewaysStrafe * sidewaysStrafe, sidewaysStrafe));
+    double rightStick = Math.copySign(turnAmount * turnAmount, turnAmount);
 
     double finalX = controllerX * Constants.TOP_SPEED;
     double finalY = controllerY * Constants.TOP_SPEED;
@@ -90,18 +91,18 @@ public class Drive extends SubsystemBase {
     controllerVector.i = finalX;
     controllerVector.j = finalY;
 
-    // backRight.drive(controllerVector);
-    // backLeft.drive(controllerVector);
-    // frontLeft.drive(controllerVector);
-    frontRight.drive(controllerVector);
+    backRight.drive(controllerVector, rightStick);
+    backLeft.drive(controllerVector, rightStick);
+    frontLeft.drive(controllerVector, rightStick);
+    frontRight.drive(controllerVector, rightStick);
   }
   
   @Override
   public void periodic() {
     SmartDashboard.putNumber("Front Right Position", Math.toDegrees(frontRight.getWheelPosition()));
     SmartDashboard.putNumber("Back Right Position", Math.toDegrees(backRight.getWheelPosition()));
-    SmartDashboard.putNumber("Front Left Position", frontLeft.getWheelPosition());
-    SmartDashboard.putNumber("Back Left Position", backLeft.getWheelPosition());
+    SmartDashboard.putNumber("Front Left Position", Math.toDegrees(frontLeft.getWheelPosition()));
+    SmartDashboard.putNumber("Back Left Position", Math.toDegrees(backLeft.getWheelPosition()));
     SmartDashboard.putBoolean("Is Inverted", backRightAngleMotor.getInverted());
     SmartDashboard.putNumber("Front Right Coder", Constants.rotationsToDegrees(frontRightCanCoder.getAbsolutePosition().getValue()));
     // This method will be called once per scheduler run

@@ -12,6 +12,8 @@ import com.ctre.phoenix6.controls.TorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -62,17 +64,21 @@ public class SwerveModule extends SubsystemBase {
     TalonFXConfiguration angleMotorConfig = new TalonFXConfiguration();
     TalonFXConfiguration driveMotorConfig = new TalonFXConfiguration();
 
-    angleMotorConfig.Slot0.kP = 0.8;
+    angleMotorConfig.Slot0.kP = 0.6;
     angleMotorConfig.Slot0.kI = 0.0;
-    angleMotorConfig.Slot0.kD = 0.001;
+    angleMotorConfig.Slot0.kD = 0.0;
     angleMotorConfig.TorqueCurrent.PeakForwardTorqueCurrent = 700;
     angleMotorConfig.TorqueCurrent.PeakReverseTorqueCurrent = -700;
+
+    angleMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
     driveMotorConfig.Slot1.kP = 0.5;
     driveMotorConfig.Slot1.kI = 0.0;
     driveMotorConfig.Slot1.kD = 0.0;
     driveMotorConfig.TorqueCurrent.PeakForwardTorqueCurrent = 700;
     driveMotorConfig.TorqueCurrent.PeakReverseTorqueCurrent = -700;
+
+    driveMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
     double absolutePosition = canCoder.getAbsolutePosition().getValue();
     angleMotor.setRotorPosition(absolutePosition);
@@ -156,7 +162,7 @@ public class SwerveModule extends SubsystemBase {
     return position;
   }
   
-  public void drive(Vector vector){
+  public void drive(Vector vector, double turnValue){
     if(Math.abs(vector.i) < 0.0001 && Math.abs(vector.j) < 0.0001) {
       driveMotor.set(0.0);
       angleMotor.set(0.0);
@@ -176,32 +182,25 @@ public class SwerveModule extends SubsystemBase {
       double currentAngle = getWheelPosition();
       double currentAngleBelow360 = (getWheelPosition()) % (Math.toRadians(360));
 
-      // setWheelPID(Math.toDegrees(angleWanted), velocityRPS);
-      double typeOne = angleWanted;
-      if(angleWanted > currentAngleBelow360){
-        typeOne = angleWanted - Math.toRadians(360);
-      }
+      double setpointAngle = findClosestAngle(currentAngleBelow360, Math.toDegrees(angleWanted));
+      double setpointAngleFlipped = findClosestAngle(currentAngleBelow360, Math.toDegrees(angleWanted) + 180.0);
 
-      double typeTwo = angleWanted;
-      if(angleWanted < currentAngleBelow360){
-        typeTwo = angleWanted + Math.toRadians(360);
-      }
-
-      double typeThree = angleWanted + Math.toRadians(180);
-      
-      double distanceTypeOne = Math.abs(currentAngleBelow360 - typeOne);
-      double distanceTypeTwo = Math.abs(currentAngleBelow360 - typeTwo);
-      double distanceTypeThree = Math.abs(currentAngleBelow360 - typeThree);
-
-      if((distanceTypeOne <= distanceTypeTwo) && (distanceTypeOne <= distanceTypeThree)){
-        setWheelPID((typeOne - currentAngleBelow360 + currentAngle), velocityRPS);
-      } else if((distanceTypeTwo <= distanceTypeOne) && (distanceTypeTwo <= distanceTypeThree)){
-        setWheelPID((typeTwo - currentAngleBelow360 + currentAngle), velocityRPS);
-      } else if((distanceTypeThree <= distanceTypeOne) && (distanceTypeThree <= distanceTypeTwo)){
-        setWheelPID((typeThree - currentAngleBelow360 + currentAngle),  -velocityRPS);
+      if (Math.abs(setpointAngle) <= Math.abs(setpointAngleFlipped)){
+        setWheelPID(Math.toRadians(currentAngle + setpointAngle), velocityRPS);;
+      } else {
+        setWheelPID(Math.toRadians(currentAngle + setpointAngleFlipped), -velocityRPS);
       }
   }
 }
+
+  public double findClosestAngle(double angleA, double angleB){
+    double direction = angleB - angleA;
+
+    if (Math.abs(direction) > 180.0){
+      direction = -(Math.signum(direction) * 360.0) + direction;
+    }
+    return direction;
+  }
 
   @Override
   public void periodic() {
