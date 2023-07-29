@@ -4,11 +4,8 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.StatusSignal;
-import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
-import com.ctre.phoenix6.controls.TorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -24,6 +21,8 @@ public class SwerveModule extends SubsystemBase {
   private final TalonFX driveMotor;
   private final int moduleNumber;
   private final CANcoder canCoder;
+
+  private Peripherals peripherals;
 
   PositionTorqueCurrentFOC positionTorqueFOCRequest = new PositionTorqueCurrentFOC(0, 0, 0, false);
   VelocityTorqueCurrentFOC velocityTorqueFOCRequest = new VelocityTorqueCurrentFOC(0, 0, 1, false);
@@ -64,24 +63,28 @@ public class SwerveModule extends SubsystemBase {
     TalonFXConfiguration angleMotorConfig = new TalonFXConfiguration();
     TalonFXConfiguration driveMotorConfig = new TalonFXConfiguration();
 
-    angleMotorConfig.Slot0.kP = 0.6;
-    angleMotorConfig.Slot0.kI = 0.0;
-    angleMotorConfig.Slot0.kD = 0.0;
+    angleMotorConfig.Slot0.kP = 3.0;
+    angleMotorConfig.Slot0.kI = 0.8;
+    angleMotorConfig.Slot0.kD = 0.5;
     angleMotorConfig.TorqueCurrent.PeakForwardTorqueCurrent = 700;
     angleMotorConfig.TorqueCurrent.PeakReverseTorqueCurrent = -700;
 
     angleMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
-    driveMotorConfig.Slot1.kP = 0.5;
-    driveMotorConfig.Slot1.kI = 0.0;
+    angleMotorConfig.ClosedLoopRamps.TorqueClosedLoopRampPeriod = 0.1;
+
+    driveMotorConfig.Slot1.kP = 3.5;
+    driveMotorConfig.Slot1.kI = 0.7;
     driveMotorConfig.Slot1.kD = 0.0;
     driveMotorConfig.TorqueCurrent.PeakForwardTorqueCurrent = 700;
     driveMotorConfig.TorqueCurrent.PeakReverseTorqueCurrent = -700;
 
     driveMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
+    driveMotorConfig.ClosedLoopRamps.TorqueClosedLoopRampPeriod = 0.1;
+
     double absolutePosition = canCoder.getAbsolutePosition().getValue();
-    angleMotor.setRotorPosition(absolutePosition);
+    angleMotor.setRotorPosition(wheelToSteerMotorRotations(absolutePosition));
     driveMotor.setRotorPosition(0.0);
 
     angleMotor.getConfigurator().apply(angleMotorConfig);
@@ -129,6 +132,14 @@ public class SwerveModule extends SubsystemBase {
     return (rps / Constants.Wheel_Rotations_In_A_Meter);
   }
 
+  public double angleToVectorI(double angle){
+    return (Math.cos(angle));
+  }
+
+  public double angleToVectorJ(double angle){
+    return (Math.sin(angle));
+  }
+
   public void moveAngleMotor(){
     angleMotor.set(0.2);
   }
@@ -143,13 +154,29 @@ public class SwerveModule extends SubsystemBase {
   }
 
   public double getWheelSpeed(){
-    double speed = driveMotorToWheelRotations(driveMotor.getPosition().getValue());
+    double speed = driveMotorToWheelRotations(driveMotor.getVelocity().getValue());
     return speed;
   }
 
   public double getAngleMotorPosition(){
     double degrees = rotationsToDegrees(wheelToSteerMotorRotations(angleMotor.getPosition().getValue()));
     return (Math.toRadians(degrees));
+  }
+
+  public double getCanCoderPosition(){
+    return canCoder.getAbsolutePosition().getValue();
+  }
+
+  public double getGroundSpeed(){
+    return RPSToMPS(getWheelSpeed());
+  }
+
+  public double getAngleMotorSetpoint(){
+    return angleMotor.getClosedLoopReference().getValue() * 2 * Math.PI;
+  }
+
+  public double getDriveMotorSetpoint(){
+    return RPSToMPS(driveMotor.getClosedLoopReference().getValue());
   }
 
   public double getJoystickAngle(double joystickY, double joystickX) {
@@ -171,6 +198,22 @@ public class SwerveModule extends SubsystemBase {
       double angleWanted = -Math.atan2(vector.j, vector.i);
       double wheelPower = Math.sqrt(Math.pow(vector.i, 2) + Math.pow(vector.i, 2));
 
+      // angleWanted -= Math.toDegrees(peripherals.getNavxAngle());
+
+      // double xValueWithNavx = wheelPower * Math.cos(angleWanted);
+      // double yValueWithNavx = wheelPower * Math.sin(angleWanted);
+
+      // turnValue *= Constants.ROBOT_RADIUS;
+      // double turnX = turnValue * (angleToVectorI(torqueAngle()));
+      // double turnY = turnValue * (angleToVectorJ(torqueAngle()));
+
+      // Vector finalVector = new Vector();
+      // finalVector.i = xValueWithNavx + turnX;
+      // finalVector.j = yValueWithNavx +turnY;
+
+      // double finalAngle = -Math.atan2(finalVector.j, finalVector.i);
+      // double finalVelocity = Math.sqrt(Math.pow(finalVector.i, 2) + Math.pow(finalVector.i, 2));
+
       if (wheelPower > Constants.TOP_SPEED){
         wheelPower = Constants.TOP_SPEED;
       }
@@ -182,13 +225,13 @@ public class SwerveModule extends SubsystemBase {
       double currentAngle = getWheelPosition();
       double currentAngleBelow360 = (getWheelPosition()) % (Math.toRadians(360));
 
-      double setpointAngle = findClosestAngle(currentAngleBelow360, Math.toDegrees(angleWanted));
-      double setpointAngleFlipped = findClosestAngle(currentAngleBelow360, Math.toDegrees(angleWanted) + 180.0);
+      double setpointAngle = findClosestAngle(currentAngleBelow360, angleWanted);
+      double setpointAngleFlipped = findClosestAngle(currentAngleBelow360, angleWanted + Math.PI);
 
       if (Math.abs(setpointAngle) <= Math.abs(setpointAngleFlipped)){
-        setWheelPID(Math.toRadians(currentAngle + setpointAngle), velocityRPS);;
+        setWheelPID(currentAngle + setpointAngle, velocityRPS);
       } else {
-        setWheelPID(Math.toRadians(currentAngle + setpointAngleFlipped), -velocityRPS);
+        setWheelPID(currentAngle + setpointAngleFlipped, -velocityRPS);
       }
   }
 }
@@ -196,8 +239,8 @@ public class SwerveModule extends SubsystemBase {
   public double findClosestAngle(double angleA, double angleB){
     double direction = angleB - angleA;
 
-    if (Math.abs(direction) > 180.0){
-      direction = -(Math.signum(direction) * 360.0) + direction;
+    if (Math.abs(direction) > Math.PI){
+      direction = -(Math.signum(direction) * (2 * Math.PI)) + direction;
     }
     return direction;
   }

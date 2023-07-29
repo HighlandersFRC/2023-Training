@@ -10,7 +10,6 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.OI;
 import frc.robot.Tools.Vector;
 import frc.robot.commands.DriveDefault;
 
@@ -63,6 +62,26 @@ public class Drive extends SubsystemBase {
     frontLeft.setDrivePID(value);    
   }
 
+  public double[] getModuleStates(){
+    double[] states = {
+      frontRight.getCanCoderPosition() * 360, frontRight.getGroundSpeed(),
+      frontLeft.getCanCoderPosition() * 360, frontLeft.getGroundSpeed(),
+      backLeft.getCanCoderPosition() * 360, frontRight.getGroundSpeed(),
+      backRight.getCanCoderPosition() * 360, frontRight.getGroundSpeed(),
+    };
+    return states;
+  }
+
+  public double[] getModuleSetpoints(){
+    double[] setpoints = {
+      frontRight.getAngleMotorSetpoint(), frontRight.getDriveMotorSetpoint(),
+      frontLeft.getAngleMotorSetpoint(), frontLeft.getDriveMotorSetpoint(),
+      backLeft.getAngleMotorSetpoint(), backLeft.getDriveMotorSetpoint(),
+      backRight.getAngleMotorSetpoint(), backRight.getDriveMotorSetpoint(),
+    };
+    return setpoints;
+  }
+
   public double getJoystickAngle(double joystickY, double joystickX) {
     double joystickAngle = Math.atan2(-joystickX, -joystickY);
     return joystickAngle;
@@ -103,12 +122,7 @@ public class Drive extends SubsystemBase {
     SmartDashboard.putNumber("Back Right Position", Math.toDegrees(backRight.getWheelPosition()));
     SmartDashboard.putNumber("Front Left Position", Math.toDegrees(frontLeft.getWheelPosition()));
     SmartDashboard.putNumber("Back Left Position", Math.toDegrees(backLeft.getWheelPosition()));
-    SmartDashboard.putBoolean("Is Inverted", backRightAngleMotor.getInverted());
-    SmartDashboard.putNumber("Front Right Coder", Constants.rotationsToDegrees(frontRightCanCoder.getAbsolutePosition().getValue()));
+    SmartDashboard.putNumber("Back Left Cancoder position", Constants.rotationsToDegrees(backRightCanCoder.getAbsolutePosition().getValue()));
     // This method will be called once per scheduler run
-    frontLeft.torqueAngle();
-    frontRight.torqueAngle();
-    backLeft.torqueAngle();
-    backRight.torqueAngle();
   }
 }

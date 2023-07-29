@@ -18,6 +18,10 @@ public class Peripherals extends SubsystemBase {
 
   private final static Navx navx = new Navx(ahrs);
 
+  public double getNavxAngle() {
+    return navx.currentAngle();
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run

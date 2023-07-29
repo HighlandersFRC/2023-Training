@@ -28,7 +28,7 @@ public class Navx {
   }
 
   public double currentAngle() {
-        SmartDashboard.putNumber("Angle", -(imu.getAngle() - originalAngle));
+        SmartDashboard.putNumber("navx angle", -(imu.getAngle() - originalAngle));
         return -(imu.getAngle() - originalAngle);
   }
 
