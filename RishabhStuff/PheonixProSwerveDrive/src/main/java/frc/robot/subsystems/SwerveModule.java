@@ -214,19 +214,19 @@ public class SwerveModule extends SubsystemBase {
       double finalAngle = -Math.atan2(finalVector.j, finalVector.i);
       double finalVelocity = Math.sqrt(Math.pow(finalVector.i, 2) + Math.pow(finalVector.i, 2));
 
-      if (wheelPower > Constants.TOP_SPEED){
-        wheelPower = Constants.TOP_SPEED;
+      if (finalVelocity > Constants.TOP_SPEED){
+        finalVelocity = Constants.TOP_SPEED;
       }
 
-      double velocityRPS = (MPSToRPS(wheelPower));
+      double velocityRPS = (MPSToRPS(finalVelocity));
       SmartDashboard.putNumber("Velocity", wheelPower);
       SmartDashboard.putNumber("Angle Wanted", Math.toDegrees(angleWanted));
 
       double currentAngle = getWheelPosition();
       double currentAngleBelow360 = (getWheelPosition()) % (Math.toRadians(360));
 
-      double setpointAngle = findClosestAngle(currentAngleBelow360, angleWanted);
-      double setpointAngleFlipped = findClosestAngle(currentAngleBelow360, angleWanted + Math.PI);
+      double setpointAngle = findClosestAngle(currentAngleBelow360, finalAngle);
+      double setpointAngleFlipped = findClosestAngle(currentAngleBelow360, finalAngle + Math.PI);
 
       if (Math.abs(setpointAngle) <= Math.abs(setpointAngleFlipped)){
         setWheelPID(currentAngle + setpointAngle, velocityRPS);
