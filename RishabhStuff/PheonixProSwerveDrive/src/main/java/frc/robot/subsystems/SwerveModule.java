@@ -198,21 +198,21 @@ public class SwerveModule extends SubsystemBase {
       double angleWanted = -Math.atan2(vector.j, vector.i);
       double wheelPower = Math.sqrt(Math.pow(vector.i, 2) + Math.pow(vector.i, 2));
 
-      // angleWanted -= Math.toDegrees(peripherals.getNavxAngle());
+      angleWanted -= Math.toDegrees(peripherals.getNavxAngle());
 
-      // double xValueWithNavx = wheelPower * Math.cos(angleWanted);
-      // double yValueWithNavx = wheelPower * Math.sin(angleWanted);
+      double xValueWithNavx = wheelPower * Math.cos(angleWanted);
+      double yValueWithNavx = wheelPower * Math.sin(angleWanted);
 
       // turnValue *= Constants.ROBOT_RADIUS;
       // double turnX = turnValue * (angleToVectorI(torqueAngle()));
       // double turnY = turnValue * (angleToVectorJ(torqueAngle()));
 
-      // Vector finalVector = new Vector();
-      // finalVector.i = xValueWithNavx + turnX;
-      // finalVector.j = yValueWithNavx +turnY;
+      Vector finalVector = new Vector();
+      finalVector.i = xValueWithNavx;
+      finalVector.j = yValueWithNavx;
 
-      // double finalAngle = -Math.atan2(finalVector.j, finalVector.i);
-      // double finalVelocity = Math.sqrt(Math.pow(finalVector.i, 2) + Math.pow(finalVector.i, 2));
+      double finalAngle = -Math.atan2(finalVector.j, finalVector.i);
+      double finalVelocity = Math.sqrt(Math.pow(finalVector.i, 2) + Math.pow(finalVector.i, 2));
 
       if (wheelPower > Constants.TOP_SPEED){
         wheelPower = Constants.TOP_SPEED;
