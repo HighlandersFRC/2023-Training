@@ -6,9 +6,11 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.commands.DriveDefault;
 
 public class Drive extends SubsystemBase {
@@ -16,6 +18,9 @@ public class Drive extends SubsystemBase {
   CANSparkMax frontLeft = new CANSparkMax(1, MotorType.kBrushless);
   CANSparkMax backRight = new CANSparkMax(2, MotorType.kBrushless);
   CANSparkMax backLeft = new CANSparkMax(3, MotorType.kBrushless);
+
+  SparkMaxPIDController pid;
+
 
   /** Creates a new Drive. */
   public Drive() {}
@@ -25,19 +30,19 @@ public class Drive extends SubsystemBase {
     backRight.follow(frontRight);
   }
 
-  public void setPIDs(double p, double i, double d, double f, CANSparkMax neo){
-    SparkMaxPIDController pid = neo.getPIDController();
-    pid.setP(p);
-    pid.setI(i);
-    pid.setD(d);
-    pid.setFF(f);
+  public void setPIDs(double p, double i, double d, double f, CANSparkMax neo, int slot){
+    pid.setP(p, slot);
+    pid.setI(i, slot);
+    pid.setD(d, slot);
+    pid.setFF(f, slot);
+    pid = neo.getPIDController();
   }
 
   public void init(){
     setUpDriveMotors();
     setDefaultCommand(new DriveDefault(this));
-    setPIDs(1, 0, 0, 1, frontRight);
-    setPIDs(1, 0, 0, 1, frontLeft);
+    setPIDs(1, 0, 0, 1, frontRight, 0);
+    setPIDs(1, 0, 0, 1, frontLeft, 1);
   }
 
   public void tankDrive(double left, double right) {
@@ -84,11 +89,21 @@ public class Drive extends SubsystemBase {
       right = right / front;
       left = left / front;
 
-    setDrivePercents(left, right);
+    right *= 4;
+    left *= 4;
+
+    setDriveVelocity(left, right);
   }
 
-  public void setVelocity(double fps){
-    
+  public void setDriveVelocity(double leftRPM, double rightRPM){
+    if (leftRPM > Constants.TOP_SPEED){
+      leftRPM = Constants.TOP_SPEED;
+    }
+    if (rightRPM > Constants.TOP_SPEED){
+      rightRPM = Constants.TOP_SPEED;
+    }
+    pid.setReference(rightRPM, ControlType.kVelocity, 0);
+    pid.setReference(leftRPM, ControlType.kVelocity, 1);
   }
 
   @Override
