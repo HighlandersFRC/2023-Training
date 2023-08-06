@@ -20,11 +20,10 @@ public class Drive extends SubsystemBase {
   CANSparkMax backRight = new CANSparkMax(2, MotorType.kBrushless);
   CANSparkMax backLeft = new CANSparkMax(4, MotorType.kBrushless);
 
-  // SparkMaxPIDController pid;
   /** Creates a new Drive. */
   public Drive() {}
 
-  public void setUpDriveMotors(){
+  public void init(){
     backLeft.follow(frontLeft);
     backRight.follow(frontRight);
     frontLeft.setIdleMode(IdleMode.kBrake);
@@ -33,22 +32,8 @@ public class Drive extends SubsystemBase {
     frontLeft.setInverted(true);
     frontRight.setSecondaryCurrentLimit(60);
     frontLeft.setSecondaryCurrentLimit(60);
-  }
-
-  // public void setPIDs(double p, double i, double d, double f, CANSparkMax neo, int slot){
-  //   this.pid = pid;
-  //   SparkMaxPIDController pid = neo.getPIDController();
-  //   pid.setP(p, slot);
-  //   pid.setI(i, slot);
-  //   pid.setD(d, slot);
-  //   pid.setFF(f, slot);
-  // }
-
-  public void init(){
-    setUpDriveMotors();
     setDefaultCommand(new DriveDefault(this));
-    // setPIDs(1, 0, 0, 1, frontRight, 0);
-    // setPIDs(1, 0, 0, 1, frontLeft, 1);
+    System.out.println("init");
   }
 
   public void arcadeDrive(double power, double direction) {
@@ -70,41 +55,17 @@ public class Drive extends SubsystemBase {
   }
 
   public void setDrivePercents(double left, double right){
+    if(left > Constants.TOP_SPEED){
+      left = Constants.TOP_SPEED;
+    }
+
+    if(right > Constants.TOP_SPEED){
+      right = Constants.TOP_SPEED;
+    }
+    
     frontRight.set(right);
     frontLeft.set(left);
   }
-
-  // public void velocityDrive(double power, double direction){
-  //   power *= Math.abs(power);
-  //   direction *= Math.abs(direction);
-  //   double right = power + direction;
-  //   double left = power - direction;
-  //   double front = 1;
-    
-  //   if (right > 1){
-  //     front = right;
-  //   } else if (left > 1){
-  //     front = left;
-  //   } 
-  //     right = right / front;
-  //     left = left / front;
-
-  //   right *= 3;
-  //   left *= 3;
-
-  //   setDriveVelocity(left, right);
-  // }
-
-  // public void setDriveVelocity(double leftRPM, double rightRPM){
-  //   if (leftRPM > Constants.TOP_SPEED){
-  //     leftRPM = Constants.TOP_SPEED;
-  //   }
-  //   if (rightRPM > Constants.TOP_SPEED){
-  //     rightRPM = Constants.TOP_SPEED;
-  //   }
-  //   pid.setReference(rightRPM, ControlType.kVelocity, 0);
-  //   pid.setReference(leftRPM, ControlType.kVelocity, 1);
-  // }
 
   @Override
   public void periodic() {

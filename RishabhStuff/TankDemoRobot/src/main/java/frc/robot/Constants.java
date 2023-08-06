@@ -17,5 +17,5 @@ public final class Constants {
     public static final int kDriverControllerPort = 0;
   }
 
-  public static final double TOP_SPEED = 3; //rps
+  public static final double TOP_SPEED = 0.4; //percent
 }
