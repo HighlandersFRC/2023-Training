@@ -22,10 +22,10 @@ public class SwerveModule extends SubsystemBase {
   private final int moduleNumber;
   private final CANcoder canCoder;
 
-  private Peripherals peripherals;
+  Peripherals peripherals;
 
   PositionTorqueCurrentFOC positionTorqueFOCRequest = new PositionTorqueCurrentFOC(0, 0, 0, false);
-  VelocityTorqueCurrentFOC velocityTorqueFOCRequest = new VelocityTorqueCurrentFOC(0, 0, 1, false);
+  VelocityTorqueCurrentFOC velocityTorqueFOCRequest = new VelocityTorqueCurrentFOC(0, 0, 0, false);
   /** Creates a new SwerveModule. */
   public SwerveModule(int mModuleNum, TalonFX mAngleMotor, TalonFX mDriveMotor, CANcoder mCanCoder) {
     moduleNumber = mModuleNum;
@@ -55,7 +55,6 @@ public class SwerveModule extends SubsystemBase {
       default: 
       angle = 1;
     }
-    SmartDashboard.putNumber("Module" + moduleNumber + "Turn", Math.toDegrees(angle));
     return angle;
   }
 
@@ -70,23 +69,23 @@ public class SwerveModule extends SubsystemBase {
     TalonFXConfiguration angleMotorConfig = new TalonFXConfiguration();
     TalonFXConfiguration driveMotorConfig = new TalonFXConfiguration();
 
-    angleMotorConfig.Slot0.kP = 3.2;
-    angleMotorConfig.Slot0.kI = 0.9;
-    angleMotorConfig.Slot0.kD = 0.6;
-    angleMotorConfig.TorqueCurrent.PeakForwardTorqueCurrent = 700;
-    angleMotorConfig.TorqueCurrent.PeakReverseTorqueCurrent = -700;
+    angleMotorConfig.Slot0.kP = 5.0;
+    angleMotorConfig.Slot0.kI = 0.0;
+    angleMotorConfig.Slot0.kD = 0.5;
+    angleMotorConfig.TorqueCurrent.PeakForwardTorqueCurrent = 60;
+    angleMotorConfig.TorqueCurrent.PeakReverseTorqueCurrent = -60;
 
-    angleMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    angleMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
     angleMotorConfig.ClosedLoopRamps.TorqueClosedLoopRampPeriod = 0.1;
 
-    driveMotorConfig.Slot1.kP = 4.0;
-    driveMotorConfig.Slot1.kI = 1.0;
-    driveMotorConfig.Slot1.kD = 0.3;
-    driveMotorConfig.TorqueCurrent.PeakForwardTorqueCurrent = 700;
-    driveMotorConfig.TorqueCurrent.PeakReverseTorqueCurrent = -700;
+    driveMotorConfig.Slot0.kP = 6.5;
+    driveMotorConfig.Slot0.kI = 0.0;
+    driveMotorConfig.Slot0.kD = 0.0;
+    driveMotorConfig.TorqueCurrent.PeakForwardTorqueCurrent = 75;
+    driveMotorConfig.TorqueCurrent.PeakReverseTorqueCurrent = -75;
 
-    driveMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    driveMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
     driveMotorConfig.ClosedLoopRamps.TorqueClosedLoopRampPeriod = 0.1;
 
@@ -139,12 +138,12 @@ public class SwerveModule extends SubsystemBase {
     return (rps / Constants.Wheel_Rotations_In_A_Meter);
   }
 
-  public void moveAngleMotor(){
+  public void moveAngleMotor(double speed){
     angleMotor.set(0.2);
   }
 
-  public void moveDriveMotor(){
-    driveMotor.set(0.2);
+  public void moveDriveMotor(double speed){
+    driveMotor.set(-0.5);
   }
 
   public double getWheelPosition(){
@@ -195,9 +194,9 @@ public class SwerveModule extends SubsystemBase {
     }
     else {
       double angleWanted = Math.atan2(vector.j, vector.i);
-      double wheelPower = Math.sqrt(Math.pow(vector.i, 2) + Math.pow(vector.i, 2));
+      double wheelPower = Math.sqrt(Math.pow(vector.i, 2) + Math.pow(vector.j, 2));
 
-      // angleWanted -= Math.toDegrees(peripherals.getNavxAngle());
+      // angleWanted -= Math.toRadians(peripherals.getNavxAngle());
 
       double xValueWithNavx = wheelPower * Math.cos(angleWanted);
       double yValueWithNavx = wheelPower * Math.sin(angleWanted);
@@ -210,15 +209,16 @@ public class SwerveModule extends SubsystemBase {
       finalVector.j = yValueWithNavx + turnY;
 
       double finalAngle = -Math.atan2(finalVector.j, finalVector.i);
-      double finalVelocity = Math.sqrt(Math.pow(finalVector.i, 2) + Math.pow(finalVector.i, 2));
+      double finalVelocity = Math.sqrt(Math.pow(finalVector.i, 2) + Math.pow(finalVector.j, 2));
 
       if (finalVelocity > Constants.TOP_SPEED){
         finalVelocity = Constants.TOP_SPEED;
       }
 
       double velocityRPS = (MPSToRPS(finalVelocity));
-      SmartDashboard.putNumber("Velocity", finalAngle);
-      SmartDashboard.putNumber("Angle Wanted", Math.toDegrees(finalVelocity));
+      SmartDashboard.putNumber("Velocity", velocityRPS);
+      SmartDashboard.putNumber("Angle Wanted", Math.toDegrees(angleWanted));
+      SmartDashboard.putNumber("Final Angle", Math.toDegrees(finalAngle));
 
       double currentAngle = getWheelPosition();
       double currentAngleBelow360 = (getWheelPosition()) % (Math.toRadians(360));

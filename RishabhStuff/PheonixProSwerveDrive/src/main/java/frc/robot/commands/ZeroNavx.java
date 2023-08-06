@@ -7,11 +7,10 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Drive;
 
-public class MoveWheelToAngle extends CommandBase {
+public class ZeroNavx extends CommandBase {
   Drive drive;
-  double speed;
-  /** Creates a new MoveWheelToAngle. */
-  public MoveWheelToAngle(Drive drive, double speed) {
+  /** Creates a new ZeroNavx. */
+  public ZeroNavx(Drive drive) {
     this.drive = drive;
     addRequirements(drive);
     // Use addRequirements() here to declare subsystem dependencies.
@@ -24,7 +23,7 @@ public class MoveWheelToAngle extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    drive.moveDriveMotor(speed);
+    drive.zeroNavx();
   }
 
   // Called once the command ends or is interrupted.
@@ -34,6 +33,6 @@ public class MoveWheelToAngle extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return true;
   }
 }

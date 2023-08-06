@@ -19,8 +19,17 @@ public class Peripherals extends SubsystemBase {
 
   private final static Navx navx = new Navx(ahrs);
 
+  public void init(){
+    // zeroNavx();
+  }
+
   public double getNavxAngle() {
     return navx.currentAngle();
+  }
+
+  public void zeroNavx(){
+    navx.softResetAngle();
+    navx.softResetYaw();
   }
 
   @Override

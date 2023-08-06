@@ -32,6 +32,8 @@ public class Drive extends SubsystemBase {
   private final SwerveModule frontLeft = new SwerveModule(2, frontLeftAngleMotor, frontLeftDriveMotor, frontLeftCanCoder);
   private final SwerveModule backLeft = new SwerveModule(3, backLeftAngleMotor, backLeftDriveMotor, backLeftCanCoder);
   private final SwerveModule backRight = new SwerveModule(4, backRightAngleMotor, backRightDriveMotor, backRightCanCoder);
+
+  Peripherals peripherals;
   
   /** Creates a new SwerveDriveSubsystem. */
   public Drive() {}
@@ -92,6 +94,10 @@ public class Drive extends SubsystemBase {
     return position;
   }
 
+  public void moveDriveMotor(double speed){
+    backRight.moveDriveMotor(speed);
+  }
+
   public void setTurnAngle(){
     frontLeft.testTurnAngle();
     frontRight.testTurnAngle();
@@ -99,13 +105,30 @@ public class Drive extends SubsystemBase {
     backRight.testTurnAngle();
   }
 
+  public void zeroNavx(){
+    peripherals.zeroNavx();
+  }
+
+  public double adjustX(double originalX, double originalY){
+    double adjustedX = originalX * Math.sqrt((1-(Math.pow(originalY, 2))/2));
+    return adjustedX;
+  }
+
+  public double adjustY(double originalX, double originalY){
+    double adjustedY = originalY * Math.sqrt((1-(Math.pow(originalX, 2))/2));
+    return adjustedY;
+  }
+
   public void drive(double forwardStrafe, double sidewaysStrafe, double turnAmount){
     double controllerX = -Math.copySign(forwardStrafe * forwardStrafe, forwardStrafe);
     double controllerY = Math.copySign(sidewaysStrafe * sidewaysStrafe, sidewaysStrafe);
     double rightStick = Math.copySign(turnAmount * turnAmount, turnAmount);
 
-    double finalX = controllerX * Constants.TOP_SPEED;
-    double finalY = controllerY * Constants.TOP_SPEED;
+    double adjustedX = adjustX(controllerX, controllerY);
+    double adjustedY = adjustY(controllerX, controllerY);
+
+    double finalX = adjustedX * Constants.TOP_SPEED;
+    double finalY = adjustedY * Constants.TOP_SPEED;
     rightStick *= Constants.TOP_SPEED;
 
     Vector controllerVector = new Vector();
@@ -125,9 +148,5 @@ public class Drive extends SubsystemBase {
     SmartDashboard.putNumber("3 Position", Math.toDegrees(backLeft.getWheelPosition()));
     SmartDashboard.putNumber("4 Position", Math.toDegrees(backRight.getWheelPosition()));
     // This method will be called once per scheduler run
-    frontRight.torqueAngle();
-    frontLeft.torqueAngle();
-    backLeft.torqueAngle();
-    backRight.torqueAngle();
   }
 }
