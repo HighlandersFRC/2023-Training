@@ -97,11 +97,7 @@ public class Robot extends LoggedRobot {
       m_autonomousCommand.cancel();
     }
 
-    OI.buttonA.whileTrue(new MoveWheelToAngle(drive, 1));
-    OI.buttonB.whileTrue(new MoveWheelToAngle(drive, 2));
-    OI.buttonY.whileTrue(new MoveWheelToAngle(drive, 4));
-    OI.buttonX.whileTrue(new MoveWheelToAngle(drive, 6));
-
+    OI.buttonA.whileTrue(new MoveWheelToAngle(drive));
   }
 
   /** This function is called periodically during operator control. */

@@ -11,9 +11,8 @@ public class MoveWheelToAngle extends CommandBase {
   Drive drive;
   double degrees;
   /** Creates a new MoveWheelToAngle. */
-  public MoveWheelToAngle(Drive drive, double degrees) {
+  public MoveWheelToAngle(Drive drive) {
     this.drive = drive;
-    this.degrees = degrees;
     addRequirements(drive);
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -21,9 +20,7 @@ public class MoveWheelToAngle extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    // drive.drive(degrees);
-    drive.moveWheel(degrees);
-    
+    drive.setTurnAngle();
   }
 
   // Called every time the scheduler runs while the command is scheduled.

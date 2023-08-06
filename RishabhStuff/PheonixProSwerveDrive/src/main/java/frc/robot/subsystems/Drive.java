@@ -92,19 +92,21 @@ public class Drive extends SubsystemBase {
     return position;
   }
 
-  public void drive(double forwardStrafe, double sidewaysStrafe, double turnAmount){
-    // double position = getJoystickPosition(OI.getDriverLeftY(), OI.getDriverLeftX());
-    // double speed = position * Constants.TOP_SPEED;
-    // double angle = getJoystickAngle(-OI.getDriverLeftY(), OI.getDriverLeftX());
-    // backRight.setWheelPID(angle, 0);
-    // SmartDashboard.putNumber("Joystick Angle", Math.toDegrees(angle));
+  public void setTurnAngle(){
+    frontLeft.testTurnAngle();
+    frontRight.testTurnAngle();
+    backLeft.testTurnAngle();
+    backRight.testTurnAngle();
+  }
 
-    double controllerX = -(Math.copySign(forwardStrafe * forwardStrafe, forwardStrafe));
-    double controllerY = (Math.copySign(sidewaysStrafe * sidewaysStrafe, sidewaysStrafe));
+  public void drive(double forwardStrafe, double sidewaysStrafe, double turnAmount){
+    double controllerX = -Math.copySign(forwardStrafe * forwardStrafe, forwardStrafe);
+    double controllerY = Math.copySign(sidewaysStrafe * sidewaysStrafe, sidewaysStrafe);
     double rightStick = Math.copySign(turnAmount * turnAmount, turnAmount);
 
     double finalX = controllerX * Constants.TOP_SPEED;
     double finalY = controllerY * Constants.TOP_SPEED;
+    rightStick *= Constants.TOP_SPEED;
 
     Vector controllerVector = new Vector();
     controllerVector.i = finalX;
@@ -118,11 +120,14 @@ public class Drive extends SubsystemBase {
   
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Front Right Position", Math.toDegrees(frontRight.getWheelPosition()));
-    SmartDashboard.putNumber("Back Right Position", Math.toDegrees(backRight.getWheelPosition()));
-    SmartDashboard.putNumber("Front Left Position", Math.toDegrees(frontLeft.getWheelPosition()));
-    SmartDashboard.putNumber("Back Left Position", Math.toDegrees(backLeft.getWheelPosition()));
-    SmartDashboard.putNumber("Back Left Cancoder position", Constants.rotationsToDegrees(backRightCanCoder.getAbsolutePosition().getValue()));
+    SmartDashboard.putNumber("1 Position", Math.toDegrees(frontRight.getWheelPosition()));
+    SmartDashboard.putNumber("2 Position", Math.toDegrees(frontLeft.getWheelPosition()));
+    SmartDashboard.putNumber("3 Position", Math.toDegrees(backLeft.getWheelPosition()));
+    SmartDashboard.putNumber("4 Position", Math.toDegrees(backRight.getWheelPosition()));
     // This method will be called once per scheduler run
+    frontRight.torqueAngle();
+    frontLeft.torqueAngle();
+    backLeft.torqueAngle();
+    backRight.torqueAngle();
   }
 }

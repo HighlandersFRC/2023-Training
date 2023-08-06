@@ -59,4 +59,12 @@ public final class Constants {
     double inches = feet * 12;
     return inchesToMeters(inches);
   }
+
+  public static double angleToUnitVectorI(double angle){
+    return (Math.cos(angle));
+  }
+
+  public static double angleToUnitVectorJ(double angle){
+    return (Math.sin(angle));
+  }
 }

@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.SPI.Port;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Tools.Navx;
 
@@ -24,6 +25,7 @@ public class Peripherals extends SubsystemBase {
 
   @Override
   public void periodic() {
+    SmartDashboard.putNumber("Pitch", navx.currentYaw());
     // This method will be called once per scheduler run
   }
 }

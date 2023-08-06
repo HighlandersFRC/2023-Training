@@ -41,31 +41,38 @@ public class SwerveModule extends SubsystemBase {
 
     switch(moduleNumber){
       case 1:
-      angle = Math.atan(-width/-length);
+      angle = (Math.atan2(-width, length)) - Math.PI;
       break;
       case 2:
-      angle =  Math.PI + Math.atan(-width/length);
+      angle = Math.atan2(width, length);
       break;
       case 3:
-      angle =  Math.PI + Math.atan(width/width);
+      angle =  Math.PI + Math.atan2(width, -length);
       break;
       case 4:
-      angle =  2 * Math.PI + Math.atan(width/-length);
+      angle =  (2 * Math.PI) + (Math.atan2(-width, -length));
       break;
       default: 
       angle = 1;
     }
-    SmartDashboard.putNumber("Module" + moduleNumber, Math.toDegrees(angle));
+    SmartDashboard.putNumber("Module" + moduleNumber + "Turn", Math.toDegrees(angle));
     return angle;
+  }
+
+  public void testTurnAngle(){
+    double i = Constants.angleToUnitVectorI(torqueAngle() + (Math.PI / 2));
+    double j = Constants.angleToUnitVectorJ(torqueAngle() + (Math.PI / 2));
+    double angle = Math.atan2(j, i);
+    setWheelPID(angle, 0.0);
   }
 
   public void init(){
     TalonFXConfiguration angleMotorConfig = new TalonFXConfiguration();
     TalonFXConfiguration driveMotorConfig = new TalonFXConfiguration();
 
-    angleMotorConfig.Slot0.kP = 3.0;
-    angleMotorConfig.Slot0.kI = 0.8;
-    angleMotorConfig.Slot0.kD = 0.5;
+    angleMotorConfig.Slot0.kP = 3.2;
+    angleMotorConfig.Slot0.kI = 0.9;
+    angleMotorConfig.Slot0.kD = 0.6;
     angleMotorConfig.TorqueCurrent.PeakForwardTorqueCurrent = 700;
     angleMotorConfig.TorqueCurrent.PeakReverseTorqueCurrent = -700;
 
@@ -73,9 +80,9 @@ public class SwerveModule extends SubsystemBase {
 
     angleMotorConfig.ClosedLoopRamps.TorqueClosedLoopRampPeriod = 0.1;
 
-    driveMotorConfig.Slot1.kP = 3.5;
-    driveMotorConfig.Slot1.kI = 0.7;
-    driveMotorConfig.Slot1.kD = 0.0;
+    driveMotorConfig.Slot1.kP = 4.0;
+    driveMotorConfig.Slot1.kI = 1.0;
+    driveMotorConfig.Slot1.kD = 0.3;
     driveMotorConfig.TorqueCurrent.PeakForwardTorqueCurrent = 700;
     driveMotorConfig.TorqueCurrent.PeakReverseTorqueCurrent = -700;
 
@@ -132,14 +139,6 @@ public class SwerveModule extends SubsystemBase {
     return (rps / Constants.Wheel_Rotations_In_A_Meter);
   }
 
-  public double angleToVectorI(double angle){
-    return (Math.cos(angle));
-  }
-
-  public double angleToVectorJ(double angle){
-    return (Math.sin(angle));
-  }
-
   public void moveAngleMotor(){
     angleMotor.set(0.2);
   }
@@ -190,26 +189,25 @@ public class SwerveModule extends SubsystemBase {
   }
   
   public void drive(Vector vector, double turnValue){
-    if(Math.abs(vector.i) < 0.0001 && Math.abs(vector.j) < 0.0001) {
+    if(Math.abs(vector.i) < 0.0001 && Math.abs(vector.j) < 0.0001 && Math.abs(turnValue) < 0.001) {
       driveMotor.set(0.0);
       angleMotor.set(0.0);
     }
     else {
-      double angleWanted = -Math.atan2(vector.j, vector.i);
+      double angleWanted = Math.atan2(vector.j, vector.i);
       double wheelPower = Math.sqrt(Math.pow(vector.i, 2) + Math.pow(vector.i, 2));
 
-      angleWanted -= Math.toDegrees(peripherals.getNavxAngle());
+      // angleWanted -= Math.toDegrees(peripherals.getNavxAngle());
 
       double xValueWithNavx = wheelPower * Math.cos(angleWanted);
       double yValueWithNavx = wheelPower * Math.sin(angleWanted);
 
-      // turnValue *= Constants.ROBOT_RADIUS;
-      // double turnX = turnValue * (angleToVectorI(torqueAngle()));
-      // double turnY = turnValue * (angleToVectorJ(torqueAngle()));
+      double turnX = turnValue * (Constants.angleToUnitVectorI(torqueAngle()));
+      double turnY = turnValue * (Constants.angleToUnitVectorJ(torqueAngle()));
 
       Vector finalVector = new Vector();
-      finalVector.i = xValueWithNavx;
-      finalVector.j = yValueWithNavx;
+      finalVector.i = xValueWithNavx + turnX;
+      finalVector.j = yValueWithNavx + turnY;
 
       double finalAngle = -Math.atan2(finalVector.j, finalVector.i);
       double finalVelocity = Math.sqrt(Math.pow(finalVector.i, 2) + Math.pow(finalVector.i, 2));
@@ -219,8 +217,8 @@ public class SwerveModule extends SubsystemBase {
       }
 
       double velocityRPS = (MPSToRPS(finalVelocity));
-      SmartDashboard.putNumber("Velocity", wheelPower);
-      SmartDashboard.putNumber("Angle Wanted", Math.toDegrees(angleWanted));
+      SmartDashboard.putNumber("Velocity", finalAngle);
+      SmartDashboard.putNumber("Angle Wanted", Math.toDegrees(finalVelocity));
 
       double currentAngle = getWheelPosition();
       double currentAngleBelow360 = (getWheelPosition()) % (Math.toRadians(360));
