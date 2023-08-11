@@ -28,8 +28,8 @@ public class Navx {
   }
 
   public double currentAngle() {
-        SmartDashboard.putNumber("navx angle", -(imu.getAngle() - originalAngle));
-        return -(imu.getAngle() - originalAngle);
+        SmartDashboard.putNumber("navx yaw", -(imu.getAngle() - originalAngle));
+        return (imu.getAngle() - originalAngle);
   }
 
   public double getRawAngle() {
@@ -57,7 +57,7 @@ public class Navx {
   }
 
   public double currentYaw() {
-      return -((imu.getYaw()) - originalYaw);
+      return -(imu.getYaw() - originalAngle);
   }
 
   public boolean isMoving() {

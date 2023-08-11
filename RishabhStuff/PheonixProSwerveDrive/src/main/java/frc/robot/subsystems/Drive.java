@@ -36,7 +36,9 @@ public class Drive extends SubsystemBase {
   Peripherals peripherals;
   
   /** Creates a new SwerveDriveSubsystem. */
-  public Drive() {}
+  public Drive(Peripherals peripherals) {
+    this.peripherals = peripherals;
+  }
 
   public void init(){
     frontRight.init();
@@ -135,10 +137,12 @@ public class Drive extends SubsystemBase {
     controllerVector.i = finalX;
     controllerVector.j = finalY;
 
-    backRight.drive(controllerVector, rightStick);
-    backLeft.drive(controllerVector, rightStick);
-    frontLeft.drive(controllerVector, rightStick);
-    frontRight.drive(controllerVector, rightStick);
+    double navxAngle = Math.toRadians(peripherals.getNavxAngle());
+
+    backRight.drive(controllerVector, rightStick, navxAngle);
+    backLeft.drive(controllerVector, rightStick, navxAngle);
+    frontLeft.drive(controllerVector, rightStick, navxAngle);
+    frontRight.drive(controllerVector, rightStick, navxAngle);
   }
   
   @Override

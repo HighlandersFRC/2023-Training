@@ -22,8 +22,6 @@ public class SwerveModule extends SubsystemBase {
   private final int moduleNumber;
   private final CANcoder canCoder;
 
-  Peripherals peripherals;
-
   PositionTorqueCurrentFOC positionTorqueFOCRequest = new PositionTorqueCurrentFOC(0, 0, 0, false);
   VelocityTorqueCurrentFOC velocityTorqueFOCRequest = new VelocityTorqueCurrentFOC(0, 0, 0, false);
   /** Creates a new SwerveModule. */
@@ -187,8 +185,8 @@ public class SwerveModule extends SubsystemBase {
     return position;
   }
   
-  public void drive(Vector vector, double turnValue){
-    if(Math.abs(vector.i) < 0.0001 && Math.abs(vector.j) < 0.0001 && Math.abs(turnValue) < 0.001) {
+  public void drive(Vector vector, double turnValue, double navxAngle){
+    if(Math.abs(vector.i) < 0.001 && Math.abs(vector.j) < 0.001 && Math.abs(turnValue) < 0.001) {
       driveMotor.set(0.0);
       angleMotor.set(0.0);
     }
@@ -196,10 +194,10 @@ public class SwerveModule extends SubsystemBase {
       double angleWanted = Math.atan2(vector.j, vector.i);
       double wheelPower = Math.sqrt(Math.pow(vector.i, 2) + Math.pow(vector.j, 2));
 
-      // angleWanted -= Math.toRadians(peripherals.getNavxAngle());
+      double angleWithNavx = angleWanted - navxAngle;
 
-      double xValueWithNavx = wheelPower * Math.cos(angleWanted);
-      double yValueWithNavx = wheelPower * Math.sin(angleWanted);
+      double xValueWithNavx = wheelPower * Math.cos(angleWithNavx);
+      double yValueWithNavx = wheelPower * Math.sin(angleWithNavx);
 
       double turnX = turnValue * (Constants.angleToUnitVectorI(torqueAngle()));
       double turnY = turnValue * (Constants.angleToUnitVectorJ(torqueAngle()));

@@ -27,8 +27,8 @@ public class Robot extends LoggedRobot {
 
   private RobotContainer m_robotContainer;
 
-  public Drive drive = new Drive();
   public Peripherals peripherals = new Peripherals();
+  public Drive drive = new Drive(peripherals);
   private Logger logger = Logger.getInstance();
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -100,7 +100,7 @@ public class Robot extends LoggedRobot {
 
     OI.buttonA.whileTrue(new MoveWheelToAngle(drive, 0.5));
     OI.buttonB.whileTrue(new MoveWheelToAngle(drive, -0.5));
-    // OI.viewButton.whileTrue(new ZeroNavx(drive));
+    OI.viewButton.whileTrue(new ZeroNavx(drive));
   }
 
   /** This function is called periodically during operator control. */

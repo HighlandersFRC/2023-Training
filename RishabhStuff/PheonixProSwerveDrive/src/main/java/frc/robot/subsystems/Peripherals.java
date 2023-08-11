@@ -15,12 +15,12 @@ public class Peripherals extends SubsystemBase {
   /** Creates a new Peripherals. */
   public Peripherals() {}
 
-  private final static AHRS ahrs = new AHRS(Port.kMXP);
+  public final static AHRS ahrs = new AHRS(Port.kMXP);
 
-  private final static Navx navx = new Navx(ahrs);
+  public final static Navx navx = new Navx(ahrs);
 
   public void init(){
-    // zeroNavx();
+    zeroNavx();
   }
 
   public double getNavxAngle() {
@@ -28,13 +28,12 @@ public class Peripherals extends SubsystemBase {
   }
 
   public void zeroNavx(){
-    navx.softResetAngle();
     navx.softResetYaw();
+    navx.softResetAngle();
   }
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Pitch", navx.currentYaw());
     // This method will be called once per scheduler run
   }
 }
