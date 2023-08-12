@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 public class ProximitySensor {
     private int portIdx;
     private DigitalInput dio;
-    
+
     public ProximitySensor(int portIdx){
         // portNum is the number of the Digital port (DIO ports on the roboRIO) that the sensor was plugged into.
         this.portIdx = portIdx;
@@ -19,7 +19,7 @@ public class ProximitySensor {
 
     public boolean isTripped(){
         //Returns true when there is an object in the sensor's Range
-        //The sensor's range must be tuned manually by adjusting the screw next to the light on the sensor
+        //The sensor's range must be tuned manually by adjusting the sensor
         boolean retval = true;
         retval = !dio.get();
         return retval;
