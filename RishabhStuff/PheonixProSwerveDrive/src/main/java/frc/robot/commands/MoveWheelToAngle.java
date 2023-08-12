@@ -9,26 +9,23 @@ import frc.robot.subsystems.Drive;
 
 public class MoveWheelToAngle extends CommandBase {
   Drive drive;
-  double degrees;
+  double speed;
   /** Creates a new MoveWheelToAngle. */
-  public MoveWheelToAngle(Drive drive, double degrees) {
+  public MoveWheelToAngle(Drive drive, double speed) {
     this.drive = drive;
-    this.degrees = degrees;
     addRequirements(drive);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    // drive.drive(degrees);
-    drive.moveWheel(degrees);
-    
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    drive.moveDriveMotor(speed);
+  }
 
   // Called once the command ends or is interrupted.
   @Override

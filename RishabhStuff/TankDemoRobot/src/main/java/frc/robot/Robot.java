@@ -5,16 +5,11 @@
 package frc.robot;
 
 import org.littletonrobotics.junction.LoggedRobot;
-import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.networktables.NT4Publisher;
-import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
+import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.commands.MoveWheelToAngle;
-import frc.robot.commands.ZeroNavx;
 import frc.robot.subsystems.Drive;
-import frc.robot.subsystems.Peripherals;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -27,9 +22,8 @@ public class Robot extends LoggedRobot {
 
   private RobotContainer m_robotContainer;
 
-  public Peripherals peripherals = new Peripherals();
-  public Drive drive = new Drive(peripherals);
-  private Logger logger = Logger.getInstance();
+  Drive drive = new Drive();
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -40,10 +34,6 @@ public class Robot extends LoggedRobot {
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
     drive.init();
-    peripherals.init();
-    logger.addDataReceiver(new WPILOGWriter("/home/lvuser/logs/"));
-    logger.addDataReceiver(new NT4Publisher());
-    logger.start();
   }
 
   /**
@@ -60,10 +50,6 @@ public class Robot extends LoggedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
-    peripherals.getNavxAngle();
-    logger.recordOutput("Swerve Module States", drive.getModuleStates());
-    logger.recordOutput("Swerve Module Setpoints", drive.getModuleSetpoints());
-    logger.recordOutput("Navx", Math.toRadians(peripherals.getNavxAngle()));
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
@@ -97,10 +83,6 @@ public class Robot extends LoggedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-
-    OI.buttonA.whileTrue(new MoveWheelToAngle(drive, 0.5));
-    OI.buttonB.whileTrue(new MoveWheelToAngle(drive, -0.5));
-    OI.viewButton.whileTrue(new ZeroNavx(drive));
   }
 
   /** This function is called periodically during operator control. */

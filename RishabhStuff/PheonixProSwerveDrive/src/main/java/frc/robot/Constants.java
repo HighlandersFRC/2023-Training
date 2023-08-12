@@ -25,13 +25,13 @@ public final class Constants {
 
   public static final double SWERVE_MODULE_OFFSET = inchesToMeters(2.5);
 
-  public static final double ROBOT_RADIUS = metersToInches(15.375);
+  public static final double ROBOT_RADIUS = inchesToMeters(15.375);
 
   public static final double GEAR_RATIO = 6.75;
 
   public static final double STEER_GEAR_RATIO = 150/7;
 
-  public static final double TOP_SPEED = 2;
+  public static final double TOP_SPEED = feetToMeters(8);
 
   public static final double WHEEL_DIAMETER = 0.1016;
 
@@ -47,11 +47,40 @@ public final class Constants {
     return rotations * 360;
   }
 
+  public static double radiansToRotations(double radians){
+    return radians / (2 * Math.PI);
+  }
+
+  public static double rotationsToRadians(double rotations){
+    return rotations * (2 * Math.PI);
+  }
+
   public static double inchesToMeters(double inches){
     return inches * 0.0254;
   }
 
   public static double metersToInches(double meters){
     return meters / 0.0254;
+  }
+
+  public static double feetToMeters(double feet){
+    double inches = feet * 12;
+    return inchesToMeters(inches);
+  }
+
+  public static double angleToUnitVectorI(double angle){
+    return (Math.cos(angle));
+  }
+
+  public static double angleToUnitVectorJ(double angle){
+    return (Math.sin(angle));
+  }
+
+  public double MPSToRPS(double mps){
+    return (mps * Constants.Wheel_Rotations_In_A_Meter);
+  }
+
+  public double RPSToMPS(double rps){
+    return (rps / Constants.Wheel_Rotations_In_A_Meter);
   }
 }
