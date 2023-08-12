@@ -31,7 +31,7 @@ public final class Constants {
 
   public static final double STEER_GEAR_RATIO = 150/7;
 
-  public static final double TOP_SPEED = feetToMeters(8);
+  public static final double TOP_SPEED = feetToMeters(20);
 
   public static final double WHEEL_DIAMETER = 0.1016;
 

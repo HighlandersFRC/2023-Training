@@ -74,9 +74,6 @@ public class Drive extends SubsystemBase {
   private double previousY = 0;
   private double previousTheta = 0;
 
-  private double currentXVelocity = 0;
-  private double currentYVelocity = 0;
-  private double currentThetaVelocity = 0;
 
   private double[] currentFusedOdometry = new double[3];
 
@@ -106,8 +103,6 @@ public class Drive extends SubsystemBase {
   private PID xPID = new PID(xP, xI, xD);
   private PID yPID = new PID(yP, yI, yD);
   private PID thetaPID = new PID(thetaP, thetaI, thetaD);
-
-  private String fieldSide = "blue";
   
   /** Creates a new SwerveDriveSubsystem. */
   public Drive(Peripherals peripherals) {
@@ -166,7 +161,7 @@ public class Drive extends SubsystemBase {
 
   }
 
-  public void updateOdometryFusedArray(){
+  public void updateOdometry(){
     double navxOffset = Math.toRadians(peripherals.getNavxAngle());
 
     SwerveModulePosition[] swerveModulePositions = new SwerveModulePosition[4];
