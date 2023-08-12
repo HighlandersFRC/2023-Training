@@ -29,7 +29,7 @@ public class Navx {
 
   public double currentAngle() {
         SmartDashboard.putNumber("navx yaw", -(imu.getAngle() - originalAngle));
-        return (imu.getAngle() - originalAngle);
+        return -(imu.getAngle() - originalAngle);
   }
 
   public double getRawAngle() {

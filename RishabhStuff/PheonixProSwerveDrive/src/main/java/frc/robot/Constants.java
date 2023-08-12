@@ -47,6 +47,14 @@ public final class Constants {
     return rotations * 360;
   }
 
+  public static double radiansToRotations(double radians){
+    return radians / (2 * Math.PI);
+  }
+
+  public static double rotationsToRadians(double rotations){
+    return rotations * (2 * Math.PI);
+  }
+
   public static double inchesToMeters(double inches){
     return inches * 0.0254;
   }
@@ -66,5 +74,13 @@ public final class Constants {
 
   public static double angleToUnitVectorJ(double angle){
     return (Math.sin(angle));
+  }
+
+  public double MPSToRPS(double mps){
+    return (mps * Constants.Wheel_Rotations_In_A_Meter);
+  }
+
+  public double RPSToMPS(double rps){
+    return (rps / Constants.Wheel_Rotations_In_A_Meter);
   }
 }

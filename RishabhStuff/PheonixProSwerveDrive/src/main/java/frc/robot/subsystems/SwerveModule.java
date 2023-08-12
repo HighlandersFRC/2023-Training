@@ -144,6 +144,12 @@ public class SwerveModule extends SubsystemBase {
     driveMotor.set(-0.5);
   }
 
+  public double getModuleDistance(){
+    double rps = driveMotor.getVelocity().getValue();
+    double distance = RPSToMPS(rps);
+    return distance;
+  }
+
   public double getWheelPosition(){
     double position = steerMotorToWheelRotations(angleMotor.getPosition().getValue());
     return Math.toRadians(rotationsToDegrees(position));
@@ -161,6 +167,10 @@ public class SwerveModule extends SubsystemBase {
 
   public double getCanCoderPosition(){
     return canCoder.getAbsolutePosition().getValue();
+  }
+
+  public double getCanCoderPositionRadians(){
+    return Constants.rotationsToRadians(canCoder.getAbsolutePosition().getValue());
   }
 
   public double getGroundSpeed(){
@@ -194,7 +204,7 @@ public class SwerveModule extends SubsystemBase {
       double angleWanted = Math.atan2(vector.j, vector.i);
       double wheelPower = Math.sqrt(Math.pow(vector.i, 2) + Math.pow(vector.j, 2));
 
-      double angleWithNavx = angleWanted - navxAngle;
+      double angleWithNavx = angleWanted + navxAngle;
 
       double xValueWithNavx = wheelPower * Math.cos(angleWithNavx);
       double yValueWithNavx = wheelPower * Math.sin(angleWithNavx);
