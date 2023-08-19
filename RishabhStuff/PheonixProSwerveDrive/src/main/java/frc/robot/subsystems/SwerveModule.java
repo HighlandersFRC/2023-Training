@@ -197,7 +197,7 @@ public class SwerveModule extends SubsystemBase {
   
   public void drive(Vector vector, double turnValue, double navxAngle){
     if(Math.abs(vector.i) < 0.001 && Math.abs(vector.j) < 0.001 && Math.abs(turnValue) < 0.001) {
-      driveMotor.set(0.0);
+      driveMotor.setControl(velocityTorqueFOCRequest.withVelocity(0.0));
       angleMotor.set(0.0);
     }
     else {

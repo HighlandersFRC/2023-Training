@@ -4,6 +4,11 @@
 
 package frc.robot;
 
+import java.io.File;
+import java.io.FileReader;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
@@ -11,6 +16,7 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.MoveWheelToAngle;
 import frc.robot.commands.ZeroNavx;
 import frc.robot.subsystems.Drive;
@@ -30,6 +36,16 @@ public class Robot extends LoggedRobot {
   public Peripherals peripherals = new Peripherals();
   public Drive drive = new Drive(peripherals);
   private Logger logger = Logger.getInstance();
+
+  File pathingFile;
+  String pathString;
+
+  JSONObject pathRead;
+  JSONArray pathJSON;
+
+  String fieldSide;
+
+  SequentialCommandGroup auto;
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -44,6 +60,10 @@ public class Robot extends LoggedRobot {
     logger.addDataReceiver(new WPILOGWriter("/home/lvuser/logs/"));
     logger.addDataReceiver(new NT4Publisher());
     logger.start();
+
+    pathingFile = new File("/home/lvuser/deploy/testPath.json");
+    // FileReader scanner = new FileReader(pathingFile);
+
   }
 
   /**
