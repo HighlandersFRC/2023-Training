@@ -475,6 +475,11 @@ public class Drive extends SubsystemBase {
     SmartDashboard.putNumber("2 Position", Math.toDegrees(frontLeft.getWheelPosition()));
     SmartDashboard.putNumber("3 Position", Math.toDegrees(backLeft.getWheelPosition()));
     SmartDashboard.putNumber("4 Position", Math.toDegrees(backRight.getWheelPosition()));
+
+    SmartDashboard.putNumber("1 Speed", frontRight.getWheelSpeed());
+    SmartDashboard.putNumber("2 Speed", frontLeft.getWheelSpeed());
+    SmartDashboard.putNumber("3 Speed", backLeft.getWheelSpeed());
+    SmartDashboard.putNumber("4 Speed", backRight.getWheelSpeed());
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("Position X", m_odometry.getEstimatedPosition().getX());
     SmartDashboard.putNumber("Position Y", m_odometry.getEstimatedPosition().getY());
