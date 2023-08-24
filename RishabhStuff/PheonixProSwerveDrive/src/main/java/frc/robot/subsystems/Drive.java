@@ -107,6 +107,8 @@ public class Drive extends SubsystemBase {
   private PID thetaPID = new PID(thetaP, thetaI, thetaD);
 
   private String fieldSide = "blue";
+
+  private int lookAheadDistance = 5;
   
   /** Creates a new SwerveDriveSubsystem. */
   public Drive(Peripherals peripherals) {
@@ -275,12 +277,23 @@ public class Drive extends SubsystemBase {
     return setpoints;
   }
 
+  public double[] getOdometry(){
+    double[] odometry = {
+      getOdometryX(), getOdometryY(), getOdometryAngle()
+    };
+    return odometry;
+  }
+
   public double getFusedOdometryX() {
     return currentFusedOdometry[0];
   }
 
   public double getFusedOdometryY() {
     return currentFusedOdometry[1];
+  }
+
+  public double getFusedOdometryTheta(){
+    return currentFusedOdometry[2];
   }
 
   public double getOdometryX() {
@@ -350,6 +363,110 @@ public class Drive extends SubsystemBase {
     backLeft.drive(controllerVector, turn, navxAngle);
     frontLeft.drive(controllerVector, turn, navxAngle);
     frontRight.drive(controllerVector, turn, navxAngle);
+  }
+
+  public void autoDrive(Vector vector, double turnRadiansPerSec){
+    updateOdometryFusedArray();
+
+    double navxOffset = Math.toRadians(peripherals.getNavxAngle());
+
+    double[] odometryList = new double[3];
+
+    odometryList[0] = getFusedOdometryX();
+    odometryList[1] = getFusedOdometryY();
+    odometryList[2] = getFusedOdometryTheta();
+
+    frontLeft.drive(vector, turnRadiansPerSec, navxOffset);
+    frontRight.drive(vector, turnRadiansPerSec, navxOffset);
+    backLeft.drive(vector, turnRadiansPerSec, navxOffset);
+    backRight.drive(vector, turnRadiansPerSec, navxOffset);
+  }
+
+  public double[] pidController(double currentX, double currentY, double currentTheta, double time, JSONArray pathPoints){
+    if(time < pathPoints.getJSONArray(pathPoints.length() - 1).getDouble(0)) {
+      JSONArray currentPoint = pathPoints.getJSONArray(0);
+      JSONArray targetPoint = pathPoints.getJSONArray(0);
+      for(int i = 0; i < pathPoints.length(); i ++) {
+          if(i == pathPoints.length() - lookAheadDistance) {
+              currentPoint = pathPoints.getJSONArray(i + 1);
+              targetPoint = pathPoints.getJSONArray((i + (lookAheadDistance - 1)));
+              break;
+          }
+
+          currentPoint = pathPoints.getJSONArray(i + 1);
+          JSONArray previousPoint = pathPoints.getJSONArray(i);
+          
+          double currentPointTime = currentPoint.getDouble(0);
+          double previousPointTime = previousPoint.getDouble(0);
+
+          if(time > previousPointTime && time < currentPointTime){
+              targetPoint = pathPoints.getJSONArray(i + (lookAheadDistance - 1));
+              break;
+          }
+      }
+      
+      double targetTime = targetPoint.getDouble(0);
+      double targetX = targetPoint.getDouble(1);
+      double targetY = targetPoint.getDouble(2);
+      double targetTheta = targetPoint.getDouble(3);
+
+      if(getFieldSide() == "blue") {
+          targetX = Constants.FIELD_LENGTH - targetX;
+          targetTheta = Math.PI - targetTheta;
+      }
+
+      if (targetTheta - currentTheta > Math.PI){
+          targetTheta -= 2 * Math.PI;
+      } else if (targetTheta - currentTheta < -Math.PI){
+          targetTheta += 2 * Math.PI;
+      }
+
+      double currentPointTime = currentPoint.getDouble(0);
+      double currentPointX = currentPoint.getDouble(1);
+      double currentPointY = currentPoint.getDouble(2);
+      double currentPointTheta = currentPoint.getDouble(3);
+
+      if(getFieldSide() == "blue") {
+          currentPointX = Constants.FIELD_LENGTH - currentPointX;
+          currentPointTheta = Math.PI - currentPointTheta;
+      }
+
+      double feedForwardX = (targetX - currentPointX)/(targetTime - currentPointTime);
+      double feedForwardY = (targetY - currentPointY)/(targetTime - currentPointTime);
+      double feedForwardTheta = -(targetTheta - currentPointTheta)/(targetTime - currentPointTime);
+
+      xPID.setSetPoint(targetX);
+      yPID.setSetPoint(targetY);
+      thetaPID.setSetPoint(targetTheta);
+
+      xPID.updatePID(currentX);
+      yPID.updatePID(currentY);
+      thetaPID.updatePID(currentTheta);
+
+      double xVelNoFF = xPID.getResult();
+      double yVelNoFF = yPID.getResult();
+      double thetaVelNoFF = -thetaPID.getResult();
+
+      double xVel = feedForwardX + xVelNoFF;
+      double yVel = feedForwardY + yVelNoFF;
+      double thetaVel = feedForwardTheta + thetaVelNoFF;
+
+      double[] velocityArray = new double[3];
+
+      velocityArray[0] = xVel;
+      velocityArray[1] = yVel;
+      velocityArray[2] = thetaVel;
+
+      return velocityArray;
+    } else {
+      double[] velocityArray = new double[3];
+
+      velocityArray[0] = 0;
+      velocityArray[1] = 0;
+      velocityArray[2] = 0;
+
+      return velocityArray;
+    }
   }
   
   @Override

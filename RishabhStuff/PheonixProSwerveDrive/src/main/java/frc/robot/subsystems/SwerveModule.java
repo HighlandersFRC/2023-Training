@@ -67,9 +67,9 @@ public class SwerveModule extends SubsystemBase {
     TalonFXConfiguration angleMotorConfig = new TalonFXConfiguration();
     TalonFXConfiguration driveMotorConfig = new TalonFXConfiguration();
 
-    angleMotorConfig.Slot0.kP = 5.0;
+    angleMotorConfig.Slot0.kP = 18.0;
     angleMotorConfig.Slot0.kI = 0.0;
-    angleMotorConfig.Slot0.kD = 0.5;
+    angleMotorConfig.Slot0.kD = 0.6;
     angleMotorConfig.TorqueCurrent.PeakForwardTorqueCurrent = 60;
     angleMotorConfig.TorqueCurrent.PeakReverseTorqueCurrent = -60;
 
@@ -77,9 +77,9 @@ public class SwerveModule extends SubsystemBase {
 
     angleMotorConfig.ClosedLoopRamps.TorqueClosedLoopRampPeriod = 0.1;
 
-    driveMotorConfig.Slot0.kP = 6.5;
+    driveMotorConfig.Slot0.kP = 8.0;
     driveMotorConfig.Slot0.kI = 0.0;
-    driveMotorConfig.Slot0.kD = 0.0;
+    driveMotorConfig.Slot0.kD = 0.2;
     driveMotorConfig.TorqueCurrent.PeakForwardTorqueCurrent = 75;
     driveMotorConfig.TorqueCurrent.PeakReverseTorqueCurrent = -75;
 
@@ -145,8 +145,9 @@ public class SwerveModule extends SubsystemBase {
   }
 
   public double getModuleDistance(){
-    double rps = driveMotor.getVelocity().getValue();
-    double distance = RPSToMPS(rps);
+    double position = driveMotor.getPosition().getValue();
+    double wheelRotations = driveMotorToWheelRotations(position);
+    double distance = RPSToMPS(wheelRotations);
     return distance;
   }
 
@@ -196,7 +197,7 @@ public class SwerveModule extends SubsystemBase {
   }
   
   public void drive(Vector vector, double turnValue, double navxAngle){
-    if(Math.abs(vector.i) < 0.001 && Math.abs(vector.j) < 0.001 && Math.abs(turnValue) < 0.001) {
+    if(Math.abs(vector.i) < 0.0001 && Math.abs(vector.j) < 0.0001 && Math.abs(turnValue) < 0.0001) {
       driveMotor.setControl(velocityTorqueFOCRequest.withVelocity(0.0));
       angleMotor.set(0.0);
     }

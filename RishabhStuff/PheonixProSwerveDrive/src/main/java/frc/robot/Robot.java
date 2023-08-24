@@ -9,6 +9,7 @@ import java.io.FileReader;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.json.JSONTokener;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
@@ -61,9 +62,16 @@ public class Robot extends LoggedRobot {
     logger.addDataReceiver(new NT4Publisher());
     logger.start();
 
-    pathingFile = new File("/home/lvuser/deploy/testPath.json");
-    // FileReader scanner = new FileReader(pathingFile);
-
+    // try {
+    //   pathingFile = new File("/home/lvuser/deploy/MoveForwardBackward.json");
+    //   FileReader scanner = new FileReader(pathingFile);
+    //   pathRead = new JSONObject(new JSONTokener(scanner));
+    //   pathJSON = (JSONArray) pathRead.get("sampled_points");
+    // } catch (Exception e) {
+    //   System.out.println("ERROR WITH PATH FILE " + e);
+    // }
+    // // this.auto = new MoveForwardBackward();
+    // auto.schedule();
   }
 
   /**
@@ -84,6 +92,9 @@ public class Robot extends LoggedRobot {
     logger.recordOutput("Swerve Module States", drive.getModuleStates());
     logger.recordOutput("Swerve Module Setpoints", drive.getModuleSetpoints());
     logger.recordOutput("Navx", Math.toRadians(peripherals.getNavxAngle()));
+    logger.recordOutput("Odometry", drive.getOdometry());
+    // logger.recordOutput("Y Value", drive.getFusedOdometryY());
+    // logger.recordOutput("Theta Value", drive.getFusedOdometryTheta());
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
@@ -102,6 +113,13 @@ public class Robot extends LoggedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
+
+    // try {
+    //   this.auto.schedule();
+    // } catch (Exception e){
+    //   System.out.println("No auto is selected");
+    // } 
+    // drive.autoInit(this.pathJSON);
   }
 
   /** This function is called periodically during autonomous. */
