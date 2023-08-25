@@ -31,13 +31,17 @@ public final class Constants {
 
   public static final double STEER_GEAR_RATIO = 150/7;
 
-  public static final double TOP_SPEED = feetToMeters(8);
+  public static final double TOP_SPEED = feetToMeters(20);
 
   public static final double WHEEL_DIAMETER = 0.1016;
 
   public static final double WHEEL_CIRCUMFRENCE = Math.PI * WHEEL_DIAMETER;
 
   public static final double Wheel_Rotations_In_A_Meter = 1 / WHEEL_CIRCUMFRENCE;
+
+  public static final double FIELD_WIDTH = 8.2;
+  
+  public static final double FIELD_LENGTH = 16.63;
 
   public static double degreesToRotations(double degrees){
     return degrees / 360;

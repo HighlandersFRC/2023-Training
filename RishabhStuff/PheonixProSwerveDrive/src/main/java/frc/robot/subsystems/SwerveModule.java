@@ -24,6 +24,9 @@ public class SwerveModule extends SubsystemBase {
 
   PositionTorqueCurrentFOC positionTorqueFOCRequest = new PositionTorqueCurrentFOC(0, 0, 0, false);
   VelocityTorqueCurrentFOC velocityTorqueFOCRequest = new VelocityTorqueCurrentFOC(0, 0, 0, false);
+  VelocityTorqueCurrentFOC velocityTorqueFOCRequestAngleMotor = new VelocityTorqueCurrentFOC(0, 0, 1, false);
+  VelocityTorqueCurrentFOC velocityTorqueFOCRequestDriveMotor = new VelocityTorqueCurrentFOC(0, 0, 1, false);
+
   /** Creates a new SwerveModule. */
   public SwerveModule(int mModuleNum, TalonFX mAngleMotor, TalonFX mDriveMotor, CANcoder mCanCoder) {
     moduleNumber = mModuleNum;
@@ -67,9 +70,14 @@ public class SwerveModule extends SubsystemBase {
     TalonFXConfiguration angleMotorConfig = new TalonFXConfiguration();
     TalonFXConfiguration driveMotorConfig = new TalonFXConfiguration();
 
-    angleMotorConfig.Slot0.kP = 5.0;
+    angleMotorConfig.Slot0.kP = 18.0;
     angleMotorConfig.Slot0.kI = 0.0;
-    angleMotorConfig.Slot0.kD = 0.5;
+    angleMotorConfig.Slot0.kD = 0.6;
+
+    angleMotorConfig.Slot1.kP = 6.0;
+    angleMotorConfig.Slot1.kI = 0.0;
+    angleMotorConfig.Slot1.kD = 0.0;
+
     angleMotorConfig.TorqueCurrent.PeakForwardTorqueCurrent = 60;
     angleMotorConfig.TorqueCurrent.PeakReverseTorqueCurrent = -60;
 
@@ -77,9 +85,14 @@ public class SwerveModule extends SubsystemBase {
 
     angleMotorConfig.ClosedLoopRamps.TorqueClosedLoopRampPeriod = 0.1;
 
-    driveMotorConfig.Slot0.kP = 6.5;
-    driveMotorConfig.Slot0.kI = 0.0;
-    driveMotorConfig.Slot0.kD = 0.0;
+    driveMotorConfig.Slot0.kP = 19.0;
+    driveMotorConfig.Slot0.kI = 6.0;
+    driveMotorConfig.Slot0.kD = 15.0;
+
+    driveMotorConfig.Slot1.kP = 6.0;
+    driveMotorConfig.Slot1.kI = 0.0;
+    driveMotorConfig.Slot1.kD = 0.0;
+
     driveMotorConfig.TorqueCurrent.PeakForwardTorqueCurrent = 75;
     driveMotorConfig.TorqueCurrent.PeakReverseTorqueCurrent = -75;
 
@@ -145,8 +158,9 @@ public class SwerveModule extends SubsystemBase {
   }
 
   public double getModuleDistance(){
-    double rps = driveMotor.getVelocity().getValue();
-    double distance = RPSToMPS(rps);
+    double position = driveMotor.getPosition().getValue();
+    double wheelRotations = driveMotorToWheelRotations(position);
+    double distance = RPSToMPS(wheelRotations);
     return distance;
   }
 
@@ -158,6 +172,10 @@ public class SwerveModule extends SubsystemBase {
   public double getWheelSpeed(){
     double speed = driveMotorToWheelRotations(driveMotor.getVelocity().getValue());
     return speed;
+  }
+
+  public double getWheelSpeedWithoutGearRatio(){
+    return driveMotor.getVelocity().getValue();
   }
 
   public double getAngleMotorPosition(){
@@ -196,9 +214,9 @@ public class SwerveModule extends SubsystemBase {
   }
   
   public void drive(Vector vector, double turnValue, double navxAngle){
-    if(Math.abs(vector.i) < 0.001 && Math.abs(vector.j) < 0.001 && Math.abs(turnValue) < 0.001) {
-      driveMotor.set(0.0);
-      angleMotor.set(0.0);
+    if(Math.abs(vector.i) < 0.00001 && Math.abs(vector.j) < 0.00001 && Math.abs(turnValue) < 0.00001) {
+      driveMotor.setControl(velocityTorqueFOCRequestDriveMotor.withVelocity(0.0));
+      angleMotor.setControl(velocityTorqueFOCRequestAngleMotor.withVelocity(0.0));
     }
     else {
       double angleWanted = Math.atan2(vector.j, vector.i);

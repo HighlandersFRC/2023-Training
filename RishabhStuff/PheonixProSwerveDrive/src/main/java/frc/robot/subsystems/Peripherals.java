@@ -32,6 +32,10 @@ public class Peripherals extends SubsystemBase {
     navx.softResetAngle();
   }
 
+  public void setNavxAngle(double angle) {
+    navx.setNavxAngle(angle);
+  } 
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
