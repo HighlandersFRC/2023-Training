@@ -24,16 +24,23 @@ public class Drive extends SubsystemBase {
   public Drive() {}
 
   public void init(){
+    frontRight.restoreFactoryDefaults();
+    frontLeft.restoreFactoryDefaults();
+    backLeft.restoreFactoryDefaults();
+    backRight.restoreFactoryDefaults();
+
     backLeft.follow(frontLeft);
     backRight.follow(frontRight);
+
     frontLeft.setIdleMode(IdleMode.kBrake);
     frontRight.setIdleMode(IdleMode.kBrake);
+
     frontRight.setInverted(false);
     frontLeft.setInverted(true);
+
     frontRight.setSecondaryCurrentLimit(60);
     frontLeft.setSecondaryCurrentLimit(60);
     setDefaultCommand(new DriveDefault(this));
-    System.out.println("init");
   }
 
   public void arcadeDrive(double power, double direction) {
