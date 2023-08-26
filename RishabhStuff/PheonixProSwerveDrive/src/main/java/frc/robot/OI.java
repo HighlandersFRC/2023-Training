@@ -36,30 +36,29 @@ public class OI {
     }
     
     
-    public static double  getDriverLeftY(){
-        if (Math.abs(driverController.getLeftY()) < 0.2 ){
+    public static double getDriverLeftY(){
+        if (Math.abs(driverController.getLeftY()) < 0.075){
             return 0;
         } else {
             return driverController.getLeftY();
         }
-        
     }
     public static double getDriverLeftX(){
-        if (Math.abs(driverController.getLeftX()) < 0.2 ){
+        if (Math.abs(driverController.getLeftX()) < 0.075){
             return 0;
         } else {
             return driverController.getLeftX();
         }
     }
     public static double getDriverRightY(){
-        if (Math.abs(driverController.getRightY()) < 0.2 ){
+        if (Math.abs(driverController.getRightY()) < 0.075){
             return 0;
         } else {
             return driverController.getRightY();
         }
     }
     public static double getDriverRightX(){
-        if (Math.abs(driverController.getRightX()) < 0.2 ){
+        if (Math.abs(driverController.getRightX()) < 0.075){
             return 0;
         } else {
             return driverController.getRightX();
