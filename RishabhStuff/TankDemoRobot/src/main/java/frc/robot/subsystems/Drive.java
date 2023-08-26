@@ -24,10 +24,6 @@ public class Drive extends SubsystemBase {
   public Drive() {}
 
   public void init(){
-    frontLeft.restoreFactoryDefaults();
-    frontRight.restoreFactoryDefaults();
-    backLeft.restoreFactoryDefaults();
-    backRight.restoreFactoryDefaults();
     backLeft.follow(frontLeft);
     backRight.follow(frontRight);
     frontLeft.setIdleMode(IdleMode.kBrake);
