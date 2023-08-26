@@ -277,6 +277,13 @@ public class Drive extends SubsystemBase {
     return setpoints;
   }
 
+  public double[] getAngleMotorVelocity(){
+    double[] velocity = {
+      frontRight.getAngleVelocity(), frontLeft.getAngleVelocity(), backLeft.getAngleVelocity(), backRight.getAngleVelocity()
+    };
+    return velocity;
+  }
+
   public double[] getOdometry(){
     double[] odometry = {
       getOdometryX(), getOdometryY(), getOdometryAngle()
@@ -357,6 +364,9 @@ public class Drive extends SubsystemBase {
     controllerVector.i = finalX;
     controllerVector.j = finalY;
 
+    SmartDashboard.putNumber("Joystick Y", finalY);
+    SmartDashboard.putNumber("Joystick X", finalX);
+    SmartDashboard.putNumber("Right Joystick", turn);
     double navxAngle = Math.toRadians(peripherals.getNavxAngle());
 
     backRight.drive(controllerVector, turn, navxAngle);

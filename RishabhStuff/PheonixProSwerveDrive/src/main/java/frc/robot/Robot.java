@@ -58,7 +58,7 @@ public class Robot extends LoggedRobot {
     m_robotContainer = new RobotContainer();
     drive.init();
     peripherals.init();
-    logger.addDataReceiver(new WPILOGWriter("/home/lvuser/logs/"));
+    logger.addDataReceiver(new WPILOGWriter("/home/lvuser/logs/mostRecent.wpilog"));
     logger.addDataReceiver(new NT4Publisher());
     logger.start();
 
@@ -91,6 +91,7 @@ public class Robot extends LoggedRobot {
     peripherals.getNavxAngle();
     logger.recordOutput("Swerve Module States", drive.getModuleStates());
     logger.recordOutput("Swerve Module Setpoints", drive.getModuleSetpoints());
+    logger.recordOutput("Angle Motor Velocity", drive.getAngleMotorVelocity());
     logger.recordOutput("Navx", Math.toRadians(peripherals.getNavxAngle()));
     logger.recordOutput("Odometry", drive.getOdometry());
     // logger.recordOutput("Y Value", drive.getFusedOdometryY());
