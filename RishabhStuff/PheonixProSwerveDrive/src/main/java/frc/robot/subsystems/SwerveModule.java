@@ -69,7 +69,7 @@ public class SwerveModule extends SubsystemBase {
     TalonFXConfiguration angleMotorConfig = new TalonFXConfiguration();
     TalonFXConfiguration driveMotorConfig = new TalonFXConfiguration();
 
-    angleMotorConfig.Slot0.kP = 18.0;
+    angleMotorConfig.Slot0.kP = 19.0;
     angleMotorConfig.Slot0.kI = 0.0;
     angleMotorConfig.Slot0.kD = 0.6;
 
@@ -156,6 +156,7 @@ public class SwerveModule extends SubsystemBase {
 
   public double getModuleDistance(){
     double position = driveMotor.getPosition().getValue();
+    // double wheelRotations = (position * Constants.Wheel_Rotations_In_A_Meter) / Constants.GEAR_RATIO;
     double wheelRotations = driveMotorToWheelRotations(position);
     double distance = RPSToMPS(wheelRotations);
     return distance;

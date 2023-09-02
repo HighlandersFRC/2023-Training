@@ -135,6 +135,26 @@ public class Drive extends SubsystemBase {
     m_odometry.resetPosition(new Rotation2d(peripherals.getNavxAngle()), swerveModulePositions, new Pose2d(new Translation2d(getFusedOdometryX(), getFusedOdometryY()), new Rotation2d(peripherals.getNavxAngle())));
   }
 
+  public void setNavxAfterAuto() {
+    peripherals.setNavxAngle((peripherals.getNavxAngle() + 180)%360);
+  }
+
+  public void setNavxAngle(double angle){
+    peripherals.setNavxAngle(angle);
+  }
+
+  public double getNavxAngle(){
+    return peripherals.getNavxAngle();
+  }
+
+  public double getNavxPitch(){
+    return peripherals.getNavxPitch();
+  }
+
+  public double getNavxRoll(){
+    return peripherals.getNavxRoll();
+  }
+
   public void init(){
     frontRight.init();
     frontLeft.init();
@@ -185,6 +205,7 @@ public class Drive extends SubsystemBase {
     estimatedX = getOdometryX();
     estimatedY = getOdometryY();
     estimatedTheta = getOdometryAngle();
+
     previousEstimateX = estimatedX;
     previousEstimateY = estimatedY;
     previousEstimateTheta = estimatedTheta;
@@ -336,6 +357,31 @@ public class Drive extends SubsystemBase {
     backRight.testTurnAngle();
   }
 
+  // public int getClosestPlacementGroup(String fieldSide, double robotX, double robotY) {
+  //   double distance = 999999;
+  //   int number = 0;
+  //   if (fieldSide == "red"){
+  //       for (int i = 0; i < 3; i ++){
+  //           double[] tagPosition = Constants.TAG_LOCATIONS[i];
+  //           double tagDistance = Math.sqrt(Math.pow(tagPosition[0] - robotX, 2) + Math.pow(tagPosition[1] - robotY, 2));
+  //           if (tagDistance < distance){
+  //               distance = tagDistance;
+  //               number = i * 3 + 1;
+  //           }
+  //       }
+  //   } else if (fieldSide == "blue"){
+  //       for (int i = 5; i < 8; i ++){
+  //           double[] tagPosition = Constants.TAG_LOCATIONS[i];
+  //           double tagDistance = Math.sqrt(Math.pow(tagPosition[0] - robotX, 2) + Math.pow(tagPosition[1] - robotY, 2));
+  //           if (tagDistance < distance){
+  //               distance = tagDistance;
+  //               number = (i - 5) * 3 + 1;
+  //           }
+  //       }
+  //   }
+  //   return number;
+  // }
+
   public double adjustX(double originalX, double originalY){
     double adjustedX = originalX * Math.sqrt((1-(Math.pow(originalY, 2))/2));
     return adjustedX;
@@ -392,90 +438,95 @@ public class Drive extends SubsystemBase {
     backRight.drive(vector, turnRadiansPerSec, navxOffset);
   }
 
-  public double[] pidController(double currentX, double currentY, double currentTheta, double time, JSONArray pathPoints){
+  // Autonomous algorithm
+  public double[] pidController(double currentX, double currentY, double currentTheta,double time, JSONArray pathPoints) {
+    // System.out.println(pathPoints.toString());
     if(time < pathPoints.getJSONArray(pathPoints.length() - 1).getDouble(0)) {
-      JSONArray currentPoint = pathPoints.getJSONArray(0);
-      JSONArray targetPoint = pathPoints.getJSONArray(0);
-      for(int i = 0; i < pathPoints.length(); i ++) {
-          if(i == pathPoints.length() - lookAheadDistance) {
-              currentPoint = pathPoints.getJSONArray(i + 1);
-              targetPoint = pathPoints.getJSONArray((i + (lookAheadDistance - 1)));
-              break;
-          }
+        JSONArray currentPoint = pathPoints.getJSONArray(0);
+        JSONArray targetPoint = pathPoints.getJSONArray(0);
+        for(int i = 0; i < pathPoints.length(); i ++) {
+            if(i == pathPoints.length() - lookAheadDistance) {
+                currentPoint = pathPoints.getJSONArray(i + 1);
+                targetPoint = pathPoints.getJSONArray((i + (lookAheadDistance - 1)));
+                break;
+            }
 
-          currentPoint = pathPoints.getJSONArray(i + 1);
-          JSONArray previousPoint = pathPoints.getJSONArray(i);
-          
-          double currentPointTime = currentPoint.getDouble(0);
-          double previousPointTime = previousPoint.getDouble(0);
+            currentPoint = pathPoints.getJSONArray(i + 1);
+            JSONArray previousPoint = pathPoints.getJSONArray(i);
+            
+            double currentPointTime = currentPoint.getDouble(0);
+            double previousPointTime = previousPoint.getDouble(0);
 
-          if(time > previousPointTime && time < currentPointTime){
-              targetPoint = pathPoints.getJSONArray(i + (lookAheadDistance - 1));
-              break;
-          }
-      }
-      
-      double targetTime = targetPoint.getDouble(0);
-      double targetX = targetPoint.getDouble(1);
-      double targetY = targetPoint.getDouble(2);
-      double targetTheta = targetPoint.getDouble(3);
+            if(time > previousPointTime && time < currentPointTime){
+                targetPoint = pathPoints.getJSONArray(i + (lookAheadDistance - 1));
+                break;
+            }
+        }
+        
+        double targetTime = targetPoint.getDouble(0);
+        double targetX = targetPoint.getDouble(1);
+        double targetY = targetPoint.getDouble(2);
+        double targetTheta = targetPoint.getDouble(3);
 
-      if(getFieldSide() == "blue") {
-          targetX = Constants.FIELD_LENGTH - targetX;
-          targetTheta = Math.PI - targetTheta;
-      }
+        if(getFieldSide() == "blue") {
+            targetX = Constants.FIELD_LENGTH - targetX;
+            targetTheta = Math.PI - targetTheta;
+        }
 
-      if (targetTheta - currentTheta > Math.PI){
-          targetTheta -= 2 * Math.PI;
-      } else if (targetTheta - currentTheta < -Math.PI){
-          targetTheta += 2 * Math.PI;
-      }
+        if (targetTheta - currentTheta > Math.PI){
+            targetTheta -= 2 * Math.PI;
+        } else if (targetTheta - currentTheta < -Math.PI){
+            targetTheta += 2 * Math.PI;
+        }
 
-      double currentPointTime = currentPoint.getDouble(0);
-      double currentPointX = currentPoint.getDouble(1);
-      double currentPointY = currentPoint.getDouble(2);
-      double currentPointTheta = currentPoint.getDouble(3);
+        double currentPointTime = currentPoint.getDouble(0);
+        double currentPointX = currentPoint.getDouble(1);
+        double currentPointY = currentPoint.getDouble(2);
+        double currentPointTheta = currentPoint.getDouble(3);
 
-      if(getFieldSide() == "blue") {
-          currentPointX = Constants.FIELD_LENGTH - currentPointX;
-          currentPointTheta = Math.PI - currentPointTheta;
-      }
+        if(getFieldSide() == "blue") {
+            currentPointX = Constants.FIELD_LENGTH - currentPointX;
+            currentPointTheta = Math.PI - currentPointTheta;
+        }
 
-      double feedForwardX = (targetX - currentPointX)/(targetTime - currentPointTime);
-      double feedForwardY = (targetY - currentPointY)/(targetTime - currentPointTime);
-      double feedForwardTheta = -(targetTheta - currentPointTheta)/(targetTime - currentPointTime);
+        double feedForwardX = (targetX - currentPointX)/(targetTime - currentPointTime);
+        double feedForwardY = (targetY - currentPointY)/(targetTime - currentPointTime);
+        double feedForwardTheta = -(targetTheta - currentPointTheta)/(targetTime - currentPointTime);
 
-      xPID.setSetPoint(targetX);
-      yPID.setSetPoint(targetY);
-      thetaPID.setSetPoint(targetTheta);
+        xPID.setSetPoint(targetX);
+        yPID.setSetPoint(targetY);
+        thetaPID.setSetPoint(targetTheta);
 
-      xPID.updatePID(currentX);
-      yPID.updatePID(currentY);
-      thetaPID.updatePID(currentTheta);
+        xPID.updatePID(currentX);
+        yPID.updatePID(currentY);
+        thetaPID.updatePID(currentTheta);
 
-      double xVelNoFF = xPID.getResult();
-      double yVelNoFF = yPID.getResult();
-      double thetaVelNoFF = -thetaPID.getResult();
+        double xVelNoFF = xPID.getResult();
+        double yVelNoFF = yPID.getResult();
+        double thetaVelNoFF = -thetaPID.getResult();
 
-      double xVel = feedForwardX + xVelNoFF;
-      double yVel = feedForwardY + yVelNoFF;
-      double thetaVel = feedForwardTheta + thetaVelNoFF;
+        double xVel = feedForwardX + xVelNoFF;
+        double yVel = feedForwardY + yVelNoFF;
+        double thetaVel = feedForwardTheta + thetaVelNoFF;
 
-      double[] velocityArray = new double[3];
+        double[] velocityArray = new double[3];
 
-      velocityArray[0] = xVel;
-      velocityArray[1] = yVel;
-      velocityArray[2] = thetaVel;
+        velocityArray[0] = xVel;
+        velocityArray[1] = yVel;
+        velocityArray[2] = thetaVel;
 
-      return velocityArray;
-    } else {
-      double[] velocityArray = new double[3];
+        // System.out.println("Target Point: " + targetPoint);
 
-      velocityArray[0] = 0;
-      velocityArray[1] = 0;
-      velocityArray[2] = 0;
+        return velocityArray;
+    }
+    else {
+        double[] velocityArray = new double[3];
 
-      return velocityArray;
+        velocityArray[0] = 0;
+        velocityArray[1] = 0;
+        velocityArray[2] = 0;
+
+        return velocityArray;
     }
   }
   
@@ -499,5 +550,8 @@ public class Drive extends SubsystemBase {
     SmartDashboard.putNumber("Position X", m_odometry.getEstimatedPosition().getX());
     SmartDashboard.putNumber("Position Y", m_odometry.getEstimatedPosition().getY());
     SmartDashboard.putNumber("Position Angle", m_odometry.getEstimatedPosition().getRotation().getDegrees());
+    // SmartDashboard.putNumber("Fused X", getFusedOdometryX());
+    // SmartDashboard.putNumber("Fused Y", getFusedOdometryY());
+    // SmartDashboard.putNumber("Fused Angle", getFusedOdometryTheta());
   }
 }

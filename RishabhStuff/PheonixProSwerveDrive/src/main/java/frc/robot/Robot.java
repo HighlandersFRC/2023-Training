@@ -64,7 +64,7 @@ public class Robot extends LoggedRobot {
     logger.start();
 
     try {
-      pathingFile = new File("/home/lvuser/deploy/MoveForward.json");
+      pathingFile = new File("/home/lvuser/deploy/IcebabyTestAuto.json");
       FileReader scanner = new FileReader(pathingFile);
       pathRead = new JSONObject(new JSONTokener(scanner));
       pathJSON = (JSONArray) pathRead.get("sampled_points");

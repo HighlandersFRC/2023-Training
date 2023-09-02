@@ -46,13 +46,45 @@ public class AutonomousFollower extends CommandBase {
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
+  public AutonomousFollower(Drive drive, boolean generatePath, boolean record, int rowOffset){
+    this.drive = drive;
+    this.rowOffset = rowOffset;
+    this.record = record;
+    this.generatePath = generatePath;
+    this.commands = new JSONArray();
+    addRequirements(this.drive);
+  }
+
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    // if(generatePath == true) {
+    //   this.fieldSide = drive.getFieldSide();
+    //   // if (this.fieldSide == "red"){
+    //     // System.out.println("Before: " + drive.getNavxAngle());
+    //     while (drive.getNavxAngle() <= -180.0){
+    //       drive.setNavxAngle(360.0);
+    //     }
+    //     if (drive.getNavxAngle() <= 0){
+    //       drive.setNavxAngle(180.0);
+    //     } else {
+    //       drive.setNavxAngle(-180.0);
+    //     }
+    //     // System.out.println("After: " + drive.getNavxAngle());
+    //   // }
+    //   int row = drive.getClosestPlacementGroup(this.fieldSide, drive.getFusedOdometryX(), drive.getFusedOdometryY()) + this.rowOffset;
+    //   this.path = drive.generatePlacementPathOnTheFly(row, this.fieldSide);
+    //   // System.out.println("Path: " + this.path.toString());
+    // }
+
+    initTime = Timer.getFPGATimestamp();
+    // // System.out.println("Path points: " + path.toString());
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    System.out.println("Auto Runs");
     odometryFusedX = drive.getFusedOdometryX();
     odometryFusedY = drive.getFusedOdometryY();
     odometryFusedTheta = drive.getFusedOdometryTheta();
@@ -88,6 +120,10 @@ public class AutonomousFollower extends CommandBase {
     double desiredThetaChange = 0.0;
     drive.autoDrive(velocityVector, desiredThetaChange);
 
+    odometryFusedX = drive.getFusedOdometryX();
+    odometryFusedY = drive.getFusedOdometryY();
+    odometryFusedTheta = drive.getFusedOdometryTheta();
+    currentTime = Timer.getFPGATimestamp() - initTime;
   }
 
   // Returns true when the command should end.

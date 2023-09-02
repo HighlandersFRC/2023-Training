@@ -26,7 +26,7 @@ public class MoveForwardAuto extends SequentialCommandGroup {
   /** Creates a new MoveForwardAuto. */
   public MoveForwardAuto(Drive drive, Peripherals peripherals) {
     try {
-      pathingFile = new File("/home/lvuser/deploy/2PiecePart1.json");
+      pathingFile = new File("/home/lvuser/deploy/IcebabyTestAuto.json");
       FileReader scanner = new FileReader(pathingFile);
       pathRead = new JSONObject(new JSONTokener(scanner));
       pathJSON = (JSONArray) pathRead.get("sampled_points");
@@ -39,7 +39,7 @@ public class MoveForwardAuto extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new AutonomousFollower(drive, pathJSON, false)
+      new AutonomousFollower(drive, pathJSON, true)
     );
   }
 }
