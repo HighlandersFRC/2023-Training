@@ -9,12 +9,16 @@ import org.json.JSONArray;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -56,6 +60,7 @@ public class Drive extends SubsystemBase {
   private double currentX = 0;
   private double currentY = 0;
   private double currentTheta = 0;
+
   private double estimatedX = 0.0;
   private double estimatedY = 0.0;
   private double estimatedTheta = 0.0;
@@ -242,6 +247,12 @@ public class Drive extends SubsystemBase {
   public void updateOdometryFusedArray(){
     double navxOffset = Math.toRadians(peripherals.getNavxAngle());
 
+    Matrix<N3, N1> stdDeviation = new Matrix<>(Nat.N3(), Nat.N1());
+
+    stdDeviation.set(0, 0, 0);
+    stdDeviation.set(1, 0, 0);
+    stdDeviation.set(2, 0, 0);
+
     SwerveModulePosition[] swerveModulePositions = new SwerveModulePosition[4];
     swerveModulePositions[0] = new SwerveModulePosition(frontRight.getModuleDistance(), new Rotation2d(frontRight.getCanCoderPositionRadians()));
     swerveModulePositions[1] = new SwerveModulePosition(frontLeft.getModuleDistance(), new Rotation2d(frontLeft.getCanCoderPositionRadians()));
@@ -253,6 +264,9 @@ public class Drive extends SubsystemBase {
     currentX = getOdometryX();
     currentY = getOdometryY();
     currentTheta = navxOffset;
+
+    currentTime = Timer.getFPGATimestamp() - initTime;
+    timeDiff = currentTime - previousTime;
 
     averagedX = (currentX + averagedX)/2;
     averagedY = (currentY + averagedY)/2;
@@ -552,6 +566,6 @@ public class Drive extends SubsystemBase {
     SmartDashboard.putNumber("Position Angle", m_odometry.getEstimatedPosition().getRotation().getDegrees());
     // SmartDashboard.putNumber("Fused X", getFusedOdometryX());
     // SmartDashboard.putNumber("Fused Y", getFusedOdometryY());
-    // SmartDashboard.putNumber("Fused Angle", getFusedOdometryTheta());
+    SmartDashboard.putNumber("Fused Angle", getFusedOdometryTheta());
   }
 }

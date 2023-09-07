@@ -4,6 +4,11 @@
 
 package frc.robot.commands;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import org.json.JSONArray;
@@ -124,6 +129,42 @@ public class AutonomousFollower extends CommandBase {
     odometryFusedY = drive.getFusedOdometryY();
     odometryFusedTheta = drive.getFusedOdometryTheta();
     currentTime = Timer.getFPGATimestamp() - initTime;
+
+    if (this.generatePath){
+      if (this.fieldSide == "red"){
+        drive.setNavxAngle(-180.0);
+      }
+    }
+    if (this.record){
+      recordedOdometry.add(new double[] {currentTime, odometryFusedX, odometryFusedY, odometryFusedTheta});
+
+      try {
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd-hh-mm-ss");
+        LocalDateTime now = LocalDateTime.now();
+        String filename = "/home/lvuser/deploy/recordings/" + dtf.format(now) + ".csv";
+        File file = new File(filename);
+        if (!file.exists()){
+          file.createNewFile();
+        }
+        FileWriter fw = new FileWriter(file);
+        BufferedWriter bw = new BufferedWriter(fw);
+        for (int i = 0; i <recordedOdometry.size(); i ++){
+          String line = "";
+          for (double val : recordedOdometry.get(i)){
+            line += val + ",";
+          }
+          line = line.substring(0, line.length() - 1);
+          line += "\n";
+          // System.out.println(line);
+          bw.write(line);
+        }
+        
+        bw.close();
+      } catch (Exception e) {
+        System.out.println(e);
+        System.out.println("CSV file error");
+      }
+    }
   }
 
   // Returns true when the command should end.
