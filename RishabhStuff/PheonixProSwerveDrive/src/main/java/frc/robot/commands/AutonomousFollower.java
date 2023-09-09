@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import org.json.JSONArray;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Tools.Vector;
 import frc.robot.subsystems.Drive;
@@ -106,6 +107,10 @@ public class AutonomousFollower extends CommandBase {
     velocityVector.i = desiredVelocityArray[0];
     velocityVector.j = desiredVelocityArray[1];
     desiredThetaChange = desiredVelocityArray[2];
+
+    SmartDashboard.putNumber("Desired Vector I", velocityVector.i);
+    SmartDashboard.putNumber("Desired Vector J", velocityVector.j);
+    SmartDashboard.putNumber("Desired Angle", desiredThetaChange);
 
     drive.autoDrive(velocityVector, desiredThetaChange);
 

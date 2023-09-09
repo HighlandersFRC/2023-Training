@@ -190,6 +190,7 @@ public class Drive extends SubsystemBase {
 
   public void autoInit(JSONArray pathPoints){
     JSONArray firstPoint = pathPoints.getJSONArray(0);
+
     double firstPointX = firstPoint.getDouble(1);
     double firstPointY = firstPoint.getDouble(2);
     double firstPointAngle = firstPoint.getDouble(3);
@@ -566,6 +567,6 @@ public class Drive extends SubsystemBase {
     SmartDashboard.putNumber("Position Angle", m_odometry.getEstimatedPosition().getRotation().getDegrees());
     // SmartDashboard.putNumber("Fused X", getFusedOdometryX());
     // SmartDashboard.putNumber("Fused Y", getFusedOdometryY());
-    SmartDashboard.putNumber("Fused Angle", getFusedOdometryTheta());
+    // SmartDashboard.putNumber("Fused Angle", getFusedOdometryTheta());
   }
 }

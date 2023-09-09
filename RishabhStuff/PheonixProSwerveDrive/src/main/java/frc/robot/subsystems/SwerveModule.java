@@ -239,6 +239,9 @@ public class SwerveModule extends SubsystemBase {
       finalVector.i = xValueWithNavx + turnX;
       finalVector.j = yValueWithNavx + turnY;
 
+      SmartDashboard.putNumber("Actual I", finalVector.i);
+      SmartDashboard.putNumber("Actual J", finalVector.j);
+
       double finalAngle = -Math.atan2(finalVector.j, finalVector.i);
       double finalVelocity = Math.sqrt(Math.pow(finalVector.i, 2) + Math.pow(finalVector.j, 2));
 
@@ -247,8 +250,8 @@ public class SwerveModule extends SubsystemBase {
       }
 
       double velocityRPS = (MPSToRPS(finalVelocity));
+      
       SmartDashboard.putNumber("Velocity", velocityRPS);
-      SmartDashboard.putNumber("Angle Wanted", Math.toDegrees(angleWanted));
       SmartDashboard.putNumber("Final Angle", Math.toDegrees(finalAngle));
 
       double currentAngle = getWheelPosition();
