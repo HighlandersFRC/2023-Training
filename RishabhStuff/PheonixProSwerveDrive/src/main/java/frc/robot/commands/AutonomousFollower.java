@@ -105,7 +105,7 @@ public class AutonomousFollower extends CommandBase {
     // create velocity vector and set desired theta change
     Vector velocityVector = new Vector();
     velocityVector.i = desiredVelocityArray[0];
-    velocityVector.j = desiredVelocityArray[1];
+    velocityVector.j = -desiredVelocityArray[1];
     desiredThetaChange = desiredVelocityArray[2];
 
     SmartDashboard.putNumber("Desired Vector I", velocityVector.i);

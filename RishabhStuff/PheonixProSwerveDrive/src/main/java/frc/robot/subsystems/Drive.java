@@ -190,10 +190,36 @@ public class Drive extends SubsystemBase {
 
   public void autoInit(JSONArray pathPoints){
     JSONArray firstPoint = pathPoints.getJSONArray(0);
-
     double firstPointX = firstPoint.getDouble(1);
     double firstPointY = firstPoint.getDouble(2);
     double firstPointAngle = firstPoint.getDouble(3);
+    SmartDashboard.putNumber("1x", firstPointX);
+    SmartDashboard.putNumber("1y", firstPointY);
+    SmartDashboard.putNumber("1angle", firstPointAngle);
+
+    // JSONArray secondPoint = pathPoints.getJSONArray(0);
+    // double secondPointX = secondPoint.getDouble(4);
+    // double secondPointY = secondPoint.getDouble(5);
+    // double secondPointAngle = secondPoint.getDouble(6);
+    // SmartDashboard.putNumber("2x", secondPointX);
+    // SmartDashboard.putNumber("2y", secondPointY);
+    // SmartDashboard.putNumber("2angle", secondPointAngle);
+
+    // JSONArray thirdPoint = pathPoints.getJSONArray(2);
+    // double thirdPointX = thirdPoint.getDouble(1);
+    // double thirdPointY = thirdPoint.getDouble(2);
+    // double thirdPointAngle = thirdPoint.getDouble(3);
+    // SmartDashboard.putNumber("3x", thirdPointX);
+    // SmartDashboard.putNumber("3y", thirdPointY);
+    // SmartDashboard.putNumber("3angle", thirdPointAngle);
+
+    // JSONArray fourthPoint = pathPoints.getJSONArray(3);
+    // double fourthPointX = fourthPoint.getDouble(1);
+    // double fourthPointY = fourthPoint.getDouble(2);
+    // double fourthPointAngle = fourthPoint.getDouble(3);
+    // SmartDashboard.putNumber("4x", fourthPointX);
+    // SmartDashboard.putNumber("4y", fourthPointY);
+    // SmartDashboard.putNumber("4angle", fourthPointAngle);
 
     if(getFieldSide() == "blue") {
       firstPointX = Constants.FIELD_LENGTH - firstPointX;
@@ -425,9 +451,9 @@ public class Drive extends SubsystemBase {
     controllerVector.i = finalX;
     controllerVector.j = finalY;
 
-    SmartDashboard.putNumber("Joystick Y", finalY);
-    SmartDashboard.putNumber("Joystick X", finalX);
-    SmartDashboard.putNumber("Right Joystick", turn);
+    // SmartDashboard.putNumber("Joystick Y", finalY);
+    // SmartDashboard.putNumber("Joystick X", finalX);
+    // SmartDashboard.putNumber("Right Joystick", turn);
     double navxAngle = Math.toRadians(peripherals.getNavxAngle());
 
     backRight.drive(controllerVector, turn, navxAngle);
@@ -488,11 +514,11 @@ public class Drive extends SubsystemBase {
             targetTheta = Math.PI - targetTheta;
         }
 
-        if (targetTheta - currentTheta > Math.PI){
-            targetTheta -= 2 * Math.PI;
-        } else if (targetTheta - currentTheta < -Math.PI){
-            targetTheta += 2 * Math.PI;
-        }
+        // if (targetTheta - currentTheta > Math.PI){
+        //     targetTheta -= 2 * Math.PI;
+        // } else if (targetTheta - currentTheta < -Math.PI){
+        //     targetTheta += 2 * Math.PI;
+        // }
 
         double currentPointTime = currentPoint.getDouble(0);
         double currentPointX = currentPoint.getDouble(1);
@@ -552,15 +578,15 @@ public class Drive extends SubsystemBase {
     SmartDashboard.putNumber("3 Position", Math.toDegrees(backLeft.getWheelPosition()));
     SmartDashboard.putNumber("4 Position", Math.toDegrees(backRight.getWheelPosition()));
 
-    SmartDashboard.putNumber("1 CanCoder", Constants.rotationsToDegrees(frontRightCanCoder.getAbsolutePosition().getValue()));
-    SmartDashboard.putNumber("2 CanCoder", Constants.rotationsToDegrees(frontLeftCanCoder.getAbsolutePosition().getValue()));
-    SmartDashboard.putNumber("3 CanCoder", Constants.rotationsToDegrees(backLeftCanCoder.getAbsolutePosition().getValue()));
-    SmartDashboard.putNumber("4 CanCoder", Constants.rotationsToDegrees(backRightCanCoder.getAbsolutePosition().getValue()));
+    // SmartDashboard.putNumber("1 CanCoder", Constants.rotationsToDegrees(frontRightCanCoder.getAbsolutePosition().getValue()));
+    // SmartDashboard.putNumber("2 CanCoder", Constants.rotationsToDegrees(frontLeftCanCoder.getAbsolutePosition().getValue()));
+    // SmartDashboard.putNumber("3 CanCoder", Constants.rotationsToDegrees(backLeftCanCoder.getAbsolutePosition().getValue()));
+    // SmartDashboard.putNumber("4 CanCoder", Constants.rotationsToDegrees(backRightCanCoder.getAbsolutePosition().getValue()));
 
-    SmartDashboard.putNumber("1 Speed", frontRight.getWheelSpeed());
-    SmartDashboard.putNumber("2 Speed", frontLeft.getWheelSpeed());
-    SmartDashboard.putNumber("3 Speed", backLeft.getWheelSpeed());
-    SmartDashboard.putNumber("4 Speed", backRight.getWheelSpeed());
+    // SmartDashboard.putNumber("1 Speed", frontRight.getWheelSpeed());
+    // SmartDashboard.putNumber("2 Speed", frontLeft.getWheelSpeed());
+    // SmartDashboard.putNumber("3 Speed", backLeft.getWheelSpeed());
+    // SmartDashboard.putNumber("4 Speed", backRight.getWheelSpeed());
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("Position X", m_odometry.getEstimatedPosition().getX());
     SmartDashboard.putNumber("Position Y", m_odometry.getEstimatedPosition().getY());
