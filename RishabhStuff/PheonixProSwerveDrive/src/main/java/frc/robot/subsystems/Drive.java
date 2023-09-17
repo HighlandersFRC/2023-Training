@@ -95,23 +95,23 @@ public class Drive extends SubsystemBase {
   double setAngle;
   double diffAngle;
 
-  private double xP = 4;
-  private double xI = 0;
-  private double xD = 1.2;
+  private double xP = 3.0;
+  private double xI = 0.05;
+  private double xD = 2.9;
 
-  private double yP = 4;
-  private double yI = 0;
-  private double yD = 1.2;
+  private double yP = 3.0;
+  private double yI = 0.05;
+  private double yD = 2.9;
 
-  private double thetaP = 3.1;
+  private double thetaP = 1.9;
   private double thetaI = 0;
-  private double thetaD = 0.8;
+  private double thetaD = 1.0;
 
   private PID xPID = new PID(xP, xI, xD);
   private PID yPID = new PID(yP, yI, yD);
   private PID thetaPID = new PID(thetaP, thetaI, thetaD);
 
-  private String fieldSide = "blue";
+  // private String fieldSide = "blue";
 
   private int lookAheadDistance = 5;
   
@@ -120,8 +120,8 @@ public class Drive extends SubsystemBase {
     this.peripherals = peripherals;
 
     SwerveModulePosition[] swerveModulePositions = new SwerveModulePosition[4];
-    swerveModulePositions[0] = new SwerveModulePosition(0, new Rotation2d(frontRight.getCanCoderPositionRadians()));
-    swerveModulePositions[1] = new SwerveModulePosition(0, new Rotation2d(frontLeft.getCanCoderPositionRadians()));
+    swerveModulePositions[0] = new SwerveModulePosition(0, new Rotation2d(frontLeft.getCanCoderPositionRadians()));
+    swerveModulePositions[1] = new SwerveModulePosition(0, new Rotation2d(frontRight.getCanCoderPositionRadians()));
     swerveModulePositions[2] = new SwerveModulePosition(0, new Rotation2d(backLeft.getCanCoderPositionRadians()));
     swerveModulePositions[3] = new SwerveModulePosition(0, new Rotation2d(backRight.getCanCoderPositionRadians()));
 
@@ -133,8 +133,8 @@ public class Drive extends SubsystemBase {
   public void zeroNavx(){
     peripherals.zeroNavx();
     SwerveModulePosition[] swerveModulePositions = new SwerveModulePosition[4];
-    swerveModulePositions[0] = new SwerveModulePosition(frontRight.getModuleDistance(), new Rotation2d(frontRight.getCanCoderPositionRadians()));
-    swerveModulePositions[1] = new SwerveModulePosition(frontLeft.getModuleDistance(), new Rotation2d(frontLeft.getCanCoderPositionRadians()));
+    swerveModulePositions[0] = new SwerveModulePosition(frontLeft.getModuleDistance(), new Rotation2d(frontLeft.getCanCoderPositionRadians()));
+    swerveModulePositions[1] = new SwerveModulePosition(frontRight.getModuleDistance(), new Rotation2d(frontRight.getCanCoderPositionRadians()));
     swerveModulePositions[2] = new SwerveModulePosition(backLeft.getModuleDistance(), new Rotation2d(backLeft.getCanCoderPositionRadians()));
     swerveModulePositions[3] = new SwerveModulePosition(backRight.getModuleDistance(), new Rotation2d(backRight.getCanCoderPositionRadians()));
     m_odometry.resetPosition(new Rotation2d(peripherals.getNavxAngle()), swerveModulePositions, new Pose2d(new Translation2d(getFusedOdometryX(), getFusedOdometryY()), new Rotation2d(peripherals.getNavxAngle())));
@@ -221,15 +221,15 @@ public class Drive extends SubsystemBase {
     // SmartDashboard.putNumber("4y", fourthPointY);
     // SmartDashboard.putNumber("4angle", fourthPointAngle);
 
-    if(getFieldSide() == "blue") {
-      firstPointX = Constants.FIELD_LENGTH - firstPointX;
-      firstPointAngle = Math.PI - firstPointAngle;
-    }
+    // if(getFieldSide() == "blue") {
+    //   firstPointX = Constants.FIELD_LENGTH - firstPointX;
+    //   firstPointAngle = Math.PI - firstPointAngle;
+    // }
         
     peripherals.setNavxAngle(Math.toDegrees(firstPointAngle));
     SwerveModulePosition[] swerveModulePositions = new SwerveModulePosition[4];
-    swerveModulePositions[0] = new SwerveModulePosition(frontRight.getModuleDistance(), new Rotation2d(frontRight.getCanCoderPositionRadians()));
-    swerveModulePositions[1] = new SwerveModulePosition(frontLeft.getModuleDistance(), new Rotation2d(frontLeft.getCanCoderPositionRadians()));
+    swerveModulePositions[0] = new SwerveModulePosition(frontLeft.getModuleDistance(), new Rotation2d(frontLeft.getCanCoderPositionRadians()));
+    swerveModulePositions[1] = new SwerveModulePosition(frontRight.getModuleDistance(), new Rotation2d(frontRight.getCanCoderPositionRadians()));
     swerveModulePositions[2] = new SwerveModulePosition(backLeft.getModuleDistance(), new Rotation2d(backLeft.getCanCoderPositionRadians()));
     swerveModulePositions[3] = new SwerveModulePosition(backRight.getModuleDistance(), new Rotation2d(backRight.getCanCoderPositionRadians()));
     m_odometry.resetPosition(new Rotation2d(firstPointAngle), swerveModulePositions, new Pose2d(new Translation2d(firstPointX, firstPointY), new Rotation2d(firstPointAngle)));
@@ -256,16 +256,16 @@ public class Drive extends SubsystemBase {
 
     initTime = Timer.getFPGATimestamp();
 
-    updateOdometryFusedArray();
+    // updateOdometryFusedArray();
   }
 
-  public void setFieldSide(String side){
-    fieldSide = side;
-  }
+  // public void setFieldSide(String side){
+  //   fieldSide = side;
+  // }
 
-  public String getFieldSide(){
-    return fieldSide;
-  }
+  // public String getFieldSide(){
+  //   return fieldSide;
+  // }
 
   public double getCurrentTime(){
     return currentTime;
@@ -274,15 +274,15 @@ public class Drive extends SubsystemBase {
   public void updateOdometryFusedArray(){
     double navxOffset = Math.toRadians(peripherals.getNavxAngle());
 
-    Matrix<N3, N1> stdDeviation = new Matrix<>(Nat.N3(), Nat.N1());
+    // Matrix<N3, N1> stdDeviation = new Matrix<>(Nat.N3(), Nat.N1());
 
-    stdDeviation.set(0, 0, 0);
-    stdDeviation.set(1, 0, 0);
-    stdDeviation.set(2, 0, 0);
+    // stdDeviation.set(0, 0, 0);
+    // stdDeviation.set(1, 0, 0);
+    // stdDeviation.set(2, 0, 0);
 
     SwerveModulePosition[] swerveModulePositions = new SwerveModulePosition[4];
-    swerveModulePositions[0] = new SwerveModulePosition(frontRight.getModuleDistance(), new Rotation2d(frontRight.getCanCoderPositionRadians()));
-    swerveModulePositions[1] = new SwerveModulePosition(frontLeft.getModuleDistance(), new Rotation2d(frontLeft.getCanCoderPositionRadians()));
+    swerveModulePositions[0] = new SwerveModulePosition(frontLeft.getModuleDistance(), new Rotation2d(frontLeft.getCanCoderPositionRadians()));
+    swerveModulePositions[1] = new SwerveModulePosition(frontRight.getModuleDistance(), new Rotation2d(frontRight.getCanCoderPositionRadians()));
     swerveModulePositions[2] = new SwerveModulePosition(backLeft.getModuleDistance(), new Rotation2d(backLeft.getCanCoderPositionRadians()));
     swerveModulePositions[3] = new SwerveModulePosition(backRight.getModuleDistance(), new Rotation2d(backRight.getCanCoderPositionRadians()));
         
@@ -321,10 +321,10 @@ public class Drive extends SubsystemBase {
 
   public double[] getModuleStates(){
     double[] states = {
-      frontRight.getCanCoderPosition() * 360, frontRight.getGroundSpeed(),
-      frontLeft.getCanCoderPosition() * 360, frontLeft.getGroundSpeed(),
-      backLeft.getCanCoderPosition() * 360, frontRight.getGroundSpeed(),
-      backRight.getCanCoderPosition() * 360, frontRight.getGroundSpeed(),
+      frontRight.getCanCoderPosition() * 360.0, frontRight.getGroundSpeed(),
+      frontLeft.getCanCoderPosition() * 360.0, frontLeft.getGroundSpeed(),
+      backLeft.getCanCoderPosition() * 360.0, frontRight.getGroundSpeed(),
+      backRight.getCanCoderPosition() * 360.0, frontRight.getGroundSpeed(),
     };
     return states;
   }
@@ -467,12 +467,6 @@ public class Drive extends SubsystemBase {
 
     double navxOffset = Math.toRadians(peripherals.getNavxAngle());
 
-    double[] odometryList = new double[3];
-
-    odometryList[0] = getFusedOdometryX();
-    odometryList[1] = getFusedOdometryY();
-    odometryList[2] = getFusedOdometryTheta();
-
     frontLeft.drive(vector, turnRadiansPerSec, navxOffset);
     frontRight.drive(vector, turnRadiansPerSec, navxOffset);
     backLeft.drive(vector, turnRadiansPerSec, navxOffset);
@@ -480,7 +474,7 @@ public class Drive extends SubsystemBase {
   }
 
   // Autonomous algorithm
-  public double[] pidController(double currentX, double currentY, double currentTheta,double time, JSONArray pathPoints) {
+  public double[] pidController(double currentX, double currentY, double currentTheta, double time, JSONArray pathPoints) {
     // System.out.println(pathPoints.toString());
     if(time < pathPoints.getJSONArray(pathPoints.length() - 1).getDouble(0)) {
         JSONArray currentPoint = pathPoints.getJSONArray(0);
@@ -509,10 +503,10 @@ public class Drive extends SubsystemBase {
         double targetY = targetPoint.getDouble(2);
         double targetTheta = targetPoint.getDouble(3);
 
-        if(getFieldSide() == "blue") {
-            targetX = Constants.FIELD_LENGTH - targetX;
-            targetTheta = Math.PI - targetTheta;
-        }
+        // if(getFieldSide() == "blue") {
+        //     targetX = Constants.FIELD_LENGTH - targetX;
+        //     targetTheta = Math.PI - targetTheta;
+        // }
 
         // if (targetTheta - currentTheta > Math.PI){
         //     targetTheta -= 2 * Math.PI;
@@ -525,10 +519,10 @@ public class Drive extends SubsystemBase {
         double currentPointY = currentPoint.getDouble(2);
         double currentPointTheta = currentPoint.getDouble(3);
 
-        if(getFieldSide() == "blue") {
-            currentPointX = Constants.FIELD_LENGTH - currentPointX;
-            currentPointTheta = Math.PI - currentPointTheta;
-        }
+        // if(getFieldSide() == "blue") {
+        //     currentPointX = Constants.FIELD_LENGTH - currentPointX;
+        //     currentPointTheta = Math.PI - currentPointTheta;
+        // }
 
         double feedForwardX = (targetX - currentPointX)/(targetTime - currentPointTime);
         double feedForwardY = (targetY - currentPointY)/(targetTime - currentPointTime);
@@ -553,10 +547,11 @@ public class Drive extends SubsystemBase {
         double[] velocityArray = new double[3];
 
         velocityArray[0] = xVel;
-        velocityArray[1] = yVel;
+        velocityArray[1] = -yVel;
         velocityArray[2] = thetaVel;
 
         // System.out.println("Target Point: " + targetPoint);
+        System.out.println("Time: " + currentPointTime + " X: " + xVel + " Y: " + -yVel + " Theta: " + thetaVel);
 
         return velocityArray;
     }

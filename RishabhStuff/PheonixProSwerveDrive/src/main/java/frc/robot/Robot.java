@@ -45,7 +45,7 @@ public class Robot extends LoggedRobot {
   JSONObject pathRead;
   JSONArray pathJSON;
 
-  String fieldSide;
+  // String fieldSide;
 
   SequentialCommandGroup auto;
   /**

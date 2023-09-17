@@ -85,7 +85,7 @@ public class SwerveModule extends SubsystemBase {
 
     angleMotorConfig.ClosedLoopRamps.TorqueClosedLoopRampPeriod = 0.1;
 
-    driveMotorConfig.Slot0.kP = 8.5;
+    driveMotorConfig.Slot0.kP = 8.2;
     driveMotorConfig.Slot0.kI = 0.6;
     driveMotorConfig.Slot0.kD = 0.0;
     driveMotorConfig.Slot0.kV = 1.6;
