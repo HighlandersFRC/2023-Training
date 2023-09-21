@@ -106,6 +106,8 @@ public class SwerveModule extends SubsystemBase {
   }
 
   public void setWheelPID(double angle, double velocity){
+    SmartDashboard.putNumber("Angle Targeted", angle);
+    SmartDashboard.putNumber("Velocity Targeted", velocity);
     angleMotor.setControl(positionTorqueFOCRequest.withPosition(wheelToSteerMotorRotations(degreesToRotations(Math.toDegrees(angle)))));
     driveMotor.setControl(velocityTorqueFOCRequest.withVelocity(wheelToDriveMotorRotations(velocity)));
   }

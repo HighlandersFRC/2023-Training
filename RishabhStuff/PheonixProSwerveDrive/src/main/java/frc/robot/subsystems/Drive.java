@@ -160,6 +160,13 @@ public class Drive extends SubsystemBase {
     return peripherals.getNavxRoll();
   }
 
+  public void setWheelsStraight(){
+    frontRight.setWheelPID(0, 0.0);
+    frontLeft.setWheelPID(0, 0.0);
+    backLeft.setWheelPID(0, 0.0);
+    backRight.setWheelPID(0, 0.0);
+  }
+
   public void init(){
     frontRight.init();
     frontLeft.init();
@@ -171,10 +178,10 @@ public class Drive extends SubsystemBase {
     backRightAngleMotor.setInverted(true);
     backLeftAngleMotor.setInverted(true);
 
-    frontRightDriveMotor.setInverted(true);
-    frontLeftDriveMotor.setInverted(true);
-    backRightDriveMotor.setInverted(true);
-    backLeftDriveMotor.setInverted(true);
+    frontRightDriveMotor.setInverted(false);
+    frontLeftDriveMotor.setInverted(false);
+    backRightDriveMotor.setInverted(false);
+    backLeftDriveMotor.setInverted(false);
 
     xPID.setMinOutput(-4.9);
     xPID.setMaxOutput(4.9);
@@ -543,6 +550,12 @@ public class Drive extends SubsystemBase {
         double xVel = feedForwardX + xVelNoFF;
         double yVel = feedForwardY + yVelNoFF;
         double thetaVel = feedForwardTheta + thetaVelNoFF;
+
+        if (Timer.getFPGATimestamp() < 0.5){
+          xVel = 0.0;
+          yVel = 0.0;
+          thetaVel = 0.0;
+        }
 
         double[] velocityArray = new double[3];
 
