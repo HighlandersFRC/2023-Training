@@ -9,16 +9,12 @@ import org.json.JSONArray;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 
-import edu.wpi.first.math.Matrix;
-import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
-import edu.wpi.first.math.numbers.N1;
-import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -95,17 +91,17 @@ public class Drive extends SubsystemBase {
   double setAngle;
   double diffAngle;
 
-  private double xP = 3.0;
-  private double xI = 0.05;
-  private double xD = 2.9;
+  private double xP = 4.0;
+  private double xI = 0.0;
+  private double xD = 1.5;
 
-  private double yP = 3.0;
-  private double yI = 0.05;
-  private double yD = 2.9;
+  private double yP = 4.0;
+  private double yI = 0.0;
+  private double yD = 1.5;
 
-  private double thetaP = 1.9;
+  private double thetaP = 2.6;
   private double thetaI = 0;
-  private double thetaD = 1.0;
+  private double thetaD = 1.5;
 
   private PID xPID = new PID(xP, xI, xD);
   private PID yPID = new PID(yP, yI, yD);
@@ -535,33 +531,45 @@ public class Drive extends SubsystemBase {
         double feedForwardY = (targetY - currentPointY)/(targetTime - currentPointTime);
         double feedForwardTheta = -(targetTheta - currentPointTheta)/(targetTime - currentPointTime);
 
-        xPID.setSetPoint(targetX);
-        yPID.setSetPoint(targetY);
-        thetaPID.setSetPoint(targetTheta);
+        SmartDashboard.putNumber("XFF", feedForwardX);
+        SmartDashboard.putNumber("YFF", feedForwardY);
+        SmartDashboard.putNumber("TFF", feedForwardTheta);
 
         xPID.updatePID(currentX);
         yPID.updatePID(currentY);
         thetaPID.updatePID(currentTheta);
 
+        xPID.setSetPoint(targetX);
+        yPID.setSetPoint(targetY);
+        thetaPID.setSetPoint(targetTheta);
+
         double xVelNoFF = xPID.getResult();
         double yVelNoFF = yPID.getResult();
         double thetaVelNoFF = -thetaPID.getResult();
+
+        SmartDashboard.putNumber("PIDX", xVelNoFF);
+        SmartDashboard.putNumber("PIDY", yVelNoFF);
+        SmartDashboard.putNumber("PIDT", thetaVelNoFF);
 
         double xVel = feedForwardX + xVelNoFF;
         double yVel = feedForwardY + yVelNoFF;
         double thetaVel = feedForwardTheta + thetaVelNoFF;
 
-        if (Timer.getFPGATimestamp() < 0.5){
-          xVel = 0.0;
-          yVel = 0.0;
-          thetaVel = 0.0;
-        }
-
         double[] velocityArray = new double[3];
 
-        velocityArray[0] = xVel;
-        velocityArray[1] = -yVel;
-        velocityArray[2] = thetaVel;
+        if ((Math.abs(targetX - currentPointX)) < 0.01 && (Math.abs(targetY - currentPointY)) < 0.01 && (Math.abs(targetTheta - currentPointTheta)) < 0.5){
+          velocityArray[0] = 0.0;
+          velocityArray[1] = 0.0;
+          velocityArray[2] = 0.0; 
+        } else {
+          velocityArray[0] = xVel;
+          velocityArray[1] = -yVel;
+          velocityArray[2] = thetaVel;
+        }
+
+        // velocityArray[0] = xVel;
+        // velocityArray[1] = -yVel;
+        // velocityArray[2] = thetaVel;
 
         // System.out.println("Target Point: " + targetPoint);
         System.out.println("Time: " + currentPointTime + " X: " + xVel + " Y: " + -yVel + " Theta: " + thetaVel);
