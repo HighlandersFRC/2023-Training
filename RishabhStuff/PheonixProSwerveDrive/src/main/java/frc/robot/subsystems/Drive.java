@@ -448,7 +448,7 @@ public class Drive extends SubsystemBase {
 
     double finalX = adjustedX * Constants.TOP_SPEED;
     double finalY = adjustedY * Constants.TOP_SPEED;
-    double turn = 0.75 * (rightStick * Constants.TOP_SPEED);
+    double turn = 0.4 * (rightStick * Constants.TOP_SPEED);
 
     Vector controllerVector = new Vector();
     controllerVector.i = finalX;
@@ -599,7 +599,7 @@ public class Drive extends SubsystemBase {
     // SmartDashboard.putNumber("3 CanCoder", Constants.rotationsToDegrees(backLeftCanCoder.getAbsolutePosition().getValue()));
     // SmartDashboard.putNumber("4 CanCoder", Constants.rotationsToDegrees(backRightCanCoder.getAbsolutePosition().getValue()));
 
-    // SmartDashboard.putNumber("1 Speed", frontRight.getWheelSpeed());
+    SmartDashboard.putNumber("1 Speed", frontRight.getGroundSpeed());
     // SmartDashboard.putNumber("2 Speed", frontLeft.getWheelSpeed());
     // SmartDashboard.putNumber("3 Speed", backLeft.getWheelSpeed());
     // SmartDashboard.putNumber("4 Speed", backRight.getWheelSpeed());

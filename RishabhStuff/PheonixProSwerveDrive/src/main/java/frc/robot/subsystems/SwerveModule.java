@@ -26,6 +26,8 @@ public class SwerveModule extends SubsystemBase {
   VelocityTorqueCurrentFOC velocityTorqueFOCRequest = new VelocityTorqueCurrentFOC(0, 0, 0, false);
   VelocityTorqueCurrentFOC velocityTorqueFOCRequestAngleMotor = new VelocityTorqueCurrentFOC(0, 0, 1, false);
 
+  private static final double DRIVE_SENSOR_POSITION_COEFFICIENT = (2 * Math.PI * Constants.WHEEL_Radius) / Constants.GEAR_RATIO;
+  private static final double DRIVE_SENSOR_VELOCITY_COEFFICIENT = DRIVE_SENSOR_POSITION_COEFFICIENT;
   /** Creates a new SwerveModule. */
   public SwerveModule(int mModuleNum, TalonFX mAngleMotor, TalonFX mDriveMotor, CANcoder mCanCoder) {
     moduleNumber = mModuleNum;
@@ -69,9 +71,9 @@ public class SwerveModule extends SubsystemBase {
     TalonFXConfiguration angleMotorConfig = new TalonFXConfiguration();
     TalonFXConfiguration driveMotorConfig = new TalonFXConfiguration();
 
-    angleMotorConfig.Slot0.kP = 18.5;
+    angleMotorConfig.Slot0.kP = 50.0;
     angleMotorConfig.Slot0.kI = 0.0;
-    angleMotorConfig.Slot0.kD = 0.6;
+    angleMotorConfig.Slot0.kD = 0.8;
 
     angleMotorConfig.Slot1.kP = 3.0;
     angleMotorConfig.Slot1.kI = 0.0;
@@ -85,10 +87,12 @@ public class SwerveModule extends SubsystemBase {
 
     angleMotorConfig.ClosedLoopRamps.TorqueClosedLoopRampPeriod = 0.1;
 
-    driveMotorConfig.Slot0.kP = 8.0;
-    driveMotorConfig.Slot0.kI = 0.6;
-    driveMotorConfig.Slot0.kD = 0.0;
-    driveMotorConfig.Slot0.kV = 1.6;
+    driveMotorConfig.Slot0.kP = 7.0;//8.5
+    driveMotorConfig.Slot0.kI = 0.0;//1.0
+    driveMotorConfig.Slot0.kD = 0.0;//0.1
+    driveMotorConfig.Slot0.kV = 8.0;
+    // 1023.0 / ((12.0 / 1.8) / (DRIVE_SENSOR_VELOCITY_COEFFICIENT));
+                    //0.5
 
     driveMotorConfig.TorqueCurrent.PeakForwardTorqueCurrent = 75;
     driveMotorConfig.TorqueCurrent.PeakReverseTorqueCurrent = -75;

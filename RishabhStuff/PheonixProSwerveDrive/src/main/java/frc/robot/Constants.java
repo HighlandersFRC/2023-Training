@@ -35,6 +35,8 @@ public final class Constants {
 
   public static final double WHEEL_DIAMETER = inchesToMeters(4);
 
+  public static final double WHEEL_Radius = inchesToMeters(2);
+
   public static final double WHEEL_CIRCUMFRENCE = Math.PI * WHEEL_DIAMETER;
 
   public static final double Wheel_Rotations_In_A_Meter = 1 / WHEEL_CIRCUMFRENCE;
