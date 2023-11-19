@@ -29,7 +29,7 @@ public final class Constants {
 
   public static final double GEAR_RATIO = 6.75;
 
-  public static final double STEER_GEAR_RATIO = 150/7;
+  public static final double STEER_GEAR_RATIO = (150.0/7);
 
   public static final double TOP_SPEED = feetToMeters(20);
 

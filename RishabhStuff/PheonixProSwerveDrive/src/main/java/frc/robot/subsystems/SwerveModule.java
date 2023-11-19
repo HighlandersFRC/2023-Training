@@ -4,17 +4,21 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Tools.Vector;
+
+// **Zero Wheels with the bolt head showing on the left when the front side(battery) is facing down/away from you**
 
 public class SwerveModule extends SubsystemBase {
   private final TalonFX angleMotor;
@@ -30,6 +34,7 @@ public class SwerveModule extends SubsystemBase {
   private static final double DRIVE_SENSOR_VELOCITY_COEFFICIENT = DRIVE_SENSOR_POSITION_COEFFICIENT;
   /** Creates a new SwerveModule. */
   public SwerveModule(int mModuleNum, TalonFX mAngleMotor, TalonFX mDriveMotor, CANcoder mCanCoder) {
+    // creates values for a single module
     moduleNumber = mModuleNum;
     angleMotor = mAngleMotor;
     driveMotor = mDriveMotor;
@@ -37,6 +42,7 @@ public class SwerveModule extends SubsystemBase {
   }
 
   public double torqueAngle(){
+    // math to find turn angle
     double length = Constants.ROBOT_LENGTH/2, width = Constants.ROBOT_WIDTH/2, angle;
     length -= Constants.SWERVE_MODULE_OFFSET;
     width -= Constants.SWERVE_MODULE_OFFSET;
@@ -68,17 +74,18 @@ public class SwerveModule extends SubsystemBase {
   }
 
   public void init(){
+    // sets all of the configurations for the motors
     TalonFXConfiguration angleMotorConfig = new TalonFXConfiguration();
     TalonFXConfiguration driveMotorConfig = new TalonFXConfiguration();
 
-    angleMotorConfig.Slot0.kP = 50.0;
+    angleMotorConfig.Slot0.kP = 300.0;//170, 60
     angleMotorConfig.Slot0.kI = 0.0;
-    angleMotorConfig.Slot0.kD = 0.8;
+    angleMotorConfig.Slot0.kD = 7.5;//4, 1
 
     angleMotorConfig.Slot1.kP = 3.0;
     angleMotorConfig.Slot1.kI = 0.0;
     angleMotorConfig.Slot1.kD = 0.0;
-    angleMotorConfig.Slot1.kV = 0.5;
+    // angleMotorConfig.Slot1.kV = 0.5;
 
     angleMotorConfig.TorqueCurrent.PeakForwardTorqueCurrent = 60;
     angleMotorConfig.TorqueCurrent.PeakReverseTorqueCurrent = -60;
@@ -87,12 +94,15 @@ public class SwerveModule extends SubsystemBase {
 
     angleMotorConfig.ClosedLoopRamps.TorqueClosedLoopRampPeriod = 0.1;
 
+    angleMotorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
+    angleMotorConfig.Feedback.FeedbackRemoteSensorID = canCoder.getDeviceID();
+    angleMotorConfig.Feedback.SensorToMechanismRatio = 1.0;
+    angleMotorConfig.Feedback.RotorToSensorRatio = Constants.STEER_GEAR_RATIO;
+
     driveMotorConfig.Slot0.kP = 7.0;//8.5
     driveMotorConfig.Slot0.kI = 0.0;//1.0
     driveMotorConfig.Slot0.kD = 0.0;//0.1
     driveMotorConfig.Slot0.kV = 8.0;
-    // 1023.0 / ((12.0 / 1.8) / (DRIVE_SENSOR_VELOCITY_COEFFICIENT));
-                    //0.5
 
     driveMotorConfig.TorqueCurrent.PeakForwardTorqueCurrent = 75;
     driveMotorConfig.TorqueCurrent.PeakReverseTorqueCurrent = -75;
@@ -102,7 +112,8 @@ public class SwerveModule extends SubsystemBase {
     driveMotorConfig.ClosedLoopRamps.TorqueClosedLoopRampPeriod = 0.1;
 
     double absolutePosition = canCoder.getAbsolutePosition().getValue();
-    angleMotor.setRotorPosition(wheelToSteerMotorRotations(absolutePosition));
+    // angleMotor.setRotorPosition(wheelToSteerMotorRotations(absolutePosition));
+    angleMotor.setRotorPosition(absolutePosition);
     driveMotor.setRotorPosition(0.0);
 
     angleMotor.getConfigurator().apply(angleMotorConfig);
@@ -110,9 +121,11 @@ public class SwerveModule extends SubsystemBase {
   }
 
   public void setWheelPID(double angle, double velocity){
+    // method used to move wheel
     SmartDashboard.putNumber("Angle Targeted", angle);
     SmartDashboard.putNumber("Velocity Targeted", velocity);
-    angleMotor.setControl(positionTorqueFOCRequest.withPosition(wheelToSteerMotorRotations(degreesToRotations(Math.toDegrees(angle)))));
+    // angleMotor.setControl(positionTorqueFOCRequest.withPosition(wheelToSteerMotorRotations(degreesToRotations(Math.toDegrees(angle)))));
+    angleMotor.setControl(positionTorqueFOCRequest.withPosition(degreesToRotations(Math.toDegrees(angle))));
     driveMotor.setControl(velocityTorqueFOCRequest.withVelocity(wheelToDriveMotorRotations(velocity)));
   }
 
@@ -169,7 +182,8 @@ public class SwerveModule extends SubsystemBase {
   }
 
   public double getWheelPosition(){
-    double position = steerMotorToWheelRotations(angleMotor.getPosition().getValue());
+    // double position = steerMotorToWheelRotations(angleMotor.getPosition().getValue());
+    double position = angleMotor.getPosition().getValue();
     return Math.toRadians(rotationsToDegrees(position));
   }
 
@@ -226,6 +240,7 @@ public class SwerveModule extends SubsystemBase {
   
   public void drive(Vector vector, double turnValue, double navxAngle){
     if(Math.abs(vector.i) < 0.0001 && Math.abs(vector.j) < 0.0001 && Math.abs(turnValue) < 0.001) {
+      // stops motors when joysticks are at 0
       driveMotor.setControl(velocityTorqueFOCRequest.withVelocity(0.0));
       angleMotor.setControl(velocityTorqueFOCRequestAngleMotor.withVelocity(0.0));
     }
@@ -233,6 +248,7 @@ public class SwerveModule extends SubsystemBase {
       double angleWanted = Math.atan2(vector.j, vector.i);
       double wheelPower = Math.sqrt(Math.pow(vector.i, 2) + Math.pow(vector.j, 2));
 
+      // field centric math
       double angleWithNavx = angleWanted + navxAngle;
 
       double xValueWithNavx = wheelPower * Math.cos(angleWithNavx);
@@ -241,6 +257,7 @@ public class SwerveModule extends SubsystemBase {
       double turnX = turnValue * (Constants.angleToUnitVectorI(torqueAngle()));
       double turnY = turnValue * (Constants.angleToUnitVectorJ(torqueAngle()));
 
+      // adds turn and strafe vectors
       Vector finalVector = new Vector();
       finalVector.i = xValueWithNavx + turnX;
       finalVector.j = yValueWithNavx + turnY;
@@ -263,17 +280,22 @@ public class SwerveModule extends SubsystemBase {
       double currentAngle = getWheelPosition();
       double currentAngleBelow360 = (getWheelPosition()) % (Math.toRadians(360));
 
+      // runs angle through optimizer to optimize wheel motion
       double setpointAngle = findClosestAngle(currentAngleBelow360, finalAngle);
       double setpointAngleFlipped = findClosestAngle(currentAngleBelow360, finalAngle + Math.PI);
 
+      // moves wheel
       if (Math.abs(setpointAngle) <= Math.abs(setpointAngleFlipped)){
+        System.out.println("normal");
         setWheelPID(currentAngle + setpointAngle, velocityRPS);
       } else {
+        System.out.println("flipped");
         setWheelPID(currentAngle + setpointAngleFlipped, -velocityRPS);
       }
   }
 }
 
+  // optimizer
   public double findClosestAngle(double angleA, double angleB){
     double direction = angleB - angleA;
 

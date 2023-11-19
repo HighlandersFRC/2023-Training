@@ -23,6 +23,8 @@ import frc.robot.Tools.PID;
 import frc.robot.Tools.Vector;
 import frc.robot.commands.DriveDefault;
 
+// **Zero Wheels with the bolt head showing on the left when the front side(battery) is facing down/away from you**
+
 public class Drive extends SubsystemBase {
   private final TalonFX frontRightDriveMotor = new TalonFX(1, "Canivore");
   private final TalonFX frontRightAngleMotor = new TalonFX(2, "Canivore");
@@ -38,6 +40,7 @@ public class Drive extends SubsystemBase {
   private final CANcoder backLeftCanCoder = new CANcoder(3, "Canivore");
   private final CANcoder backRightCanCoder = new CANcoder(4, "Canivore");
 
+  // creates all 4 modules
   private final SwerveModule frontRight = new SwerveModule(1, frontRightAngleMotor, frontRightDriveMotor, frontRightCanCoder);
   private final SwerveModule frontLeft = new SwerveModule(2, frontLeftAngleMotor, frontLeftDriveMotor, frontLeftCanCoder);
   private final SwerveModule backLeft = new SwerveModule(3, backLeftAngleMotor, backLeftDriveMotor, backLeftCanCoder);
@@ -45,6 +48,7 @@ public class Drive extends SubsystemBase {
 
   Peripherals peripherals;
 
+  // used for locations(odometry)
   private final double moduleX = ((Constants.ROBOT_LENGTH)/2) - Constants.SWERVE_MODULE_OFFSET;
   private final double moduleY = ((Constants.ROBOT_WIDTH)/2) - Constants.SWERVE_MODULE_OFFSET;
 
@@ -53,6 +57,7 @@ public class Drive extends SubsystemBase {
   Translation2d m_backLeftLocation = new Translation2d(-moduleX, moduleY);
   Translation2d m_backRightLocation = new Translation2d(-moduleX, -moduleY);
 
+  // odometry
   private double currentX = 0;
   private double currentY = 0;
   private double currentTheta = 0;
@@ -91,17 +96,18 @@ public class Drive extends SubsystemBase {
   double setAngle;
   double diffAngle;
 
-  private double xP = 4.0;
+  // path following PID values
+  private double xP = 3.5;
   private double xI = 0.0;
   private double xD = 1.5;
 
-  private double yP = 4.0;
+  private double yP = 3.5;
   private double yI = 0.0;
   private double yD = 1.5;
 
-  private double thetaP = 2.6;
-  private double thetaI = 0;
-  private double thetaD = 1.5;
+  private double thetaP = 3.5;//2.6, 3.1
+  private double thetaI = 0.0;
+  private double thetaD = 1.5;//1.5, 0.8
 
   private PID xPID = new PID(xP, xI, xD);
   private PID yPID = new PID(yP, yI, yD);
@@ -127,6 +133,7 @@ public class Drive extends SubsystemBase {
   }
 
   public void zeroNavx(){
+    // zeros IMU and resets odometry
     peripherals.zeroNavx();
     SwerveModulePosition[] swerveModulePositions = new SwerveModulePosition[4];
     swerveModulePositions[0] = new SwerveModulePosition(frontLeft.getModuleDistance(), new Rotation2d(frontLeft.getCanCoderPositionRadians()));
@@ -164,6 +171,7 @@ public class Drive extends SubsystemBase {
   }
 
   public void init(){
+    // sets configurations
     frontRight.init();
     frontLeft.init();
     backRight.init();
@@ -192,6 +200,7 @@ public class Drive extends SubsystemBase {
   }
 
   public void autoInit(JSONArray pathPoints){
+    // runs at start of auto
     JSONArray firstPoint = pathPoints.getJSONArray(0);
     double firstPointX = firstPoint.getDouble(1);
     double firstPointY = firstPoint.getDouble(2);
@@ -275,6 +284,7 @@ public class Drive extends SubsystemBase {
   }
 
   public void updateOdometryFusedArray(){
+    // updates odometry
     double navxOffset = Math.toRadians(peripherals.getNavxAngle());
 
     // Matrix<N3, N1> stdDeviation = new Matrix<>(Nat.N3(), Nat.N1());
@@ -426,6 +436,7 @@ public class Drive extends SubsystemBase {
   //   return number;
   // }
 
+  // adjust x and y values
   public double adjustX(double originalX, double originalY){
     double adjustedX = originalX * Math.sqrt((1-(Math.pow(originalY, 2))/2));
     return adjustedX;
@@ -437,6 +448,7 @@ public class Drive extends SubsystemBase {
   }
 
   public void drive(double forwardStrafe, double sidewaysStrafe, double turnAmount){
+    // teleop drive method
     updateOdometryFusedArray();
 
     double controllerX = -Math.copySign(forwardStrafe * forwardStrafe, forwardStrafe);
@@ -450,6 +462,7 @@ public class Drive extends SubsystemBase {
     double finalY = adjustedY * Constants.TOP_SPEED;
     double turn = 0.4 * (rightStick * Constants.TOP_SPEED);
 
+    // creates strafe vector
     Vector controllerVector = new Vector();
     controllerVector.i = finalX;
     controllerVector.j = finalY;
@@ -466,6 +479,7 @@ public class Drive extends SubsystemBase {
   }
 
   public void autoDrive(Vector vector, double turnRadiansPerSec){
+    // method for moving in auto
     updateOdometryFusedArray();
 
     double navxOffset = Math.toRadians(peripherals.getNavxAngle());
@@ -594,10 +608,10 @@ public class Drive extends SubsystemBase {
     SmartDashboard.putNumber("3 Position", Math.toDegrees(backLeft.getWheelPosition()));
     SmartDashboard.putNumber("4 Position", Math.toDegrees(backRight.getWheelPosition()));
 
-    // SmartDashboard.putNumber("1 CanCoder", Constants.rotationsToDegrees(frontRightCanCoder.getAbsolutePosition().getValue()));
-    // SmartDashboard.putNumber("2 CanCoder", Constants.rotationsToDegrees(frontLeftCanCoder.getAbsolutePosition().getValue()));
-    // SmartDashboard.putNumber("3 CanCoder", Constants.rotationsToDegrees(backLeftCanCoder.getAbsolutePosition().getValue()));
-    // SmartDashboard.putNumber("4 CanCoder", Constants.rotationsToDegrees(backRightCanCoder.getAbsolutePosition().getValue()));
+    SmartDashboard.putNumber("1 CanCoder", Constants.rotationsToDegrees(frontRightCanCoder.getAbsolutePosition().getValue()));
+    SmartDashboard.putNumber("2 CanCoder", Constants.rotationsToDegrees(frontLeftCanCoder.getAbsolutePosition().getValue()));
+    SmartDashboard.putNumber("3 CanCoder", Constants.rotationsToDegrees(backLeftCanCoder.getAbsolutePosition().getValue()));
+    SmartDashboard.putNumber("4 CanCoder", Constants.rotationsToDegrees(backRightCanCoder.getAbsolutePosition().getValue()));
 
     SmartDashboard.putNumber("1 Speed", frontRight.getGroundSpeed());
     // SmartDashboard.putNumber("2 Speed", frontLeft.getWheelSpeed());
@@ -610,5 +624,8 @@ public class Drive extends SubsystemBase {
     // SmartDashboard.putNumber("Fused X", getFusedOdometryX());
     // SmartDashboard.putNumber("Fused Y", getFusedOdometryY());
     // SmartDashboard.putNumber("Fused Angle", getFusedOdometryTheta());
+
+    SmartDashboard.putNumber("encoder position", Constants.rotationsToDegrees(frontLeftCanCoder.getAbsolutePosition().getValue()));
+    SmartDashboard.putNumber("steer position", frontLeftAngleMotor.getPosition().getValue());
   }
 }
