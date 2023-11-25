@@ -102,7 +102,7 @@ public class SwerveModule extends SubsystemBase {
     driveMotorConfig.Slot0.kP = 7.0;//8.5
     driveMotorConfig.Slot0.kI = 0.0;//1.0
     driveMotorConfig.Slot0.kD = 0.0;//0.1
-    driveMotorConfig.Slot0.kV = 8.0;
+    driveMotorConfig.Slot0.kV = 13.0;
 
     driveMotorConfig.TorqueCurrent.PeakForwardTorqueCurrent = 75;
     driveMotorConfig.TorqueCurrent.PeakReverseTorqueCurrent = -75;

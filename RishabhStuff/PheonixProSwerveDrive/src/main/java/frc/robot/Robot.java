@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.MoveWheelToAngle;
 import frc.robot.commands.ZeroNavx;
 import frc.robot.commands.autos.MoveForwardAuto;
+import frc.robot.commands.autos.ThreePieceAuto;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Peripherals;
 
@@ -64,14 +65,15 @@ public class Robot extends LoggedRobot {
     logger.start();
 
     try {
-      pathingFile = new File("/home/lvuser/deploy/IcebabyTestAuto.json");
+      pathingFile = new File("/home/lvuser/deploy/2PiecePart1.json");
       FileReader scanner = new FileReader(pathingFile);
       pathRead = new JSONObject(new JSONTokener(scanner));
       pathJSON = (JSONArray) pathRead.get("sampled_points");
     } catch (Exception e) {
       System.out.println("ERROR WITH PATH FILE " + e);
     }
-    this.auto = new MoveForwardAuto(drive, peripherals);
+    // this.auto = new ThreePieceAuto(drive, peripherals);
+    this.auto = new ThreePieceAuto(drive, peripherals);
     auto.schedule();
   }
 
