@@ -72,7 +72,7 @@ public class Robot extends LoggedRobot {
     } catch (Exception e) {
       System.out.println("ERROR WITH PATH FILE " + e);
     }
-    // this.auto = new ThreePieceAuto(drive, peripherals);
+    
     this.auto = new ThreePieceAuto(drive, peripherals);
     auto.schedule();
   }

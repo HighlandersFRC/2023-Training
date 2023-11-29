@@ -97,7 +97,7 @@ public class Drive extends SubsystemBase {
   double diffAngle;
 
   // path following PID values
-  private double xP = 4.0; //3, 1.5
+  private double xP = 4.0; 
   private double xI = 0.0;
   private double xD = 1.2;
 
@@ -105,9 +105,9 @@ public class Drive extends SubsystemBase {
   private double yI = 0.0;
   private double yD = 1.2;
 
-  private double thetaP = 3.1;//2.6, 3.1, 2.8
+  private double thetaP = 2.1;
   private double thetaI = 0.0;
-  private double thetaD = 0.8;//1.5, 0.8, 1.0
+  private double thetaD = 0.8;
 
   private PID xPID = new PID(xP, xI, xD);
   private PID yPID = new PID(yP, yI, yD);
@@ -213,8 +213,7 @@ public class Drive extends SubsystemBase {
 
     // if(getFieldSide() == "blue") {
     //   firstPointX = Constants.FIELD_LENGTH - firstPointX;
-    //   firstPointAngle = firstPointAngle - Math.PI;
-    //   // firstPointAngle = Math.PI - firstPointAngle;
+      // firstPointAngle = Math.PI - firstPointAngle;
     //   firstPointY = Constants.FIELD_WIDTH - firstPointY;
     // }
         
@@ -447,9 +446,6 @@ public class Drive extends SubsystemBase {
     controllerVector.i = finalX;
     controllerVector.j = finalY;
 
-    // SmartDashboard.putNumber("Joystick Y", finalY);
-    // SmartDashboard.putNumber("Joystick X", finalX);
-    // SmartDashboard.putNumber("Right Joystick", turn);
     double navxAngle = Math.toRadians(peripherals.getNavxAngle());
 
     backRight.drive(controllerVector, turn, navxAngle);
@@ -502,8 +498,7 @@ public class Drive extends SubsystemBase {
 
         // if(getFieldSide() == "blue") {
         //     targetX = Constants.FIELD_LENGTH - targetX;
-        //     // targetTheta = Math.PI - targetTheta;
-        //     targetTheta = targetTheta - Math.PI;
+            // targetTheta = Math.PI - targetTheta;
         //     targetY = Constants.FIELD_WIDTH - targetY;
         // }
 
@@ -520,8 +515,7 @@ public class Drive extends SubsystemBase {
 
         // if(getFieldSide() == "blue") {
         //     currentPointX = Constants.FIELD_LENGTH - currentPointX;
-        //     // currentPointTheta = Math.PI - currentPointTheta;
-        //     currentPointTheta = currentPointTheta - Math.PI;
+            // currentPointTheta = Math.PI - currentPointTheta;
         //     currentPointY = Constants.FIELD_WIDTH - currentPointY;
         // }
 
@@ -533,7 +527,7 @@ public class Drive extends SubsystemBase {
         yPID.updatePID(currentY);
         thetaPID.updatePID(currentTheta);
 
-        xPID.setSetPoint(targetX);
+        xPID.setSetPoint(targetX); // need to update before setting a point
         yPID.setSetPoint(targetY);
         thetaPID.setSetPoint(targetTheta);
 
@@ -551,19 +545,19 @@ public class Drive extends SubsystemBase {
 
         double[] velocityArray = new double[3];
 
-        // if ((Math.abs(targetX - currentPointX)) < 0.01 && (Math.abs(targetY - currentPointY)) < 0.01 && (Math.abs(targetTheta - currentPointTheta)) < (Math.toRadians(1.0))){
-        //   velocityArray[0] = 0.0;
-        //   velocityArray[1] = 0.0;
-        //   velocityArray[2] = 0.0; 
-        // } else {
-        //   velocityArray[0] = xVel;
-        //   velocityArray[1] = -yVel;
-        //   velocityArray[2] = thetaVel;
-        // }
+        if ((Math.abs(targetX - currentPointX)) < 0.01 && (Math.abs(targetY - currentPointY)) < 0.01 && (Math.abs(targetTheta - currentPointTheta)) < (Math.toRadians(0.5))){
+          velocityArray[0] = 0.0;
+          velocityArray[1] = 0.0;
+          velocityArray[2] = 0.0; 
+        } else {
+          velocityArray[0] = xVel;
+          velocityArray[1] = -yVel;
+          velocityArray[2] = thetaVel;
+        }
 
-        velocityArray[0] = xVel;
-        velocityArray[1] = -yVel;
-        velocityArray[2] = thetaVel;
+        // velocityArray[0] = xVel;
+        // velocityArray[1] = -yVel;
+        // velocityArray[2] = thetaVel;
 
         // System.out.println("Target Point: " + targetPoint);
         System.out.println("Time: " + currentPointTime + " X: " + xVel + " Y: " + -yVel + " Theta: " + thetaVel);
