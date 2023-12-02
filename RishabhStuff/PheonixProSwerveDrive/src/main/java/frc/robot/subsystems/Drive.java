@@ -105,7 +105,7 @@ public class Drive extends SubsystemBase {
   private double yI = 0.0;
   private double yD = 1.2;
 
-  private double thetaP = 2.1;
+  private double thetaP = 1.5;
   private double thetaI = 0.0;
   private double thetaD = 0.8;
 
@@ -193,10 +193,10 @@ public class Drive extends SubsystemBase {
     yPID.setMinOutput(-4.9);
     yPID.setMaxOutput(4.9);
 
-    thetaPID.setMinOutput(-(Constants.TOP_SPEED)/(Constants.ROBOT_RADIUS));
-    thetaPID.setMaxOutput((Constants.TOP_SPEED)/(Constants.ROBOT_RADIUS));
-    // thetaPID.setMinOutput(-1.0);
-    // thetaPID.setMaxOutput(1.0);
+    // thetaPID.setMinOutput(-(Constants.TOP_SPEED)/(Constants.ROBOT_RADIUS));
+    // thetaPID.setMaxOutput((Constants.TOP_SPEED)/(Constants.ROBOT_RADIUS));
+    thetaPID.setMinOutput(-1.0);
+    thetaPID.setMaxOutput(1.0);
 
     setDefaultCommand(new DriveDefault(this));
   }
