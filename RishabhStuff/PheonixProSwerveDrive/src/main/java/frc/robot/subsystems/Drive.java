@@ -107,7 +107,7 @@ public class Drive extends SubsystemBase {
 
   private double thetaP = 1.5;
   private double thetaI = 0.0;
-  private double thetaD = 0.8;
+  private double thetaD = 0.5;
 
   private PID xPID = new PID(xP, xI, xD);
   private PID yPID = new PID(yP, yI, yD);
