@@ -83,9 +83,9 @@ public class ThreePieceAuto extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       new AutonomousFollower(drive, pathJSON, false),
-      new AutonomousFollower(drive, pathJSON2, false),
-      new AutonomousFollower(drive, pathJSON3, false),
-      new AutonomousFollower(drive, pathJSON4, false)
+      new AutonomousFollower(drive, pathJSON2, false)
+      // new AutonomousFollower(drive, pathJSON3, false),
+      // new AutonomousFollower(drive, pathJSON4, false)
     );
   }
 }

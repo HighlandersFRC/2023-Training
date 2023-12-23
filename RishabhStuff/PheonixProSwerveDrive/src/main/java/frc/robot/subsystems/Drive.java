@@ -187,16 +187,16 @@ public class Drive extends SubsystemBase {
     backRightDriveMotor.setInverted(false);
     backLeftDriveMotor.setInverted(false);
 
-    xPID.setMinOutput(-4.9);
-    xPID.setMaxOutput(4.9);
+    xPID.setMinOutput(-4.5);
+    xPID.setMaxOutput(4.5);
 
-    yPID.setMinOutput(-4.9);
-    yPID.setMaxOutput(4.9);
+    yPID.setMinOutput(-4.5);
+    yPID.setMaxOutput(4.5);
 
     // thetaPID.setMinOutput(-(Constants.TOP_SPEED)/(Constants.ROBOT_RADIUS));
     // thetaPID.setMaxOutput((Constants.TOP_SPEED)/(Constants.ROBOT_RADIUS));
-    thetaPID.setMinOutput(-1.0);
-    thetaPID.setMaxOutput(1.0);
+    thetaPID.setMinOutput(-0.8);
+    thetaPID.setMaxOutput(0.8);
 
     setDefaultCommand(new DriveDefault(this));
   }
