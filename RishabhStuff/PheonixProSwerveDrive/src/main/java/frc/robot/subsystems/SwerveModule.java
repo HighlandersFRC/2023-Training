@@ -239,7 +239,7 @@ public class SwerveModule extends SubsystemBase {
   }
   
   public void drive(Vector vector, double turnValue, double navxAngle){
-    if(Math.abs(vector.i) < 0.0001 && Math.abs(vector.j) < 0.0001 && Math.abs(turnValue) < 0.001) {
+    if(Math.abs(vector.i) < 0.0001 && Math.abs(vector.j) < 0.0001 && Math.abs(turnValue) < 0.01) {
       // stops motors when joysticks are at 0
       driveMotor.setControl(velocityTorqueFOCRequest.withVelocity(0.0));
       angleMotor.setControl(velocityTorqueFOCRequestAngleMotor.withVelocity(0.0));

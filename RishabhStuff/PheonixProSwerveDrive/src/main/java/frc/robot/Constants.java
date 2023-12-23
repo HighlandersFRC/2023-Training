@@ -230,4 +230,12 @@ public final class Constants {
   public static double getArmExtensionInchesFromRotations(double rotations) {
     return getArmExtensionInches(rotations) * FALCON_TICS_PER_ROTATION;
   }
+
+  public static void increaseWristOffset() {
+    wristOffsetMidMatch += 3.75;
+  }
+
+  public static void decreaseWristOffset() {
+    wristOffsetMidMatch -= 3.75;
+  }
 }
