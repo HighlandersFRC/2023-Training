@@ -39,7 +39,7 @@ public class ThreePieceAuto extends SequentialCommandGroup {
   /** Creates a new ThreePieceAuto. */
   public ThreePieceAuto(Drive drive, Peripherals peripherals) {
     try {
-      pathingFile = new File("/home/lvuser/deploy/2PiecePart1.json");
+      pathingFile = new File("/home/lvuser/deploy/CurveTest.json");
       FileReader scanner = new FileReader(pathingFile);
       pathRead = new JSONObject(new JSONTokener(scanner));
       pathJSON = (JSONArray) pathRead.get("sampled_points");
@@ -82,8 +82,8 @@ public class ThreePieceAuto extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new AutonomousFollower(drive, pathJSON, false),
-      new AutonomousFollower(drive, pathJSON2, false)
+      new AutonomousFollower(drive, pathJSON, false)
+      // new AutonomousFollower(drive, pathJSON2, false)
       // new AutonomousFollower(drive, pathJSON3, false),
       // new AutonomousFollower(drive, pathJSON4, false)
     );
