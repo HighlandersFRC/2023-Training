@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
@@ -30,8 +29,6 @@ public class SwerveModule extends SubsystemBase {
   VelocityTorqueCurrentFOC velocityTorqueFOCRequest = new VelocityTorqueCurrentFOC(0, 0, 0, false);
   VelocityTorqueCurrentFOC velocityTorqueFOCRequestAngleMotor = new VelocityTorqueCurrentFOC(0, 0, 1, false);
 
-  private static final double DRIVE_SENSOR_POSITION_COEFFICIENT = (2 * Math.PI * Constants.WHEEL_Radius) / Constants.GEAR_RATIO;
-  private static final double DRIVE_SENSOR_VELOCITY_COEFFICIENT = DRIVE_SENSOR_POSITION_COEFFICIENT;
   /** Creates a new SwerveModule. */
   public SwerveModule(int mModuleNum, TalonFX mAngleMotor, TalonFX mDriveMotor, CANcoder mCanCoder) {
     // creates values for a single module
@@ -182,7 +179,6 @@ public class SwerveModule extends SubsystemBase {
   }
 
   public double getWheelPosition(){
-    // double position = steerMotorToWheelRotations(angleMotor.getPosition().getValue());
     double position = angleMotor.getPosition().getValue();
     return Math.toRadians(rotationsToDegrees(position));
   }
@@ -215,17 +211,14 @@ public class SwerveModule extends SubsystemBase {
 
   public double getGroundSpeed(){
     return RPSToMPS(getWheelSpeed());
-    // return driveMotor.getVelocity().getValue();
   }
 
   public double getAngleMotorSetpoint(){
-    // return angleMotor.getClosedLoopReference().getValue() * 2 * Math.PI;
     return angleMotor.getClosedLoopReference().getValue();
   }
 
   public double getDriveMotorSetpoint(){
     return RPSToMPS(driveMotorToWheelRotations(driveMotor.getClosedLoopReference().getValue()));
-    // return driveMotor.getClosedLoopReference().getValue();
   }
 
   public double getJoystickAngle(double joystickY, double joystickX) {

@@ -97,17 +97,17 @@ public class Drive extends SubsystemBase {
   double diffAngle;
 
   // path following PID values
-  private double xP = 3.5; 
+  private double xP = 2.7; 
   private double xI = 0.0;
-  private double xD = 1.2;
+  private double xD = 1.0;
 
-  private double yP = 3.5;
+  private double yP = 2.7;
   private double yI = 0.0;
-  private double yD = 1.2;
+  private double yD = 1.0;
 
-  private double thetaP = 1.8;
+  private double thetaP = 1.5;
   private double thetaI = 0.0;
-  private double thetaD = 0.5;
+  private double thetaD = 0.3;
 
   private PID xPID = new PID(xP, xI, xD);
   private PID yPID = new PID(yP, yI, yD);
@@ -523,13 +523,13 @@ public class Drive extends SubsystemBase {
         double feedForwardY = (targetY - currentPointY)/(targetTime - currentPointTime);
         double feedForwardTheta = -(targetTheta - currentPointTheta)/(targetTime - currentPointTime);
 
+        xPID.setSetPoint(targetX);
+        yPID.setSetPoint(targetY);
+        thetaPID.setSetPoint(targetTheta);
+
         xPID.updatePID(currentX);
         yPID.updatePID(currentY);
         thetaPID.updatePID(currentTheta);
-
-        xPID.setSetPoint(targetX); // need to update before setting a point
-        yPID.setSetPoint(targetY);
-        thetaPID.setSetPoint(targetTheta);
 
         double xVelNoFF = xPID.getResult();
         double yVelNoFF = yPID.getResult();
@@ -545,19 +545,19 @@ public class Drive extends SubsystemBase {
 
         double[] velocityArray = new double[3];
 
-        if ((Math.abs(targetX - currentPointX)) < 0.01 && (Math.abs(targetY - currentPointY)) < 0.01 && (Math.abs(targetTheta - currentPointTheta)) < (Math.toRadians(0.5))){
-          velocityArray[0] = 0.0;
-          velocityArray[1] = 0.0;
-          velocityArray[2] = 0.0; 
-        } else {
-          velocityArray[0] = xVel;
-          velocityArray[1] = -yVel;
-          velocityArray[2] = thetaVel;
-        }
+        // if ((Math.abs(targetX - currentPointX)) < 0.01 && (Math.abs(targetY - currentPointY)) < 0.01 && (Math.abs(targetTheta - currentPointTheta)) < (Math.toRadians(0.5))){
+        //   velocityArray[0] = 0.0;
+        //   velocityArray[1] = 0.0;
+        //   velocityArray[2] = 0.0; 
+        // } else {
+        //   velocityArray[0] = xVel;
+        //   velocityArray[1] = -yVel;
+        //   velocityArray[2] = thetaVel;
+        // }
 
-        // velocityArray[0] = xVel;
-        // velocityArray[1] = -yVel;
-        // velocityArray[2] = thetaVel;
+        velocityArray[0] = xVel;
+        velocityArray[1] = -yVel;
+        velocityArray[2] = thetaVel;
 
         // System.out.println("Target Point: " + targetPoint);
         System.out.println("Time: " + currentPointTime + " X: " + xVel + " Y: " + -yVel + " Theta: " + thetaVel);
