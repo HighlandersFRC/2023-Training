@@ -97,17 +97,17 @@ public class Drive extends SubsystemBase {
   double diffAngle;
 
   // path following PID values
-  private double xP = 2.8; 
+  private double xP = 4.0; 
   private double xI = 0.0;
-  private double xD = 1.0;
+  private double xD = 1.2;
 
-  private double yP = 2.8;
+  private double yP = 4.0;
   private double yI = 0.0;
-  private double yD = 1.0;
+  private double yD = 1.2;
 
-  private double thetaP = 1.0;
+  private double thetaP = 3.1;
   private double thetaI = 0.0;
-  private double thetaD = 0.5;
+  private double thetaD = 0.8;
 
   private PID xPID = new PID(xP, xI, xD);
   private PID yPID = new PID(yP, yI, yD);
@@ -187,16 +187,16 @@ public class Drive extends SubsystemBase {
     backRightDriveMotor.setInverted(false);
     backLeftDriveMotor.setInverted(false);
 
-    xPID.setMinOutput(-4.5);
-    xPID.setMaxOutput(4.5);
+    xPID.setMinOutput(-4.9);
+    xPID.setMaxOutput(4.9);
 
-    yPID.setMinOutput(-4.5);
-    yPID.setMaxOutput(4.5);
+    yPID.setMinOutput(-4.9);
+    yPID.setMaxOutput(4.9);
 
-    // thetaPID.setMinOutput(-(Constants.TOP_SPEED)/(Constants.ROBOT_RADIUS));
-    // thetaPID.setMaxOutput((Constants.TOP_SPEED)/(Constants.ROBOT_RADIUS));
-    thetaPID.setMinOutput(-1.0);
-    thetaPID.setMaxOutput(1.0);
+    thetaPID.setMinOutput(-(Constants.TOP_SPEED)/(Constants.ROBOT_RADIUS));
+    thetaPID.setMaxOutput((Constants.TOP_SPEED)/(Constants.ROBOT_RADIUS));
+    // thetaPID.setMinOutput(-1.0);
+    // thetaPID.setMaxOutput(1.0);
 
     setDefaultCommand(new DriveDefault(this));
   }
