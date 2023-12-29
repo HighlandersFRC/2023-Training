@@ -75,14 +75,13 @@ public class SwerveModule extends SubsystemBase {
     TalonFXConfiguration angleMotorConfig = new TalonFXConfiguration();
     TalonFXConfiguration driveMotorConfig = new TalonFXConfiguration();
 
-    angleMotorConfig.Slot0.kP = 300.0;//170, 60
+    angleMotorConfig.Slot0.kP = 300.0; //300
     angleMotorConfig.Slot0.kI = 0.0;
-    angleMotorConfig.Slot0.kD = 7.5;//4, 1
+    angleMotorConfig.Slot0.kD = 7.5; //7.5
 
     angleMotorConfig.Slot1.kP = 3.0;
     angleMotorConfig.Slot1.kI = 0.0;
     angleMotorConfig.Slot1.kD = 0.0;
-    // angleMotorConfig.Slot1.kV = 0.5;
 
     angleMotorConfig.TorqueCurrent.PeakForwardTorqueCurrent = 60;
     angleMotorConfig.TorqueCurrent.PeakReverseTorqueCurrent = -60;
@@ -95,12 +94,18 @@ public class SwerveModule extends SubsystemBase {
     angleMotorConfig.Feedback.FeedbackRemoteSensorID = canCoder.getDeviceID();
     angleMotorConfig.Feedback.SensorToMechanismRatio = 1.0;
     angleMotorConfig.Feedback.RotorToSensorRatio = Constants.STEER_GEAR_RATIO;
-
-    driveMotorConfig.Slot0.kP = 7.0;//8.5
-    driveMotorConfig.Slot0.kI = 0.0;//1.0
-    driveMotorConfig.Slot0.kD = 0.0;//0.1
-    driveMotorConfig.Slot0.kV = 13.0;
-
+    
+    if(moduleNumber == 2 || moduleNumber == 3) {
+      driveMotorConfig.Slot0.kP = 7.0; //7
+      driveMotorConfig.Slot0.kI = 0.0;
+      driveMotorConfig.Slot0.kD = 0.0;
+      driveMotorConfig.Slot0.kV = 0.0; //13
+    } else {
+      driveMotorConfig.Slot0.kP = 7.0;
+      driveMotorConfig.Slot0.kI = 0.0;
+      driveMotorConfig.Slot0.kD = 0.0;
+      driveMotorConfig.Slot0.kV = 0.0;
+    }
     driveMotorConfig.TorqueCurrent.PeakForwardTorqueCurrent = 75;
     driveMotorConfig.TorqueCurrent.PeakReverseTorqueCurrent = -75;
 
@@ -279,10 +284,8 @@ public class SwerveModule extends SubsystemBase {
 
       // moves wheel
       if (Math.abs(setpointAngle) <= Math.abs(setpointAngleFlipped)){
-        System.out.println("normal");
         setWheelPID(currentAngle + setpointAngle, velocityRPS);
       } else {
-        System.out.println("flipped");
         setWheelPID(currentAngle + setpointAngleFlipped, -velocityRPS);
       }
   }

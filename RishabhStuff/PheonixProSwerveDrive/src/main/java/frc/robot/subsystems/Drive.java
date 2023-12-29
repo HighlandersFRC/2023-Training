@@ -97,23 +97,23 @@ public class Drive extends SubsystemBase {
   double diffAngle;
 
   // path following PID values
-  private double xP = 2.7; 
+  private double xP = 2.8; 
   private double xI = 0.0;
   private double xD = 1.0;
 
-  private double yP = 2.7;
+  private double yP = 2.8;
   private double yI = 0.0;
   private double yD = 1.0;
 
-  private double thetaP = 1.5;
+  private double thetaP = 1.0;
   private double thetaI = 0.0;
-  private double thetaD = 0.3;
+  private double thetaD = 0.5;
 
   private PID xPID = new PID(xP, xI, xD);
   private PID yPID = new PID(yP, yI, yD);
   private PID thetaPID = new PID(thetaP, thetaI, thetaD);
 
-  private String fieldSide = "blue";
+  private String fieldSide = "red";
 
   private int lookAheadDistance = 5;
   
@@ -207,15 +207,11 @@ public class Drive extends SubsystemBase {
     double firstPointX = firstPoint.getDouble(1);
     double firstPointY = firstPoint.getDouble(2);
     double firstPointAngle = firstPoint.getDouble(3);
-    SmartDashboard.putNumber("1x", firstPointX);
-    SmartDashboard.putNumber("1y", firstPointY);
-    SmartDashboard.putNumber("1angle", firstPointAngle);
 
-    // if(getFieldSide() == "blue") {
-    //   firstPointX = Constants.FIELD_LENGTH - firstPointX;
-      // firstPointAngle = Math.PI - firstPointAngle;
-    //   firstPointY = Constants.FIELD_WIDTH - firstPointY;
-    // }
+    if(getFieldSide() == "blue") {
+      firstPointX = Constants.FIELD_LENGTH - firstPointX;
+      firstPointAngle = Math.PI - firstPointAngle;
+    }
         
     peripherals.setNavxAngle(Math.toDegrees(firstPointAngle));
     SwerveModulePosition[] swerveModulePositions = new SwerveModulePosition[4];
@@ -247,7 +243,7 @@ public class Drive extends SubsystemBase {
 
     initTime = Timer.getFPGATimestamp();
 
-    // updateOdometryFusedArray();
+    updateOdometryFusedArray();
   }
 
   public void setFieldSide(String side){
@@ -485,7 +481,7 @@ public class Drive extends SubsystemBase {
             double currentPointTime = currentPoint.getDouble(0);
             double previousPointTime = previousPoint.getDouble(0);
 
-            if(time > previousPointTime && time < currentPointTime){
+            if(time >= previousPointTime && time < currentPointTime){
                 targetPoint = pathPoints.getJSONArray(i + (lookAheadDistance - 1));
                 break;
             }
@@ -496,28 +492,26 @@ public class Drive extends SubsystemBase {
         double targetY = targetPoint.getDouble(2);
         double targetTheta = targetPoint.getDouble(3);
 
-        // if(getFieldSide() == "blue") {
-        //     targetX = Constants.FIELD_LENGTH - targetX;
-            // targetTheta = Math.PI - targetTheta;
-        //     targetY = Constants.FIELD_WIDTH - targetY;
-        // }
+        if(getFieldSide() == "blue") {
+            targetX = Constants.FIELD_LENGTH - targetX;
+            targetTheta = Math.PI - targetTheta;
+        }
 
-        // if (targetTheta - currentTheta > Math.PI){
-        //     targetTheta -= 2 * Math.PI;
-        // } else if (targetTheta - currentTheta < -Math.PI){
-        //     targetTheta += 2 * Math.PI;
-        // }
+        if (targetTheta - currentTheta > Math.PI){
+            targetTheta -= 2 * Math.PI;
+        } else if (targetTheta - currentTheta < -Math.PI){
+            targetTheta += 2 * Math.PI;
+        }
 
         double currentPointTime = currentPoint.getDouble(0);
         double currentPointX = currentPoint.getDouble(1);
         double currentPointY = currentPoint.getDouble(2);
         double currentPointTheta = currentPoint.getDouble(3);
 
-        // if(getFieldSide() == "blue") {
-        //     currentPointX = Constants.FIELD_LENGTH - currentPointX;
-            // currentPointTheta = Math.PI - currentPointTheta;
-        //     currentPointY = Constants.FIELD_WIDTH - currentPointY;
-        // }
+        if(getFieldSide() == "blue") {
+            currentPointX = Constants.FIELD_LENGTH - currentPointX;
+            currentPointTheta = Math.PI - currentPointTheta;
+        }
 
         double feedForwardX = (targetX - currentPointX)/(targetTime - currentPointTime);
         double feedForwardY = (targetY - currentPointY)/(targetTime - currentPointTime);
@@ -526,7 +520,7 @@ public class Drive extends SubsystemBase {
         xPID.setSetPoint(targetX);
         yPID.setSetPoint(targetY);
         thetaPID.setSetPoint(targetTheta);
-
+        
         xPID.updatePID(currentX);
         yPID.updatePID(currentY);
         thetaPID.updatePID(currentTheta);
@@ -560,7 +554,7 @@ public class Drive extends SubsystemBase {
         velocityArray[2] = thetaVel;
 
         // System.out.println("Target Point: " + targetPoint);
-        System.out.println("Time: " + currentPointTime + " X: " + xVel + " Y: " + -yVel + " Theta: " + thetaVel);
+        // System.out.println("Time: " + currentPointTime + " X: " + xVel + " Y: " + -yVel + " Theta: " + thetaVel);
 
         return velocityArray;
     }
