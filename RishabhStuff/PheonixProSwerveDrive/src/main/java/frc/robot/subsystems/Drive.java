@@ -195,8 +195,6 @@ public class Drive extends SubsystemBase {
 
     thetaPID.setMinOutput(-(Constants.TOP_SPEED)/(Constants.ROBOT_RADIUS));
     thetaPID.setMaxOutput((Constants.TOP_SPEED)/(Constants.ROBOT_RADIUS));
-    // thetaPID.setMinOutput(-1.0);
-    // thetaPID.setMaxOutput(1.0);
 
     setDefaultCommand(new DriveDefault(this));
   }
