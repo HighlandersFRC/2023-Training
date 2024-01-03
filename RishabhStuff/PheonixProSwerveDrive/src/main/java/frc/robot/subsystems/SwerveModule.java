@@ -75,9 +75,9 @@ public class SwerveModule extends SubsystemBase {
     TalonFXConfiguration angleMotorConfig = new TalonFXConfiguration();
     TalonFXConfiguration driveMotorConfig = new TalonFXConfiguration();
 
-    angleMotorConfig.Slot0.kP = 300.0; //300
+    angleMotorConfig.Slot0.kP = 300.0;
     angleMotorConfig.Slot0.kI = 0.0;
-    angleMotorConfig.Slot0.kD = 7.5; //7.5
+    angleMotorConfig.Slot0.kD = 7.5;
 
     angleMotorConfig.Slot1.kP = 3.0;
     angleMotorConfig.Slot1.kI = 0.0;
@@ -96,10 +96,10 @@ public class SwerveModule extends SubsystemBase {
     angleMotorConfig.Feedback.RotorToSensorRatio = Constants.STEER_GEAR_RATIO;
     
     if(moduleNumber == 2 || moduleNumber == 3) {
-      driveMotorConfig.Slot0.kP = 7.0; //7
+      driveMotorConfig.Slot0.kP = 7.0;
       driveMotorConfig.Slot0.kI = 0.0;
       driveMotorConfig.Slot0.kD = 0.0;
-      driveMotorConfig.Slot0.kV = 0.0; //13
+      driveMotorConfig.Slot0.kV = 0.0;
     } else {
       driveMotorConfig.Slot0.kP = 7.0;
       driveMotorConfig.Slot0.kI = 0.0;
@@ -114,7 +114,6 @@ public class SwerveModule extends SubsystemBase {
     driveMotorConfig.ClosedLoopRamps.TorqueClosedLoopRampPeriod = 0.1;
 
     double absolutePosition = canCoder.getAbsolutePosition().getValue();
-    // angleMotor.setRotorPosition(wheelToSteerMotorRotations(absolutePosition));
     angleMotor.setRotorPosition(absolutePosition);
     driveMotor.setRotorPosition(0.0);
 
@@ -126,7 +125,6 @@ public class SwerveModule extends SubsystemBase {
     // method used to move wheel
     SmartDashboard.putNumber("Angle Targeted", angle);
     SmartDashboard.putNumber("Velocity Targeted", velocity);
-    // angleMotor.setControl(positionTorqueFOCRequest.withPosition(wheelToSteerMotorRotations(degreesToRotations(Math.toDegrees(angle)))));
     angleMotor.setControl(positionTorqueFOCRequest.withPosition(degreesToRotations(Math.toDegrees(angle))));
     driveMotor.setControl(velocityTorqueFOCRequest.withVelocity(wheelToDriveMotorRotations(velocity)));
   }
@@ -236,6 +234,7 @@ public class SwerveModule extends SubsystemBase {
     return position;
   }
   
+  // main drive method
   public void drive(Vector vector, double turnValue, double navxAngle){
     if(Math.abs(vector.i) < 0.0001 && Math.abs(vector.j) < 0.0001 && Math.abs(turnValue) < 0.001) {
       // stops motors when joysticks are at 0

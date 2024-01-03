@@ -48,10 +48,11 @@ public class Drive extends SubsystemBase {
 
   Peripherals peripherals;
 
-  // used for locations(odometry)
+  // xy position of module based on robot width and distance from edge of robot
   private final double moduleX = ((Constants.ROBOT_LENGTH)/2) - Constants.SWERVE_MODULE_OFFSET;
   private final double moduleY = ((Constants.ROBOT_WIDTH)/2) - Constants.SWERVE_MODULE_OFFSET;
 
+  // Locations for the swerve drive modules relative to the robot center.
   Translation2d m_frontLeftLocation = new Translation2d(moduleX, moduleY);
   Translation2d m_frontRightLocation = new Translation2d(moduleX, -moduleY);
   Translation2d m_backLeftLocation = new Translation2d(-moduleX, moduleY);
@@ -83,8 +84,10 @@ public class Drive extends SubsystemBase {
   private double previousY = 0;
   private double previousTheta = 0;
 
+  // array for fused odometry
   private double[] currentFusedOdometry = new double[3];
 
+  // Creating my kinematics object using the module locations
   SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
   m_frontLeftLocation, m_frontRightLocation, m_backLeftLocation, m_backRightLocation
   );
@@ -97,17 +100,17 @@ public class Drive extends SubsystemBase {
   double diffAngle;
 
   // path following PID values
-  private double xP = 4.0; 
+  private double xP = 3.5; 
   private double xI = 0.0;
-  private double xD = 1.2;
+  private double xD = 1.5;
 
-  private double yP = 4.0;
+  private double yP = 3.5;
   private double yI = 0.0;
-  private double yD = 1.2;
+  private double yD = 1.5;
 
-  private double thetaP = 3.1;
+  private double thetaP = 2.7;
   private double thetaI = 0.0;
-  private double thetaD = 0.8;
+  private double thetaD = 1.0;
 
   private PID xPID = new PID(xP, xI, xD);
   private PID yPID = new PID(yP, yI, yD);
@@ -132,8 +135,8 @@ public class Drive extends SubsystemBase {
     m_odometry = new SwerveDrivePoseEstimator(m_kinematics, new Rotation2d(peripherals.getNavxAngle()), swerveModulePositions, m_pose);
   }
 
+  // method to zeroNavx mid match and reset odometry with zeroed angle
   public void zeroNavx(){
-    // zeros IMU and resets odometry
     peripherals.zeroNavx();
     SwerveModulePosition[] swerveModulePositions = new SwerveModulePosition[4];
     swerveModulePositions[0] = new SwerveModulePosition(frontLeft.getModuleDistance(), new Rotation2d(frontLeft.getCanCoderPositionRadians()));
@@ -171,7 +174,7 @@ public class Drive extends SubsystemBase {
   }
 
   public void init(){
-    // sets configurations
+    // sets configurations when run on robot initalization
     frontRight.init();
     frontLeft.init();
     backRight.init();
@@ -200,12 +203,13 @@ public class Drive extends SubsystemBase {
   }
 
   public void autoInit(JSONArray pathPoints){
-    // runs at start of auto
+    // runs at start of autonomous
     JSONArray firstPoint = pathPoints.getJSONArray(0);
     double firstPointX = firstPoint.getDouble(1);
     double firstPointY = firstPoint.getDouble(2);
     double firstPointAngle = firstPoint.getDouble(3);
 
+    // changing odometry if on blue side, don't need to change y because it will be the same for autos on either side
     if(getFieldSide() == "blue") {
       firstPointX = Constants.FIELD_LENGTH - firstPointX;
       firstPointAngle = Math.PI - firstPointAngle;
@@ -256,8 +260,8 @@ public class Drive extends SubsystemBase {
     return currentTime;
   }
 
+  // method to update odometry by fusing prediction, encoder rotations, and camera values
   public void updateOdometryFusedArray(){
-    // updates odometry
     double navxOffset = Math.toRadians(peripherals.getNavxAngle());
 
     // Matrix<N3, N1> stdDeviation = new Matrix<>(Nat.N3(), Nat.N1());
@@ -277,6 +281,14 @@ public class Drive extends SubsystemBase {
     currentX = getOdometryX();
     currentY = getOdometryY();
     currentTheta = navxOffset;
+
+    // if(useCameraInOdometry && cameraCoordinates.getDouble(0) != 0) {
+    //   cameraBasedX = cameraCoordinates.getDouble(0);
+    //   cameraBasedY = cameraCoordinates.getDouble(1);
+    //   timeSinceLastCameraMeasurement = 0;
+    //   Pose2d cameraBasedPosition = new Pose2d(new Translation2d(cameraBasedX, cameraBasedY), new Rotation2d(navxOffset));
+    //   m_odometry.addVisionMeasurement(cameraBasedPosition, Timer.getFPGATimestamp() - (peripherals.getBackCameraLatency()/1000));
+    // }
 
     currentTime = Timer.getFPGATimestamp() - initTime;
     timeDiff = currentTime - previousTime;
@@ -448,11 +460,17 @@ public class Drive extends SubsystemBase {
     frontRight.drive(controllerVector, turn, navxAngle);
   }
 
+  // method run in autonomous that accepts a velocity vector of xy velocities, as well as how much to spin per second
   public void autoDrive(Vector vector, double turnRadiansPerSec){
-    // method for moving in auto
     updateOdometryFusedArray();
 
     double navxOffset = Math.toRadians(peripherals.getNavxAngle());
+
+    double[] odometryList = new double[3];
+
+    odometryList[0] = getFusedOdometryX();
+    odometryList[1] = getFusedOdometryY();
+    odometryList[2] = getFusedOdometryTheta();
 
     frontLeft.drive(vector, turnRadiansPerSec, navxOffset);
     frontRight.drive(vector, turnRadiansPerSec, navxOffset);
@@ -590,8 +608,5 @@ public class Drive extends SubsystemBase {
     // SmartDashboard.putNumber("Fused X", getFusedOdometryX());
     // SmartDashboard.putNumber("Fused Y", getFusedOdometryY());
     // SmartDashboard.putNumber("Fused Angle", getFusedOdometryTheta());
-
-    SmartDashboard.putNumber("encoder position", Constants.rotationsToDegrees(frontLeftCanCoder.getAbsolutePosition().getValue()));
-    SmartDashboard.putNumber("steer position", frontLeftAngleMotor.getPosition().getValue());
   }
 }
