@@ -48,11 +48,44 @@ public class ThreePieceAuto extends SequentialCommandGroup {
       System.out.println("ERROR WITH PATH FILE " + e);
     }
 
+    try {
+      pathingFile2 = new File("/home/lvuser/deploy/2PiecePart2.json");
+      FileReader scanner2 = new FileReader(pathingFile2);
+      pathRead2 = new JSONObject(new JSONTokener(scanner2));
+      pathJSON2 = (JSONArray) pathRead2.get("sampled_points");
+    }
+    catch(Exception e) {
+      System.out.println("ERROR WITH PATH FILE " + e);
+    }
+
+    try {
+      pathingFile3 = new File("/home/lvuser/deploy/2PiecePart3.json");
+      FileReader scanner3 = new FileReader(pathingFile3);
+      pathRead3 = new JSONObject(new JSONTokener(scanner3));
+      pathJSON3 = (JSONArray) pathRead3.get("sampled_points");
+    }
+    catch(Exception e) {
+      System.out.println("ERROR WITH PATH FILE " + e);
+    }
+
+    try {
+      pathingFile4 = new File("/home/lvuser/deploy/3PiecePart4.json");
+      FileReader scanner4 = new FileReader(pathingFile4);
+      pathRead4 = new JSONObject(new JSONTokener(scanner4));
+      pathJSON4 = (JSONArray) pathRead4.get("sampled_points");
+    }
+    catch(Exception e) {
+      System.out.println("ERROR WITH PATH FILE " + e);
+    }
+
     addRequirements(drive);
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       new AutonomousFollower(drive, pathJSON, false)
+      // new AutonomousFollower(drive, pathJSON2, false)
+      // new AutonomousFollower(drive, pathJSON3, false),
+      // new AutonomousFollower(drive, pathJSON4, false)
     );
   }
 }
