@@ -11,7 +11,11 @@ import frc.robot.commands.IntakeDown;
 import frc.robot.commands.IntakeRing;
 import frc.robot.commands.IntakeUp;
 import frc.robot.commands.OuttakeRing;
+import frc.robot.commands.Shoot;
+import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Peripherals;
+import frc.robot.subsystems.Shooter;
 
 
 /**
@@ -24,7 +28,10 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
+  private Peripherals peripherals = new Peripherals();
   private Intake intake = new Intake();
+  private Drive drive = new Drive(peripherals);
+  private Shooter shooter = new Shooter();
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -35,6 +42,9 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
     intake.init();
+    drive.init();
+    peripherals.init();
+    shooter.init();
   }
 
   /**
@@ -84,10 +94,11 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-    OI.driverY.whenPressed(new IntakeUp(intake));    
+    OI.driverY.whenPressed(new IntakeUp(intake));   
+    OI.driverB.whenPressed(new Shoot(shooter));
     OI.driverA.whenPressed(new IntakeDown(intake));
-    OI.driverLT.whenActive(new OuttakeRing(intake));
-    OI.driverRT.whenActive(new IntakeRing(intake)); 
+    OI.driverLT.whileTrue(new OuttakeRing(intake));
+    OI.driverRT.whileTrue(new IntakeRing(intake)); 
   }
 
   /** This function is called periodically during operator control. */

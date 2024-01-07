@@ -5,26 +5,27 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Motors;
+import frc.robot.subsystems.Intake;
 
-public class MotorsDefault extends CommandBase {
-  /** Creates a new MotorsDefault. */
-  Motors motors;
-  public MotorsDefault(Motors motors) {
-    this.motors = motors;
-    addRequirements(motors);
+public class IntakeDefault extends CommandBase {
+  /** Creates a new IntakeDefault. */
+  Intake intake;
+  public IntakeDefault(Intake intake) {
     // Use addRequirements() here to declare subsystem dependencies.
+    this.intake = intake;
+    addRequirements(intake);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    motors.motorsOff();
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    intake.moveIntake(0);
+    intake.rotateIntake(0);
+  }
 
   // Called once the command ends or is interrupted.
   @Override
