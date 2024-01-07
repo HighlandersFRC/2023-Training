@@ -29,9 +29,9 @@ public class Peripherals extends SubsystemBase {
 
   public void init(){
     // values from pigeon calibration in phoenix tuner
-    pigeonConfig.MountPose.MountPosePitch = 85.20455932617188;
-    pigeonConfig.MountPose.MountPoseRoll = 131.78761291503906;
-    pigeonConfig.MountPose.MountPoseYaw = 5.973172187805176;
+    pigeonConfig.MountPose.MountPosePitch = -0.9015172123908997;
+    pigeonConfig.MountPose.MountPoseRoll = -0.5668477416038513;
+    pigeonConfig.MountPose.MountPoseYaw = 93.2885513305664;
     pigeon.getConfigurator().apply(pigeonConfig);
     // zeroNavx();
     zeroPigeon();  

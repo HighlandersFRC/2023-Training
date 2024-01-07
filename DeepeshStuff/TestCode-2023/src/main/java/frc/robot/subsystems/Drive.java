@@ -132,18 +132,18 @@ public class Drive extends SubsystemBase {
 
     Pose2d m_pose = new Pose2d();
 
-    m_odometry = new SwerveDrivePoseEstimator(m_kinematics, new Rotation2d(peripherals.getYaw()), swerveModulePositions, m_pose);
+    m_odometry = new SwerveDrivePoseEstimator(m_kinematics, new Rotation2d((Math.toRadians(peripherals.getYaw()))), swerveModulePositions, m_pose);
   }
 
   // method to zeroNavx mid match and reset odometry with zeroed angle
-  public void zeroNavx(){
+  public void zeroIMU(){
     peripherals.zeroPigeon();
     SwerveModulePosition[] swerveModulePositions = new SwerveModulePosition[4];
     swerveModulePositions[0] = new SwerveModulePosition(frontLeft.getModuleDistance(), new Rotation2d(frontLeft.getCanCoderPositionRadians()));
     swerveModulePositions[1] = new SwerveModulePosition(frontRight.getModuleDistance(), new Rotation2d(frontRight.getCanCoderPositionRadians()));
     swerveModulePositions[2] = new SwerveModulePosition(backLeft.getModuleDistance(), new Rotation2d(backLeft.getCanCoderPositionRadians()));
     swerveModulePositions[3] = new SwerveModulePosition(backRight.getModuleDistance(), new Rotation2d(backRight.getCanCoderPositionRadians()));
-    m_odometry.resetPosition(new Rotation2d(peripherals.getYaw()), swerveModulePositions, new Pose2d(new Translation2d(getFusedOdometryX(), getFusedOdometryY()), new Rotation2d(peripherals.getNavxAngle())));
+    m_odometry.resetPosition(new Rotation2d((Math.toRadians(peripherals.getYaw()))), swerveModulePositions, new Pose2d(new Translation2d(getFusedOdometryX(), getFusedOdometryY()), new Rotation2d((Math.toRadians(peripherals.getYaw())))));
   }
 
   public void setNavxAfterAuto() {
@@ -262,7 +262,7 @@ public class Drive extends SubsystemBase {
 
   // method to update odometry by fusing prediction, encoder rotations, and camera values
   public void updateOdometryFusedArray(){
-    double navxOffset = Math.toRadians(peripherals.getYaw());
+    double imuOffset = Math.toRadians(peripherals.getYaw());
 
     // Matrix<N3, N1> stdDeviation = new Matrix<>(Nat.N3(), Nat.N1());
 
@@ -276,11 +276,11 @@ public class Drive extends SubsystemBase {
     swerveModulePositions[2] = new SwerveModulePosition(backLeft.getModuleDistance(), new Rotation2d(backLeft.getCanCoderPositionRadians()));
     swerveModulePositions[3] = new SwerveModulePosition(backRight.getModuleDistance(), new Rotation2d(backRight.getCanCoderPositionRadians()));
         
-    m_pose = m_odometry.update(new Rotation2d((navxOffset)), swerveModulePositions);
+    m_pose = m_odometry.update(new Rotation2d((imuOffset)), swerveModulePositions);
 
     currentX = getOdometryX();
     currentY = getOdometryY();
-    currentTheta = navxOffset;
+    currentTheta = imuOffset;
 
     // if(useCameraInOdometry && cameraCoordinates.getDouble(0) != 0) {
     //   cameraBasedX = cameraCoordinates.getDouble(0);

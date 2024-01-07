@@ -4,15 +4,28 @@
 
 package frc.robot;
 
+import java.io.File;
+import java.io.FileReader;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.json.JSONTokener;
+
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.commands.Feed;
 import frc.robot.commands.IntakeDown;
 import frc.robot.commands.IntakeRing;
 import frc.robot.commands.IntakeUp;
 import frc.robot.commands.OuttakeRing;
 import frc.robot.commands.Shoot;
+import frc.robot.commands.ZeroIMU;
+import frc.robot.commands.autos.ThreePieceAuto;
 import frc.robot.subsystems.Drive;
+import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Peripherals;
 import frc.robot.subsystems.Shooter;
@@ -32,6 +45,18 @@ public class Robot extends TimedRobot {
   private Intake intake = new Intake();
   private Drive drive = new Drive(peripherals);
   private Shooter shooter = new Shooter();
+  private Feeder feeder = new Feeder();
+
+  File pathingFile;
+  String pathString;
+
+  JSONObject pathRead;
+  JSONArray pathJSON;
+
+  // String fieldSide;
+
+  SequentialCommandGroup auto;
+  
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -45,6 +70,18 @@ public class Robot extends TimedRobot {
     drive.init();
     peripherals.init();
     shooter.init();
+
+    try {
+      pathingFile = new File("/home/lvuser/deploy/CurveTest.json");
+      FileReader scanner = new FileReader(pathingFile);
+      pathRead = new JSONObject(new JSONTokener(scanner));
+      pathJSON = (JSONArray) pathRead.get("sampled_points");
+    } catch (Exception e) {
+      System.out.println("ERROR WITH PATH FILE " + e);
+    }
+    
+    this.auto = new ThreePieceAuto(drive, peripherals);
+    auto.schedule();
   }
 
   /**
@@ -65,7 +102,10 @@ public class Robot extends TimedRobot {
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    OI.driverController.setRumble(RumbleType.kBothRumble, 0);
+    OI.operatorController.setRumble(RumbleType.kBothRumble, 0);
+  }
 
   @Override
   public void disabledPeriodic() {}
@@ -79,6 +119,13 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
+
+    try {
+      this.auto.schedule();
+    } catch (Exception e){
+      System.out.println("No auto is selected");
+    } 
+    drive.autoInit(this.pathJSON);
   }
 
   /** This function is called periodically during autonomous. */
@@ -94,11 +141,15 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+
+    OI.driverViewButton.whileTrue(new ZeroIMU(drive));
+
     OI.driverY.whenPressed(new IntakeUp(intake));   
     OI.driverB.whenPressed(new Shoot(shooter));
     OI.driverA.whenPressed(new IntakeDown(intake));
-    OI.driverLT.whileTrue(new OuttakeRing(intake));
-    OI.driverRT.whileTrue(new IntakeRing(intake)); 
+    OI.driverLB.whileHeld(new OuttakeRing(intake));
+    OI.driverRB.whileHeld(new IntakeRing(intake)); 
+    OI.driverX.whileTrue(new Feed(feeder));
   }
 
   /** This function is called periodically during operator control. */

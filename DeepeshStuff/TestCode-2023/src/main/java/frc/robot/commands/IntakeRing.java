@@ -20,12 +20,14 @@ public class IntakeRing extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    intake.rotateIntake(0.4);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    System.out.println("intake");
+    intake.rotateIntake(0.4);
+  }
 
   // Called once the command ends or is interrupted.
   @Override
@@ -34,6 +36,6 @@ public class IntakeRing extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return !OI.driverRT.getAsBoolean();
+    return true;
   }
 }
