@@ -16,7 +16,6 @@ import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.commands.Feed;
 import frc.robot.commands.IntakeDown;
 import frc.robot.commands.IntakeRing;
 import frc.robot.commands.IntakeUp;
@@ -25,7 +24,6 @@ import frc.robot.commands.Shoot;
 import frc.robot.commands.ZeroIMU;
 import frc.robot.commands.autos.ThreePieceAuto;
 import frc.robot.subsystems.Drive;
-import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Peripherals;
 import frc.robot.subsystems.Shooter;
@@ -45,7 +43,7 @@ public class Robot extends TimedRobot {
   private Intake intake = new Intake();
   private Drive drive = new Drive(peripherals);
   private Shooter shooter = new Shooter();
-  private Feeder feeder = new Feeder();
+  // private Feeder feeder = new Feeder();
 
   File pathingFile;
   String pathString;
@@ -70,7 +68,7 @@ public class Robot extends TimedRobot {
     drive.init();
     peripherals.init();
     shooter.init();
-    feeder.init();
+    // feeder.init();
 
     try {
       pathingFile = new File("/home/lvuser/deploy/CurveTest.json");
@@ -148,9 +146,9 @@ public class Robot extends TimedRobot {
     OI.driverY.whenPressed(new IntakeUp(intake));   
     OI.driverB.whenPressed(new Shoot(shooter));
     OI.driverA.whenPressed(new IntakeDown(intake));
-    OI.driverLB.whileHeld(new OuttakeRing(intake, feeder));
-    OI.driverRB.whileHeld(new IntakeRing(intake, feeder)); 
-    OI.driverX.whileHeld(new Feed(feeder));
+    OI.driverLB.whileHeld(new OuttakeRing(intake));
+    OI.driverRB.whileHeld(new IntakeRing(intake)); 
+    // OI.driverX.whileHeld(new Feed(feeder));
   }
 
   /** This function is called periodically during operator control. */

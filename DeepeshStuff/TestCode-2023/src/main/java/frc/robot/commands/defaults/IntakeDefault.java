@@ -23,8 +23,8 @@ public class IntakeDefault extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    intake.moveIntake(0);
-    intake.rotateIntake(0);
+    intake.moveIntake(0.0);
+    intake.rotateIntake(0.0, 0.0, 0.0);
   }
 
   // Called once the command ends or is interrupted.

@@ -13,6 +13,10 @@ public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
   TalonFX intake = new TalonFX(10, "Canivore");
   TalonFX moveIntake = new TalonFX(9, "Canivore");
+
+  TalonFX feederLeft = new TalonFX(13, "Canivore");
+  TalonFX feederRight = new TalonFX(14, "Canivore");
+  
   public Intake() {}
 
   public void init(){
@@ -23,8 +27,10 @@ public class Intake extends SubsystemBase {
     moveIntake.set(percent);
   }
 
-  public void rotateIntake(double percent){
+  public void rotateIntake(double percent, double feeder1, double feeder2){
     intake.set(percent);
+    feederLeft.set(feeder1);
+    feederRight.set(-feeder2);
   }
 
   @Override
