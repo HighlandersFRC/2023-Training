@@ -70,6 +70,7 @@ public class Robot extends TimedRobot {
     drive.init();
     peripherals.init();
     shooter.init();
+    feeder.init();
 
     try {
       pathingFile = new File("/home/lvuser/deploy/CurveTest.json");
@@ -147,9 +148,9 @@ public class Robot extends TimedRobot {
     OI.driverY.whenPressed(new IntakeUp(intake));   
     OI.driverB.whenPressed(new Shoot(shooter));
     OI.driverA.whenPressed(new IntakeDown(intake));
-    OI.driverLB.whileHeld(new OuttakeRing(intake));
-    OI.driverRB.whileHeld(new IntakeRing(intake)); 
-    OI.driverX.whileTrue(new Feed(feeder));
+    OI.driverLB.whileHeld(new OuttakeRing(intake, feeder));
+    OI.driverRB.whileHeld(new IntakeRing(intake, feeder)); 
+    OI.driverX.whileHeld(new Feed(feeder));
   }
 
   /** This function is called periodically during operator control. */

@@ -24,7 +24,7 @@ public class Feed extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    feeder.setPercent(0.3, 0.3);
+    feeder.setPercent(1.0, 1.0);
   }
 
   // Called once the command ends or is interrupted.

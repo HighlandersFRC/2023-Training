@@ -6,15 +6,18 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.OI;
+import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.Intake;
 
 public class IntakeRing extends CommandBase {
   /** Creates a new IntakeRing. */
   Intake intake;
-  public IntakeRing(Intake intake) {
+  Feeder feeder;
+  public IntakeRing(Intake intake, Feeder feeder) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.intake = intake;
-    addRequirements(intake);
+    this.feeder = feeder;
+    addRequirements(intake, feeder);
   }
 
   // Called when the command is initially scheduled.
@@ -27,6 +30,7 @@ public class IntakeRing extends CommandBase {
   public void execute() {
     System.out.println("intake");
     intake.rotateIntake(0.4);
+    feeder.setPercent(1.0, 1.0);
   }
 
   // Called once the command ends or is interrupted.
