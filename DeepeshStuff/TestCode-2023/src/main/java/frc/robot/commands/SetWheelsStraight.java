@@ -5,28 +5,26 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.OI;
-import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Drive;
 
-public class Shoot extends CommandBase {
-  /** Creates a new Shoot. */
-  Shooter shooter;
-  public Shoot(Shooter shooter) {
-    this.shooter = shooter;
+public class SetWheelsStraight extends CommandBase {
+  Drive drive;
+  /** Creates a new SetWheelsStraight. */
+  public SetWheelsStraight(Drive drive) {
+    this.drive = drive;
+    addRequirements(drive);
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(shooter);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    drive.setWheelsStraight();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-    shooter.setPercent(0.8, 0.8);
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
@@ -35,6 +33,6 @@ public class Shoot extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return !OI.driverB.getAsBoolean();
+    return true;
   }
 }

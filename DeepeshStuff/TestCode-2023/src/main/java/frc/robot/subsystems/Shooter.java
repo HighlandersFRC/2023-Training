@@ -14,7 +14,7 @@ public class Shooter extends SubsystemBase {
   /** Creates a new Shooter. */
   TalonFX shooterLeft = new TalonFX(11, "Canivore");
   TalonFX shooterRight = new TalonFX(12, "Canivore");
-  TalonFX shooter2Prototype = new TalonFX(17, "Canivore");
+  // TalonFX shooter2Prototype = new TalonFX(12, "Canivore");
 
   public Shooter() {}
   public void init(){

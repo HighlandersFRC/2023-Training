@@ -64,6 +64,7 @@ public class AutonomousFollower extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    // drive.setWheelsStraight();
     // if(generatePath == true) {
     //   this.fieldSide = drive.getFieldSide();
     //   // if (this.fieldSide == "red"){

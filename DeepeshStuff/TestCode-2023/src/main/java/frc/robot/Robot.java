@@ -22,7 +22,7 @@ import frc.robot.commands.IntakeUp;
 import frc.robot.commands.OuttakeRing;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.ZeroIMU;
-import frc.robot.commands.autos.ThreePieceAuto;
+import frc.robot.commands.autos.FourPieceCenterAuto;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Peripherals;
@@ -71,7 +71,7 @@ public class Robot extends TimedRobot {
     // feeder.init();
 
     try {
-      pathingFile = new File("/home/lvuser/deploy/CurveTest.json");
+      pathingFile = new File("/home/lvuser/deploy/2PieceCenterSpikePart1.json");
       FileReader scanner = new FileReader(pathingFile);
       pathRead = new JSONObject(new JSONTokener(scanner));
       pathJSON = (JSONArray) pathRead.get("sampled_points");
@@ -79,7 +79,7 @@ public class Robot extends TimedRobot {
       System.out.println("ERROR WITH PATH FILE " + e);
     }
     
-    this.auto = new ThreePieceAuto(drive, peripherals);
+    this.auto = new FourPieceCenterAuto(drive, peripherals);
     auto.schedule();
   }
 

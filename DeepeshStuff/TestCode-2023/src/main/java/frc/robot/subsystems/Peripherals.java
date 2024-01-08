@@ -33,7 +33,7 @@ public class Peripherals extends SubsystemBase {
     pigeonConfig.MountPose.MountPoseRoll = -0.5668477416038513;
     pigeonConfig.MountPose.MountPoseYaw = 93.2885513305664;
     pigeon.getConfigurator().apply(pigeonConfig);
-    // zeroNavx();
+    zeroNavx();
     zeroPigeon();  
   }
 
@@ -95,6 +95,10 @@ public class Peripherals extends SubsystemBase {
 
   public double getYaw(){
     return pigeon.getYaw().getValue();
+  }
+
+  public double getAngle(){
+    return pigeon.getAngle();
   }
 
   public void setPitch(double degrees){
@@ -184,12 +188,10 @@ public class Peripherals extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Roll", getNavxRoll());
     SmartDashboard.putNumber("Pigeon Yaw", getYaw());
-    SmartDashboard.putNumber("Pigeon Pitch", getPitch());
-    SmartDashboard.putNumber("Pigeon Roll", getRoll());
-    // SmartDashboard.putNumber("Pitch", navx.currentPitch());
-    navx.currentPitch();
+    SmartDashboard.putNumber("Pigeon Angle", getAngle());
+    SmartDashboard.putNumber("Navx Yaw", getNavxYaw());
+    SmartDashboard.putNumber("Navx Angle", getNavxAngle());
     // This method will be called once per scheduler run
   }
 }

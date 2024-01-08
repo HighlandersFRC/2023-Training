@@ -95,17 +95,11 @@ public class SwerveModule extends SubsystemBase {
     angleMotorConfig.Feedback.SensorToMechanismRatio = 1.0;
     angleMotorConfig.Feedback.RotorToSensorRatio = Constants.STEER_GEAR_RATIO;
     
-    if(moduleNumber == 2 || moduleNumber == 3) {
-      driveMotorConfig.Slot0.kP = 4.0;
-      driveMotorConfig.Slot0.kI = 0.0;
-      driveMotorConfig.Slot0.kD = 0.0;
-      driveMotorConfig.Slot0.kV = 0.0;
-    } else {
-      driveMotorConfig.Slot0.kP = 4.0;
-      driveMotorConfig.Slot0.kI = 0.0;
-      driveMotorConfig.Slot0.kD = 0.0;
-      driveMotorConfig.Slot0.kV = 0.0;
-    }
+    driveMotorConfig.Slot0.kP = 6.5;
+    driveMotorConfig.Slot0.kI = 0.0;
+    driveMotorConfig.Slot0.kD = 0.0;
+    driveMotorConfig.Slot0.kV = 0.0;
+
     driveMotorConfig.TorqueCurrent.PeakForwardTorqueCurrent = 75;
     driveMotorConfig.TorqueCurrent.PeakReverseTorqueCurrent = -75;
 
@@ -236,7 +230,7 @@ public class SwerveModule extends SubsystemBase {
   
   // main drive method
   public void drive(Vector vector, double turnValue, double navxAngle){
-    if(Math.abs(vector.i) < 0.0001 && Math.abs(vector.j) < 0.0001 && Math.abs(turnValue) < 0.001) {
+    if(Math.abs(vector.i) < 0.0001 && Math.abs(vector.j) < 0.0001 && Math.abs(turnValue) < 0.01) {
       // stops motors when joysticks are at 0
       driveMotor.setControl(velocityTorqueFOCRequest.withVelocity(0.0));
       angleMotor.setControl(velocityTorqueFOCRequestAngleMotor.withVelocity(0.0));

@@ -13,13 +13,14 @@ import org.json.JSONTokener;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.AutonomousFollower;
+import frc.robot.commands.SetWheelsStraight;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Peripherals;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class ThreePieceAuto extends SequentialCommandGroup {
+public class FourPieceCenterAuto extends SequentialCommandGroup {
   private File pathingFile;
   private JSONArray pathJSON;
   private JSONObject pathRead;
@@ -32,14 +33,10 @@ public class ThreePieceAuto extends SequentialCommandGroup {
   private JSONArray pathJSON3;
   private JSONObject pathRead3;
 
-  private File pathingFile4;
-  private JSONArray pathJSON4;
-  private JSONObject pathRead4;
-
-  /** Creates a new ThreePieceAuto. */
-  public ThreePieceAuto(Drive drive, Peripherals peripherals) {
+  /** Creates a new FourPieceCenterAuto. */
+  public FourPieceCenterAuto(Drive drive, Peripherals peripherals) {
     try {
-      pathingFile = new File("/home/lvuser/deploy/CurveTest.json");
+      pathingFile = new File("/home/lvuser/deploy/2PieceCenterSpikePart1.json");
       FileReader scanner = new FileReader(pathingFile);
       pathRead = new JSONObject(new JSONTokener(scanner));
       pathJSON = (JSONArray) pathRead.get("sampled_points");
@@ -49,7 +46,7 @@ public class ThreePieceAuto extends SequentialCommandGroup {
     }
 
     try {
-      pathingFile2 = new File("/home/lvuser/deploy/2PiecePart2.json");
+      pathingFile2 = new File("/home/lvuser/deploy/3PieceSpikePart2.json");
       FileReader scanner2 = new FileReader(pathingFile2);
       pathRead2 = new JSONObject(new JSONTokener(scanner2));
       pathJSON2 = (JSONArray) pathRead2.get("sampled_points");
@@ -59,20 +56,10 @@ public class ThreePieceAuto extends SequentialCommandGroup {
     }
 
     try {
-      pathingFile3 = new File("/home/lvuser/deploy/2PiecePart3.json");
+      pathingFile3 = new File("/home/lvuser/deploy/4PiecePart3.json");
       FileReader scanner3 = new FileReader(pathingFile3);
       pathRead3 = new JSONObject(new JSONTokener(scanner3));
       pathJSON3 = (JSONArray) pathRead3.get("sampled_points");
-    }
-    catch(Exception e) {
-      System.out.println("ERROR WITH PATH FILE " + e);
-    }
-
-    try {
-      pathingFile4 = new File("/home/lvuser/deploy/3PiecePart4.json");
-      FileReader scanner4 = new FileReader(pathingFile4);
-      pathRead4 = new JSONObject(new JSONTokener(scanner4));
-      pathJSON4 = (JSONArray) pathRead4.get("sampled_points");
     }
     catch(Exception e) {
       System.out.println("ERROR WITH PATH FILE " + e);
@@ -82,10 +69,10 @@ public class ThreePieceAuto extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new AutonomousFollower(drive, pathJSON, false)
-      // new AutonomousFollower(drive, pathJSON2, false)
-      // new AutonomousFollower(drive, pathJSON3, false),
-      // new AutonomousFollower(drive, pathJSON4, false)
+      new SetWheelsStraight(drive),
+      new AutonomousFollower(drive, pathJSON, true),
+      new AutonomousFollower(drive, pathJSON2, true)
+      // new AutonomousFollower(drive, pathJSON3, true)
     );
   }
 }

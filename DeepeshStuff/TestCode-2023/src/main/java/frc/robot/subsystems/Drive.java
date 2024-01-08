@@ -138,6 +138,7 @@ public class Drive extends SubsystemBase {
   // method to zeroNavx mid match and reset odometry with zeroed angle
   public void zeroIMU(){
     peripherals.zeroPigeon();
+    peripherals.zeroNavx();
     SwerveModulePosition[] swerveModulePositions = new SwerveModulePosition[4];
     swerveModulePositions[0] = new SwerveModulePosition(frontLeft.getModuleDistance(), new Rotation2d(frontLeft.getCanCoderPositionRadians()));
     swerveModulePositions[1] = new SwerveModulePosition(frontRight.getModuleDistance(), new Rotation2d(frontRight.getCanCoderPositionRadians()));
@@ -167,10 +168,10 @@ public class Drive extends SubsystemBase {
   }
 
   public void setWheelsStraight(){
-    frontRight.setWheelPID(0, 0.0);
-    frontLeft.setWheelPID(0, 0.0);
-    backLeft.setWheelPID(0, 0.0);
-    backRight.setWheelPID(0, 0.0);
+    frontRight.setWheelPID(180, 0.0);
+    frontLeft.setWheelPID(180, 0.0);
+    backLeft.setWheelPID(180, 0.0);
+    backRight.setWheelPID(180, 0.0);
   }
 
   public void init(){
@@ -204,6 +205,7 @@ public class Drive extends SubsystemBase {
 
   public void autoInit(JSONArray pathPoints){
     // runs at start of autonomous
+    // System.out.println("Auto init");
     JSONArray firstPoint = pathPoints.getJSONArray(0);
     double firstPointX = firstPoint.getDouble(1);
     double firstPointY = firstPoint.getDouble(2);
@@ -507,6 +509,8 @@ public class Drive extends SubsystemBase {
         double targetX = targetPoint.getDouble(1);
         double targetY = targetPoint.getDouble(2);
         double targetTheta = targetPoint.getDouble(3);
+
+        // System.out.println("X: " + targetX + " Y: " + targetY + " Theta: " + targetTheta);
 
         if(getFieldSide() == "blue") {
             targetX = Constants.FIELD_LENGTH - targetX;
