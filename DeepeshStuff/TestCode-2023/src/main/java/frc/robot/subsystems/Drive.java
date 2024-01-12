@@ -168,10 +168,10 @@ public class Drive extends SubsystemBase {
   }
 
   public void setWheelsStraight(){
-    frontRight.setWheelPID(180, 0.0);
-    frontLeft.setWheelPID(180, 0.0);
-    backLeft.setWheelPID(180, 0.0);
-    backRight.setWheelPID(180, 0.0);
+    frontRight.setWheelPID(0.0, 0.0);
+    frontLeft.setWheelPID(0.0, 0.0);
+    backLeft.setWheelPID(0.0, 0.0);
+    backRight.setWheelPID(0.0, 0.0);
   }
 
   public void init(){

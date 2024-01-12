@@ -71,7 +71,7 @@ public class Robot extends TimedRobot {
     // feeder.init();
 
     try {
-      pathingFile = new File("/home/lvuser/deploy/2PieceCenterSpikePart1.json");
+      pathingFile = new File("/home/lvuser/deploy/2PieceCenterPart1.json");
       FileReader scanner = new FileReader(pathingFile);
       pathRead = new JSONObject(new JSONTokener(scanner));
       pathJSON = (JSONArray) pathRead.get("sampled_points");
