@@ -33,9 +33,9 @@ public class FourPieceCenterAuto extends SequentialCommandGroup {
   private JSONArray pathJSON3;
   private JSONObject pathRead3;
 
-  // private File pathingFile4;
-  // private JSONArray pathJSON4;
-  // private JSONObject pathRead4;
+  private File pathingFile4;
+  private JSONArray pathJSON4;
+  private JSONObject pathRead4;
 
   /** Creates a new FourPieceCenterAuto. */
   public FourPieceCenterAuto(Drive drive, Peripherals peripherals) {
@@ -69,24 +69,25 @@ public class FourPieceCenterAuto extends SequentialCommandGroup {
       System.out.println("ERROR WITH PATH FILE " + e);
     }
 
-    // try {
-    //   pathingFile4 = new File("/home/lvuser/deploy/5PieceCenterPart4.json");
-    //   FileReader scanner4 = new FileReader(pathingFile4);
-    //   pathRead4 = new JSONObject(new JSONTokener(scanner4));
-    //   pathJSON4 = (JSONArray) pathRead4.get("sampled_points");
-    // }
-    // catch(Exception e) {
-    //   System.out.println("ERROR WITH PATH FILE " + e);
-    // }
+    try {
+      pathingFile4 = new File("/home/lvuser/deploy/5PieceCenterPart4.json");
+      FileReader scanner4 = new FileReader(pathingFile4);
+      pathRead4 = new JSONObject(new JSONTokener(scanner4));
+      pathJSON4 = (JSONArray) pathRead4.get("sampled_points");
+    }
+    catch(Exception e) {
+      System.out.println("ERROR WITH PATH FILE " + e);
+    }
 
     addRequirements(drive);
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
+      new SetWheelsStraight(drive),
       new AutonomousFollower(drive, pathJSON, false),
       new AutonomousFollower(drive, pathJSON2, false),
-      new AutonomousFollower(drive, pathJSON3, false)
-      // new AutonomousFollower(drive, pathJSON4, false)
+      new AutonomousFollower(drive, pathJSON3, false),
+      new AutonomousFollower(drive, pathJSON4, false)
     );
   }
 }
