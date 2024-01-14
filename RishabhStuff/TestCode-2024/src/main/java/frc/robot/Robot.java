@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.commands.AmpScore;
 import frc.robot.commands.IntakeDown;
 import frc.robot.commands.IntakeRing;
 import frc.robot.commands.IntakeUp;
@@ -23,6 +24,7 @@ import frc.robot.commands.OuttakeRing;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.ZeroIMU;
 import frc.robot.commands.autos.FourPieceCenterAuto;
+import frc.robot.subsystems.AmpScorer;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Peripherals;
@@ -43,6 +45,7 @@ public class Robot extends TimedRobot {
   private Intake intake = new Intake();
   private Drive drive = new Drive(peripherals);
   private Shooter shooter = new Shooter();
+  private AmpScorer scorer = new AmpScorer();
   // private Feeder feeder = new Feeder();
 
   File pathingFile;
@@ -143,11 +146,13 @@ public class Robot extends TimedRobot {
 
     OI.driverViewButton.whileTrue(new ZeroIMU(drive));
 
-    OI.driverY.whileTrue(new IntakeUp(intake));   
+    // OI.driverY.whileTrue(new IntakeUp(intake));   
     OI.driverB.whileTrue(new Shoot(shooter));
-    OI.driverA.whileTrue(new IntakeDown(intake));
+    // OI.driverA.whileTrue(new IntakeDown(intake));
     OI.driverLB.whileTrue(new OuttakeRing(intake));
     OI.driverRB.whileTrue(new IntakeRing(intake)); 
+    OI.driverX.whileTrue(new AmpScore(scorer, -0.5));    
+    OI.driverY.whileTrue(new AmpScore(scorer, 0.5));
     // OI.driverX.whileHeld(new Feed(feeder));
   }
 
