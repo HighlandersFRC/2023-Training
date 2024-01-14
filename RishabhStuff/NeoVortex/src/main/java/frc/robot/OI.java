@@ -1,6 +1,3 @@
-// Copyrights (c) 2018-2019 FIRST, 2020 Highlanders FRC. All Rights Reserved.
-//hi om
-
 package frc.robot;
 
 import java.util.function.BooleanSupplier;
@@ -8,8 +5,7 @@ import java.util.function.BooleanSupplier;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.TriggerButton;
+import frc.robot.tools.TriggerButton;
 
 public class OI {
     public static XboxController driverController = new XboxController(0);

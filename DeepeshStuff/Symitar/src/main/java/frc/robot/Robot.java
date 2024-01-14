@@ -106,9 +106,9 @@ public class Robot extends TimedRobot {
     }
 
     OI.b.onTrue(new setArmPostition(arm, 60));
-    OI.a.onTrue(new setArmPostition(arm, 5));
+    OI.y.onTrue(new setArmPostition(arm, 5));
     OI.x.onTrue(new setArmPostition(arm, 90));
-    OI.y.onTrue(new setArmPostition(arm, 175));
+    OI.a.onTrue(new setArmPostition(arm, 175));
     OI.rb.onTrue(new Grab(grabber));
     OI.lb.onTrue(new LetGo(grabber));
     OI.rt.onTrue(new GrabberIn(grabber));
