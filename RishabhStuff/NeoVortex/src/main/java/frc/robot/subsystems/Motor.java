@@ -12,7 +12,6 @@ import com.revrobotics.SparkPIDController;
 public class Motor extends SubsystemBase {
   CANSparkFlex vortex = new CANSparkFlex(1, MotorType.kBrushless);
   public Motor() {}
-
   private final SparkAbsoluteEncoder vortexEncoder = vortex.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle);
   private final SparkPIDController vortexPID = vortex.getPIDController();
   private double position;

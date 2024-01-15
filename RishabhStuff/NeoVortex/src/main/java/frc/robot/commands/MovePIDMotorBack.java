@@ -14,7 +14,7 @@ public class MovePIDMotorBack extends Command {
   public void initialize() {
     motor.zeroVortexPosition();
     motor.setVortexPosition(-20);
-    System.out.println("STarting PID");
+    System.out.println("Starting PID");
   }
 
   @Override
