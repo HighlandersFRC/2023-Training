@@ -158,7 +158,6 @@ public class Robot extends TimedRobot {
     OI.driverX.whileTrue(new MoveServo(scorer, 0));
     OI.driverY.whileTrue(new MoveServo(scorer, 90));
     OI.driverA.whileTrue(new MoveServo(scorer, 180));
-
   }
 
   /** This function is called periodically during operator control. */
