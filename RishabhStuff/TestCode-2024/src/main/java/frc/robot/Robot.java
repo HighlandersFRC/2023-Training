@@ -20,6 +20,7 @@ import frc.robot.commands.AmpScore;
 import frc.robot.commands.IntakeDown;
 import frc.robot.commands.IntakeRing;
 import frc.robot.commands.IntakeUp;
+import frc.robot.commands.MoveServo;
 import frc.robot.commands.OuttakeRing;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.ZeroIMU;
@@ -151,9 +152,13 @@ public class Robot extends TimedRobot {
     // OI.driverA.whileTrue(new IntakeDown(intake));
     OI.driverLB.whileTrue(new OuttakeRing(intake));
     OI.driverRB.whileTrue(new IntakeRing(intake)); 
-    OI.driverX.whileTrue(new AmpScore(scorer, -0.5));    
-    OI.driverY.whileTrue(new AmpScore(scorer, 0.5));
+    // OI.driverX.whileTrue(new AmpScore(scorer, -0.5));    
+    // OI.driverY.whileTrue(new AmpScore(scorer, 0.5));
     // OI.driverX.whileHeld(new Feed(feeder));
+    OI.driverX.whileTrue(new MoveServo(scorer, 0));
+    OI.driverY.whileTrue(new MoveServo(scorer, 90));
+    OI.driverA.whileTrue(new MoveServo(scorer, 180));
+
   }
 
   /** This function is called periodically during operator control. */
