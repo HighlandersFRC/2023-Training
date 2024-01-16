@@ -4,11 +4,17 @@
 
 package frc.robot;
 
-import org.littletonrobotics.junction.LoggedRobot;
-
+import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.subsystems.Drive;
+import frc.robot.commands.IntakeCommands.IntakeBalls;
+import frc.robot.commands.IntakeCommands.OutakeBalls;
+import frc.robot.commands.TailCommands.TailDown;
+import frc.robot.commands.TailCommands.TailUp;
+import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.TailSubsystem;
+import frc.robot.tools.OI;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -16,12 +22,14 @@ import frc.robot.subsystems.Drive;
  * the package after creating this project, you must also update the build.gradle file in the
  * project.
  */
-public class Robot extends LoggedRobot {
+public class Robot extends TimedRobot {
+  private final IntakeSubsystem intake = new IntakeSubsystem();
+  private final TailSubsystem tail = new TailSubsystem();
+  private final DriveSubsystem drive = new DriveSubsystem();
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
 
-  Drive drive = new Drive();
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -29,10 +37,12 @@ public class Robot extends LoggedRobot {
    */
   @Override
   public void robotInit() {
+    
+    drive.initialize();
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
-    drive.init();
+    
   }
 
   /**
@@ -81,12 +91,23 @@ public class Robot extends LoggedRobot {
     // this line or comment it out.
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
+
     }
+    drive.initialize();
+    drive.periodic();
+    intake.init();
+    tail.init();
+    OI.rightTrigger.whileTrue(new IntakeBalls(intake));
+    OI.leftTrigger.whileTrue(new OutakeBalls(intake));
+    OI.driverY.whileTrue(new TailDown(tail));
+    OI.driverA.whileTrue(new TailUp(tail));
   }
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    System.out.println(tail.getTailCurrent());
+  }
 
   @Override
   public void testInit() {
