@@ -6,7 +6,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.MoveMotor;
 import frc.robot.commands.MovePIDMotor;
-import frc.robot.commands.MovePIDMotorBack;
 import frc.robot.subsystems.Motor;
 
 public class Robot extends TimedRobot {
@@ -52,10 +51,10 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-    OI.driverX.onTrue(new MovePIDMotor(motor));
-    OI.driverA.whileTrue(new MoveMotor(motor, 1.0));
-    OI.driverB.whileTrue(new MoveMotor(motor, -1.0));
-    OI.driverY.onTrue(new MovePIDMotorBack(motor));
+    OI.driverX.whileTrue(new MovePIDMotor(motor, -60));
+    OI.driverA.whileTrue(new MoveMotor(motor, 0.6));
+    OI.driverB.whileTrue(new MoveMotor(motor, -0.6));
+    // OI.driverY.onTrue(new MovePIDMotorBack(motor));
   }
 
   @Override

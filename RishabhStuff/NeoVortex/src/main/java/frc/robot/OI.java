@@ -5,7 +5,7 @@ import java.util.function.BooleanSupplier;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.tools.TriggerButton;
+// import frc.robot.tools.TriggerButton;
 
 public class OI {
     public static XboxController driverController = new XboxController(0);
@@ -23,8 +23,8 @@ public class OI {
     public static JoystickButton driverY = new JoystickButton(driverController, 4);
     public static JoystickButton driverX = new JoystickButton(driverController, 3);
 
-    public static TriggerButton driverRT = new TriggerButton(driverRTSupplier);
-    public static TriggerButton driverLT = new TriggerButton(driverLTSupplier);
+    // public static TriggerButton driverRT = new TriggerButton(driverRTSupplier);
+    // public static TriggerButton driverLT = new TriggerButton(driverLTSupplier);
     public static JoystickButton driverRB = new JoystickButton(driverController, 6);
     public static JoystickButton driverLB = new JoystickButton(driverController, 5);
 
@@ -34,8 +34,8 @@ public class OI {
     public static JoystickButton operatorY = new JoystickButton(operatorController, 4);
     public static JoystickButton operatorA = new JoystickButton(operatorController, 1);
     
-    public static TriggerButton operatorRT = new TriggerButton(operatorRTSupplier);
-    public static TriggerButton operatorLT = new TriggerButton(operatorLTSupplier);
+    // public static TriggerButton operatorRT = new TriggerButton(operatorRTSupplier);
+    // public static TriggerButton operatorLT = new TriggerButton(operatorLTSupplier);
     public static JoystickButton operatorRB = new JoystickButton(operatorController, 6);
     public static JoystickButton operatorLB = new JoystickButton(operatorController, 5);
 

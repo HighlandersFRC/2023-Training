@@ -150,8 +150,8 @@ public class Robot extends TimedRobot {
     // OI.driverY.whileTrue(new IntakeUp(intake));   
     OI.driverB.whileTrue(new Shoot(shooter));
     // OI.driverA.whileTrue(new IntakeDown(intake));
-    OI.driverLB.whileTrue(new OuttakeRing(intake));
-    OI.driverRB.whileTrue(new IntakeRing(intake)); 
+    OI.driverLB.whileTrue(new IntakeRing(intake, 0.8));
+    OI.driverRB.whileTrue(new IntakeRing(intake, -0.8)); 
     // OI.driverX.whileTrue(new AmpScore(scorer, -0.5));    
     // OI.driverY.whileTrue(new AmpScore(scorer, 0.5));
     // OI.driverX.whileHeld(new Feed(feeder));
