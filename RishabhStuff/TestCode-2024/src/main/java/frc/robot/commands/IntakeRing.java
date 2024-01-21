@@ -10,9 +10,11 @@ import frc.robot.subsystems.Intake;
 public class IntakeRing extends Command {
   /** Creates a new IntakeRing. */
   Intake intake;
-  public IntakeRing(Intake intake) {
+  double speed;
+  public IntakeRing(Intake intake, double speed) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.intake = intake;
+    this.speed = speed;
     addRequirements(intake);
   }
 
@@ -24,16 +26,19 @@ public class IntakeRing extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    intake.rotateIntake(0.4, 1.0, 1.0);
+    // intake.rotateIntake(0.4, 1.0, 1.0);
+    intake.moveIntake(speed);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    intake.moveIntake(0.0);
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return true;
+    return false;
   }
 }

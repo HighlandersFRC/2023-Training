@@ -18,7 +18,7 @@ public class Shooter extends SubsystemBase {
 
   public Shooter() {}
   public void init(){
-    setDefaultCommand(new ShooterDefault(this));
+    // setDefaultCommand(new ShooterDefault(this));
   }
   public void setPercent(double left, double right){
     shooterLeft.set(-left);
