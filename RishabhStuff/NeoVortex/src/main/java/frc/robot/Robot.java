@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.commands.MotorVelocity;
 import frc.robot.commands.MoveMotor;
 import frc.robot.commands.MovePIDMotor;
 import frc.robot.commands.MovePIDMotorBack;
@@ -19,9 +20,6 @@ public class Robot extends TimedRobot {
   public void robotInit() {
    m_robotContainer = new RobotContainer();
     motor.init();
-    SmartDashboard.putNumber("Position", motor.getVortexPosition());
-    SmartDashboard.putNumber("Velocity", motor.getVortexVelocity());
-    SmartDashboard.putNumber("Offset", motor.getVortexOffset());
   }
 
   @Override
@@ -52,10 +50,12 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-    OI.driverX.onTrue(new MovePIDMotor(motor));
+    // OI.driverX.onTrue(new MovePIDMotor(motor));
     OI.driverA.whileTrue(new MoveMotor(motor, 1.0));
     OI.driverB.whileTrue(new MoveMotor(motor, -1.0));
-    OI.driverY.onTrue(new MovePIDMotorBack(motor));
+    // OI.driverY.onTrue(new MovePIDMotorBack(motor));
+    OI.driverRT.whileTrue(new MotorVelocity(motor, 60));
+    OI.driverLT.whileTrue(new MotorVelocity(motor, -60));
   }
 
   @Override
