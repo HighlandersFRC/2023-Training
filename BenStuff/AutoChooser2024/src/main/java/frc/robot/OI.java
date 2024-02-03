@@ -43,26 +43,25 @@ public class OI {
     public static JoystickButton driverA = new JoystickButton(driverController, 1);
     public static JoystickButton driverB = new JoystickButton(driverController, 2);
 
-    public static JoystickButton driverY = new JoystickButton(driverController, 4);
     public static JoystickButton driverX = new JoystickButton(driverController, 3);
+    public static JoystickButton driverY = new JoystickButton(driverController, 4);
 
-    public static JoystickButton driverRB = new JoystickButton(driverController, 6);
     public static JoystickButton driverLB = new JoystickButton(driverController, 5);
-
-    public static JoystickButton operatorX = new JoystickButton(operatorController, 3);
-    public static JoystickButton operatorB = new JoystickButton(operatorController, 2);
-
-    public static JoystickButton operatorY = new JoystickButton(operatorController, 4);
-    public static JoystickButton operatorA = new JoystickButton(operatorController, 1);
-
-    public static JoystickButton operatorRB = new JoystickButton(operatorController, 6);
-    public static JoystickButton operatorLB = new JoystickButton(operatorController, 5);
+    public static JoystickButton driverRB = new JoystickButton(driverController, 6);
 
     public static JoystickButton driverViewButton = new JoystickButton(driverController, 7);
-
-    public static JoystickButton operatorViewButton = new JoystickButton(operatorController, 7);
     public static JoystickButton driverMenuButton = new JoystickButton(driverController, 8);
 
+    public static JoystickButton operatorA = new JoystickButton(operatorController, 1);
+    public static JoystickButton operatorB = new JoystickButton(operatorController, 2);
+
+    public static JoystickButton operatorX = new JoystickButton(operatorController, 3);
+    public static JoystickButton operatorY = new JoystickButton(operatorController, 4);
+
+    public static JoystickButton operatorLB = new JoystickButton(operatorController, 5);
+    public static JoystickButton operatorRB = new JoystickButton(operatorController, 6);
+
+    public static JoystickButton operatorViewButton = new JoystickButton(operatorController, 7);
     public static JoystickButton operatorMenuButton = new JoystickButton(operatorController, 8);
 
     public static Joystick autoChooser = new Joystick(2);
@@ -75,18 +74,6 @@ public class OI {
 
     public static boolean getDriverLT() {
         if(getDriverLTPercent() > 0.1) {
-            return true;
-        } else return false;
-    }
-
-    public static boolean getOperatorRT() {
-        if(getOperatorRTPercent() > 0.1) {
-            return true;
-        } else return false;
-    }
-
-    public static boolean getOperatorLT() {
-        if(getOperatorLTPercent() > 0.1) {
             return true;
         } else return false;
     }
@@ -133,6 +120,18 @@ public class OI {
 
     public static int getDriverPOV() {
         return driverController.getPOV();
+    }
+
+    public static boolean getOperatorRT() {
+        if(getOperatorRTPercent() > 0.1) {
+            return true;
+        } else return false;
+    }
+
+    public static boolean getOperatorLT() {
+        if(getOperatorLTPercent() > 0.1) {
+            return true;
+        } else return false;
     }
 
     public static boolean getOperatorRB() {
