@@ -4,33 +4,11 @@
 
 package frc.robot;
 
-import java.io.File;
-import java.io.FileReader;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.json.JSONTokener;
-
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.commands.AmpScore;
-import frc.robot.commands.IntakeDown;
-import frc.robot.commands.IntakeRing;
-import frc.robot.commands.IntakeUp;
-import frc.robot.commands.MoveServo;
-import frc.robot.commands.OuttakeRing;
-import frc.robot.commands.Shoot;
-import frc.robot.commands.ZeroIMU;
-import frc.robot.commands.autos.FourPieceCenterAuto;
-import frc.robot.subsystems.AmpScorer;
-import frc.robot.subsystems.Drive;
-import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Peripherals;
-import frc.robot.subsystems.Shooter;
-
+import frc.robot.commands.ToggleBrake;
+import frc.robot.subsystems.Brake;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -40,25 +18,9 @@ import frc.robot.subsystems.Shooter;
  */
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
-
+  private Brake brake = new Brake();
   private RobotContainer m_robotContainer;
-  private Peripherals peripherals = new Peripherals();
-  private Intake intake = new Intake();
-  private Drive drive = new Drive(peripherals);
-  private Shooter shooter = new Shooter();
-  private AmpScorer scorer = new AmpScorer();
-  // private Feeder feeder = new Feeder();
 
-  File pathingFile;
-  String pathString;
-
-  JSONObject pathRead;
-  JSONArray pathJSON;
-
-  // String fieldSide;
-
-  SequentialCommandGroup auto;
-  
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -68,23 +30,6 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
-    intake.init();
-    drive.init();
-    peripherals.init();
-    shooter.init();
-    // feeder.init();
-
-    try {
-      pathingFile = new File("/home/lvuser/deploy/2PieceCenterPart1.json");
-      FileReader scanner = new FileReader(pathingFile);
-      pathRead = new JSONObject(new JSONTokener(scanner));
-      pathJSON = (JSONArray) pathRead.get("sampled_points");
-    } catch (Exception e) {
-      System.out.println("ERROR WITH PATH FILE " + e);
-    }
-    
-    this.auto = new FourPieceCenterAuto(drive, peripherals);
-    auto.schedule();
   }
 
   /**
@@ -105,10 +50,7 @@ public class Robot extends TimedRobot {
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
-  public void disabledInit() {
-    OI.driverController.setRumble(RumbleType.kBothRumble, 0);
-    OI.operatorController.setRumble(RumbleType.kBothRumble, 0);
-  }
+  public void disabledInit() {}
 
   @Override
   public void disabledPeriodic() {}
@@ -122,13 +64,6 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
-
-    try {
-      this.auto.schedule();
-    } catch (Exception e){
-      System.out.println("No auto is selected");
-    } 
-    drive.autoInit(this.pathJSON);
   }
 
   /** This function is called periodically during autonomous. */
@@ -144,20 +79,7 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-
-    OI.driverViewButton.whileTrue(new ZeroIMU(drive));
-
-    // OI.driverY.whileTrue(new IntakeUp(intake));   
-    OI.driverB.whileTrue(new Shoot(shooter));
-    // OI.driverA.whileTrue(new IntakeDown(intake));
-    OI.driverLB.whileTrue(new OuttakeRing(intake));
-    OI.driverRB.whileTrue(new IntakeRing(intake, -0.8)); 
-    // OI.driverX.whileTrue(new AmpScore(scorer, -0.5));    
-    // OI.driverY.whileTrue(new AmpScore(scorer, 0.5));
-    // OI.driverX.whileHeld(new Feed(feeder));
-    OI.driverX.whileTrue(new MoveServo(scorer, 0));
-    OI.driverY.whileTrue(new MoveServo(scorer, 90));
-    OI.driverA.whileTrue(new MoveServo(scorer, 180));
+    OI.driverA.onTrue(new ToggleBrake(brake));
   }
 
   /** This function is called periodically during operator control. */

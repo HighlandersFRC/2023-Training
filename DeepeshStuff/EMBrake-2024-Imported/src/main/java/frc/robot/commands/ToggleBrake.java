@@ -4,37 +4,37 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.OI;
-import frc.robot.subsystems.Shooter;
+import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.Brake;
 
-public class Shoot extends CommandBase {
-  /** Creates a new Shoot. */
-  Shooter shooter;
-  public Shoot(Shooter shooter) {
-    this.shooter = shooter;
+public class ToggleBrake extends Command {
+  /** Creates a new SetBrake. */
+  Brake brake;
+  public ToggleBrake(Brake brake) {
+    this.brake = brake;
+    addRequirements(brake);
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(shooter);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    brake.toggle();
+    System.out.println("Toggling");
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-    shooter.setPercent(0.6, 0.6);
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return !OI.driverB.getAsBoolean();
+    return true;
   }
 }
