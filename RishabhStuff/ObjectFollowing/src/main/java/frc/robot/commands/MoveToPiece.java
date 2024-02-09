@@ -16,7 +16,7 @@ public class MoveToPiece extends CommandBase {
   private Peripherals peripherals;
 
   private PID pid;
-  private double kP = 1;
+  private double kP = 3;
   private double kI = 0;
   private double kD = 0;
 
@@ -44,7 +44,7 @@ public class MoveToPiece extends CommandBase {
     pid.updatePID(angleToPiece);
     double result = -pid.getResult();
 
-    drive.autoRobotCentricDrive(new Vector(-1, 0), result);
+    drive.autoRobotCentricDrive(new Vector(-3, 0), result);
   }
 
   // Called once the command ends or is interrupted.
