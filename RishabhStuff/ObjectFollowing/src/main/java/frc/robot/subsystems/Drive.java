@@ -143,7 +143,7 @@ public class Drive extends SubsystemBase {
   private PID yPID = new PID(yP, yI, yD);
   private PID thetaPID = new PID(thetaP, thetaI, thetaD);
 
-  private String fieldSide = "blue";
+  private String fieldSide = "red";
 
   private int lookAheadDistance = 5;
   

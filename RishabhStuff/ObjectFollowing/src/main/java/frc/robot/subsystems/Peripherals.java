@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.commands.defaults.PeripheralsDefault;
+import frc.robot.sensors.Navx;
 
 public class Peripherals extends SubsystemBase {
   private NetworkTable backCam = NetworkTableInstance.getDefault().getTable("limelight-back");
@@ -38,6 +39,9 @@ public class Peripherals extends SubsystemBase {
 
   private Pigeon2 pigeon = new Pigeon2(0, "Canivore");
   private Pigeon2Configuration pigeonConfig = new Pigeon2Configuration();
+
+  private final static AHRS ahrs = new AHRS(Port.kMXP);
+  private final static Navx navx = new Navx(ahrs);
   
   public Peripherals() {}
 
@@ -136,15 +140,19 @@ public class Peripherals extends SubsystemBase {
   }
 
   public void zeroPigeon(){
-    setPigeonAngle(0.0);
+    // setPigeonAngle(0.0);
+    navx.softResetYaw();
+    navx.softResetAngle();
   }
 
   public void setPigeonAngle(double degrees){
-    pigeon.setYaw(degrees);
+    // pigeon.setYaw(degrees);
+    navx.setNavxAngle(degrees);
   }
 
   public double getPigeonAngle(){
-    return pigeon.getYaw().getValue();
+    // return pigeon.getYaw().getValue();
+    return navx.currentAngle();
   }
 
   public JSONObject getCameraMeasurements(){
@@ -175,5 +183,6 @@ public class Peripherals extends SubsystemBase {
     //   System.out.println(i.remote_ip);
     //   System.out.println(i.remote_id);
     // }
+    SmartDashboard.putNumber("Navx", getPigeonAngle());
   }
 }

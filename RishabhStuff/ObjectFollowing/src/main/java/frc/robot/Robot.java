@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.DriveAutoAligned;
 import frc.robot.commands.MoveToPiece;
 import frc.robot.commands.ZeroAngleMidMatch;
+import frc.robot.commands.autos.AutoNoteFollowing;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Lights;
 import frc.robot.subsystems.Peripherals;
@@ -115,7 +116,7 @@ public class Robot extends TimedRobot {
 
     //Creating jsons for all autos
     try {
-      fourPiecePart1PathingFile = new File("/home/lvuser/deploy/2PieceCenterPart1.json");
+      fourPiecePart1PathingFile = new File("/home/lvuser/deploy/AutoNoteFollowingTest.json");
       FileReader fourPiecePart1Scanner = new FileReader(fourPiecePart1PathingFile);
       fourPiecePart1PathRead = new JSONObject(new JSONTokener(fourPiecePart1Scanner));
       fourPiecePart1PathJSON = (JSONArray) fourPiecePart1PathRead.get("sampled_points");
@@ -177,9 +178,9 @@ public class Robot extends TimedRobot {
 
     // if (OI.isBlueSide()) {
     //   System.out.println("ON BLUE SIDE");
-    //   fieldSide = "blue";
-    //   drive.setFieldSide(fieldSide);
-    //   lights.setFieldSide(fieldSide);
+      // fieldSide = "blue";
+      // drive.setFieldSide(fieldSide);
+      // lights.setFieldSide(fieldSide);
     // } else {
     //   System.out.println("ON RED SIDE");
     //   fieldSide = "red";
@@ -189,9 +190,9 @@ public class Robot extends TimedRobot {
 
     // //Auto selection
     // if (OI.is4PieceCloseAuto()) {
-    //   this.drive.autoInit(this.fourPiecePart1PathJSON);
-    //   this.auto = new FourPieceCloseAuto(drive, peripherals);
-    //   auto.schedule();
+      this.drive.autoInit(this.fourPiecePart1PathJSON);
+      this.auto = new AutoNoteFollowing(drive, peripherals);
+      auto.schedule();
     // } else if (OI.is5PieceAuto()) {
     //   this.drive.autoInit(this.fourPiecePart1PathJSON);
     //   this.auto = new FivePieceAuto(drive, peripherals, intake, feeder, shooter, lights, tof);
