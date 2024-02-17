@@ -44,7 +44,7 @@ public class NotePickupAutonomousFollower extends CommandBase {
   private double pathEndTime;
 
   private PID pid;
-  private double kP = 7;
+  private double kP = 6.5;
   private double kI = 0;
   private double kD = 0;
 
@@ -122,8 +122,10 @@ public class NotePickupAutonomousFollower extends CommandBase {
       double adjustedUnitVectorToNoteJ = unitVectorToNoteJ * result;
       velocityVector.setI(desiredVelocityArray[0] + adjustedUnitVectorToNoteI);
       velocityVector.setJ(desiredVelocityArray[1] + adjustedUnitVectorToNoteJ);
-      System.out.println("I: " + desiredVelocityArray[0]);
-      System.out.println("J: " + desiredVelocityArray[1]);
+      System.out.println("I: " + adjustedUnitVectorToNoteI);
+      System.out.println("J: " + adjustedUnitVectorToNoteJ);
+      System.out.println("Path I: " + desiredVelocityArray[0]);
+      System.out.println("Path J: " + desiredVelocityArray[1]);
       desiredThetaChange = desiredVelocityArray[2];
     } else {
       velocityVector.setI(desiredVelocityArray[0]);
