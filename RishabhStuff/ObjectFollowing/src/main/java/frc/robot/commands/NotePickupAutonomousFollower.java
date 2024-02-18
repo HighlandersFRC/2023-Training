@@ -44,9 +44,13 @@ public class NotePickupAutonomousFollower extends CommandBase {
   private double pathEndTime;
 
   private PID pid;
-  private double kP = 6.5;
+  private double kP = 5;
   private double kI = 0;
   private double kD = 0;
+  private PID vectorPid;
+  private double vectorKP = 17;
+  private double vectorKI = 1.0;
+  private double vectorKD = 2.0;
 
   private boolean pickupNote;
 
@@ -79,6 +83,10 @@ public class NotePickupAutonomousFollower extends CommandBase {
     pid.setSetPoint(0);
     pid.setMinOutput(-4);
     pid.setMaxOutput(4);
+    vectorPid = new PID(vectorKP, vectorKI, vectorKD);
+    vectorPid.setSetPoint(0);
+    vectorPid.setMinOutput(-4);
+    vectorPid.setMaxOutput(4);
   }
 
   @Override
@@ -98,12 +106,16 @@ public class NotePickupAutonomousFollower extends CommandBase {
     desiredVelocityArray = drive.pidController(odometryFusedX, odometryFusedY, odometryFusedTheta, currentTime, path);
     
     double angleToPiece = peripherals.getBackCamTargetTx();
-    // double vectorToNoteI = -Constants.angleToUnitVectorI(angleToPiece);
-    // double vectorToNoteJ = -Constants.angleToUnitVectorJ(angleToPiece);
+    System.out.println("Angle to note: " + angleToPiece);
+    double vectorToNoteI = -Constants.angleToUnitVectorI(angleToPiece);
+    double vectorToNoteJ = -Constants.angleToUnitVectorJ(angleToPiece);
 
     pid.updatePID(angleToPiece);
     double result = pid.getResult();
+    vectorPid.updatePID(angleToPiece);
+    double vectorPIDResult = vectorPid.getResult();
     System.out.println("Result: " + result);
+    System.out.println("VectorResult: " + vectorPIDResult);
 
     double unitVectorToNoteI;
     double unitVectorToNoteJ;
@@ -120,16 +132,20 @@ public class NotePickupAutonomousFollower extends CommandBase {
       }
       double adjustedUnitVectorToNoteI = unitVectorToNoteI * result;
       double adjustedUnitVectorToNoteJ = unitVectorToNoteJ * result;
+      double adjustedVectorToNoteI = unitVectorToNoteI * vectorPIDResult;
+      double adjustedVectorToNoteJ = unitVectorToNoteJ * vectorPIDResult;
       double finalVectorI = desiredVelocityArray[0] + adjustedUnitVectorToNoteI;
       double finalVectorJ = desiredVelocityArray[1] + adjustedUnitVectorToNoteJ;
       double vectorAngle = Math.atan2(finalVectorJ, finalVectorI);
-      velocityVector.setI(desiredVelocityArray[0] + adjustedUnitVectorToNoteI);
-      velocityVector.setJ(desiredVelocityArray[1] + adjustedUnitVectorToNoteJ);
+      velocityVector.setI(desiredVelocityArray[0] + adjustedVectorToNoteI);
+      velocityVector.setJ(desiredVelocityArray[1]+ adjustedVectorToNoteJ);
       System.out.println("I: " + adjustedUnitVectorToNoteI);
       System.out.println("J: " + adjustedUnitVectorToNoteJ);
       System.out.println("Path I: " + desiredVelocityArray[0]);
       System.out.println("Path J: " + desiredVelocityArray[1]);
-      desiredThetaChange = desiredVelocityArray[2] + vectorAngle;
+      System.out.println("Angle: " + vectorAngle);
+      System.out.println("Path Theta: " + desiredVelocityArray[2]);
+      desiredThetaChange = desiredVelocityArray[2] - result;
     } else {
       velocityVector.setI(desiredVelocityArray[0]);
       velocityVector.setJ(desiredVelocityArray[1]);
