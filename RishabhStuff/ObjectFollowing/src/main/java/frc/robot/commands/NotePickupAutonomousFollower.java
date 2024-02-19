@@ -44,13 +44,13 @@ public class NotePickupAutonomousFollower extends CommandBase {
   private double pathEndTime;
 
   private PID pid;
-  private double kP = 5;
+  private double kP = 10;
   private double kI = 0;
-  private double kD = 0;
+  private double kD = 4;
   private PID vectorPid;
   private double vectorKP = 17;
-  private double vectorKI = 1.0;
-  private double vectorKD = 2.0;
+  private double vectorKI = 0;
+  private double vectorKD = 2.5;
 
   private boolean pickupNote;
 
@@ -81,12 +81,12 @@ public class NotePickupAutonomousFollower extends CommandBase {
     initTime = Timer.getFPGATimestamp();
     pid = new PID(kP, kI, kD);
     pid.setSetPoint(0);
-    pid.setMinOutput(-4);
-    pid.setMaxOutput(4);
+    pid.setMinOutput(-7);
+    pid.setMaxOutput(7);
     vectorPid = new PID(vectorKP, vectorKI, vectorKD);
     vectorPid.setSetPoint(0);
-    vectorPid.setMinOutput(-4);
-    vectorPid.setMaxOutput(4);
+    vectorPid.setMinOutput(-1);
+    vectorPid.setMaxOutput(1);
   }
 
   @Override
@@ -138,9 +138,9 @@ public class NotePickupAutonomousFollower extends CommandBase {
       double finalVectorJ = desiredVelocityArray[1] + adjustedUnitVectorToNoteJ;
       double vectorAngle = Math.atan2(finalVectorJ, finalVectorI);
       velocityVector.setI(desiredVelocityArray[0] + adjustedVectorToNoteI);
-      velocityVector.setJ(desiredVelocityArray[1]+ adjustedVectorToNoteJ);
-      System.out.println("I: " + adjustedUnitVectorToNoteI);
-      System.out.println("J: " + adjustedUnitVectorToNoteJ);
+      velocityVector.setJ(desiredVelocityArray[1] + adjustedVectorToNoteJ);
+      System.out.println("I: " + adjustedVectorToNoteI);
+      System.out.println("J: " + adjustedVectorToNoteJ);
       System.out.println("Path I: " + desiredVelocityArray[0]);
       System.out.println("Path J: " + desiredVelocityArray[1]);
       System.out.println("Angle: " + vectorAngle);
