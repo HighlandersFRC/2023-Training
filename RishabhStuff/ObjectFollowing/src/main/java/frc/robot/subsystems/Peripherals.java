@@ -26,6 +26,7 @@ public class Peripherals extends SubsystemBase {
   private NetworkTable backCam = NetworkTableInstance.getDefault().getTable("limelight-back");
   private NetworkTableEntry backCamJSON = backCam.getEntry("json");
   private NetworkTableEntry backCamTx = backCam.getEntry("tx");
+  private NetworkTableEntry backCamTa = backCam.getEntry("ta");
   private NetworkTable frontCam = NetworkTableInstance.getDefault().getTable("limelight-front");
   private NetworkTableEntry frontCamJSON = frontCam.getEntry("json");
   private NetworkTableEntry frontCamTy = frontCam.getEntry("ty");
@@ -92,6 +93,10 @@ public class Peripherals extends SubsystemBase {
 
   public double getBackCamTargetTx(){
     return backCamTx.getDouble(0.0) * Math.PI / 180;
+  }
+
+  public double getBackCamTargetTa(){
+    return backCamTa.getDouble(0.0);
   }
 
   public ArrayList<Integer> getFrontCamIDs(){
@@ -184,5 +189,7 @@ public class Peripherals extends SubsystemBase {
     //   System.out.println(i.remote_id);
     // }
     SmartDashboard.putNumber("Navx", getPigeonAngle());
+    SmartDashboard.putNumber("target size", getBackCamTargetTa());
+    SmartDashboard.putNumber("target x", getBackCamTargetTx());
   }
 }

@@ -12,15 +12,11 @@ import org.json.JSONArray;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.tools.controlloops.PID;
 import frc.robot.tools.math.Vector;
-import frc.robot.Constants;
 import frc.robot.subsystems.Drive;
-import frc.robot.subsystems.Peripherals;
 
 public class NotePickupAutonomousFollower extends CommandBase {
   private Drive drive;
-  private Peripherals peripherals;
 
   private JSONArray path;
   private JSONArray commands;
@@ -43,50 +39,31 @@ public class NotePickupAutonomousFollower extends CommandBase {
   private double pathStartTime;
   private double pathEndTime;
 
-  private PID pid;
-  private double kP = 10;
-  private double kI = 0;
-  private double kD = 4;
-  private PID vectorPid;
-  private double vectorKP = 17;
-  private double vectorKI = 0;
-  private double vectorKD = 2.5;
-
   private boolean pickupNote;
 
-  public NotePickupAutonomousFollower(Drive drive, Peripherals peripherals, JSONArray pathPoints, double pathStartTime, double pathEndTime, boolean record, boolean pickupNote) {
+  public NotePickupAutonomousFollower(Drive drive, JSONArray pathPoints, double pathStartTime, double pathEndTime, boolean record, boolean pickupNote) {
     this.drive = drive;
-    this.peripherals = peripherals;
     this.path = pathPoints;
     this.record = record;
     this.pathStartTime = pathStartTime;
     this.pathEndTime = pathEndTime;
     this.pickupNote = pickupNote;
-    addRequirements(drive, peripherals);
+    addRequirements(drive);
   }
 
-  public NotePickupAutonomousFollower(Drive drive, Peripherals peripherals, JSONArray pathPoints, double pathStartTime, boolean record, boolean pickupNote) {
+  public NotePickupAutonomousFollower(Drive drive, JSONArray pathPoints, double pathStartTime, boolean record, boolean pickupNote) {
     this.drive = drive;
-    this.peripherals = peripherals;
     this.path = pathPoints;
     this.record = record;
     this.pathStartTime = pathStartTime;
     this.pathEndTime = path.getJSONArray(path.length() - 1).getDouble(0);
     this.pickupNote = pickupNote;
-    addRequirements(drive, peripherals);
+    addRequirements(drive);
   }
 
   @Override
   public void initialize() {
     initTime = Timer.getFPGATimestamp();
-    pid = new PID(kP, kI, kD);
-    pid.setSetPoint(0);
-    pid.setMinOutput(-7);
-    pid.setMaxOutput(7);
-    vectorPid = new PID(vectorKP, vectorKI, vectorKD);
-    vectorPid.setSetPoint(0);
-    vectorPid.setMinOutput(-1);
-    vectorPid.setMaxOutput(1);
   }
 
   @Override
@@ -103,55 +80,13 @@ public class NotePickupAutonomousFollower extends CommandBase {
     currentTime = Timer.getFPGATimestamp() - initTime + pathStartTime;
     
     // call PIDController function
-    desiredVelocityArray = drive.pidController(odometryFusedX, odometryFusedY, odometryFusedTheta, currentTime, path);
+    desiredVelocityArray = drive.pidController(odometryFusedX, odometryFusedY, odometryFusedTheta, currentTime, path, pickupNote);
     
-    double angleToPiece = peripherals.getBackCamTargetTx();
-    System.out.println("Angle to note: " + angleToPiece);
-    double vectorToNoteI = -Constants.angleToUnitVectorI(angleToPiece);
-    double vectorToNoteJ = -Constants.angleToUnitVectorJ(angleToPiece);
-
-    pid.updatePID(angleToPiece);
-    double result = pid.getResult();
-    vectorPid.updatePID(angleToPiece);
-    double vectorPIDResult = vectorPid.getResult();
-    System.out.println("Result: " + result);
-    System.out.println("VectorResult: " + vectorPIDResult);
-
-    double unitVectorToNoteI;
-    double unitVectorToNoteJ;
     // create velocity vector and set desired theta change
     Vector velocityVector = new Vector();
-
-    if (pickupNote){
-      if (angleToPiece < 0){
-        unitVectorToNoteI = 0;
-        unitVectorToNoteJ = -1;
-      } else {
-        unitVectorToNoteI = 0;
-        unitVectorToNoteJ = 1;
-      }
-      double adjustedUnitVectorToNoteI = unitVectorToNoteI * result;
-      double adjustedUnitVectorToNoteJ = unitVectorToNoteJ * result;
-      double adjustedVectorToNoteI = unitVectorToNoteI * vectorPIDResult;
-      double adjustedVectorToNoteJ = unitVectorToNoteJ * vectorPIDResult;
-      double finalVectorI = desiredVelocityArray[0] + adjustedUnitVectorToNoteI;
-      double finalVectorJ = desiredVelocityArray[1] + adjustedUnitVectorToNoteJ;
-      double vectorAngle = Math.atan2(finalVectorJ, finalVectorI);
-      velocityVector.setI(desiredVelocityArray[0] + adjustedVectorToNoteI);
-      velocityVector.setJ(desiredVelocityArray[1] + adjustedVectorToNoteJ);
-      System.out.println("I: " + adjustedVectorToNoteI);
-      System.out.println("J: " + adjustedVectorToNoteJ);
-      System.out.println("Path I: " + desiredVelocityArray[0]);
-      System.out.println("Path J: " + desiredVelocityArray[1]);
-      System.out.println("Angle: " + vectorAngle);
-      System.out.println("Path Theta: " + desiredVelocityArray[2]);
-      desiredThetaChange = desiredVelocityArray[2] - result;
-    } else {
-      velocityVector.setI(desiredVelocityArray[0]);
-      velocityVector.setJ(desiredVelocityArray[1]);
-      desiredThetaChange = desiredVelocityArray[2];
-    }
-    
+    velocityVector.setI(desiredVelocityArray[0]);
+    velocityVector.setJ(desiredVelocityArray[1]);
+    desiredThetaChange = desiredVelocityArray[2];
     // velocityVector.setI(0);
     // velocityVector.setJ(0);
     // desiredThetaChange = 0;

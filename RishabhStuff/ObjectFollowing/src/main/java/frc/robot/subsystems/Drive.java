@@ -4,6 +4,9 @@
 
 package frc.robot.subsystems;
 
+import java.time.chrono.ThaiBuddhistChronology;
+import java.time.chrono.ThaiBuddhistDate;
+import java.time.chrono.ThaiBuddhistEra;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -143,6 +146,11 @@ public class Drive extends SubsystemBase {
   private PID yPID = new PID(yP, yI, yD);
   private PID thetaPID = new PID(thetaP, thetaI, thetaD);
 
+  private double kP = 3;
+  private double kI = 0;
+  private double kD = 0;
+  private PID noteFollowingPID = new PID(kP, kI, kD);
+
   private String fieldSide = "red";
 
   private int lookAheadDistance = 5;
@@ -187,6 +195,9 @@ public class Drive extends SubsystemBase {
 
     thetaPID.setMinOutput(-3);
     thetaPID.setMaxOutput(3);
+
+    noteFollowingPID.setMinOutput(-4);
+    noteFollowingPID.setMaxOutput(4);
 
     setDefaultCommand(new DriveDefault(this));
   }
@@ -869,7 +880,7 @@ public class Drive extends SubsystemBase {
   }
 
   // Autonomous algorithm
-  public double[] pidController(double currentX, double currentY, double currentTheta, double time, JSONArray pathPoints) {
+  public double[] pidController(double currentX, double currentY, double currentTheta, double time, JSONArray pathPoints, boolean pickupNote) {
     if(time < pathPoints.getJSONArray(pathPoints.length() - 1).getDouble(0)) {
         JSONArray currentPoint = pathPoints.getJSONArray(0);
         JSONArray targetPoint = pathPoints.getJSONArray(0);
@@ -916,6 +927,24 @@ public class Drive extends SubsystemBase {
         if(this.fieldSide == "blue") {
           currentPointX = Constants.Physical.FIELD_LENGTH - currentPointX;
           currentPointTheta = Math.PI - currentPointTheta;
+        }
+
+        if (pickupNote){
+          double angleToNote = -peripherals.getBackCamTargetTx();
+          // noteFollowingPID.setSetPoint(0);
+          // noteFollowingPID.updatePID(angleToNote);
+          // double result = noteFollowingPID.getResult();
+          // double xDifferencePath = Math.abs(targetX - currentX);
+          // double yDifferencePath = Math.abs(targetY - currentY);
+          // double yDifference = xDifferencePath * Math.tan(angleToNote);
+          // double xDifference = yDifferencePath * (1 / Math.tan(angleToNote));
+          // xDifference = targetSize * xDifference;
+          // yDifference = targetSize * yDifference;
+          // targetX = targetX - xDifference;
+          // targetY = targetY + yDifference;
+          targetX = ((-targetY) * Math.cos(angleToNote)) - (targetX * Math.sin(angleToNote));
+          targetY = -(((-targetY) * Math.sin(angleToNote)) + (targetX * Math.cos(angleToNote)));
+          targetTheta = targetTheta + angleToNote;
         }
 
         double feedForwardX = (targetX - currentPointX)/(targetTime - currentPointTime);

@@ -43,7 +43,7 @@ public class AutoNoteFollowing extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new NotePickupAutonomousFollower(drive, peripherals, pathJSON, 0, false, true)
+      new NotePickupAutonomousFollower(drive, pathJSON, 0, false, true)
     );
   }
 }

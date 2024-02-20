@@ -76,7 +76,7 @@ public class AutonomousFollower extends CommandBase {
     currentTime = Timer.getFPGATimestamp() - initTime + pathStartTime;
     
     // call PIDController function
-    desiredVelocityArray = drive.pidController(odometryFusedX, odometryFusedY, odometryFusedTheta, currentTime, path);
+    desiredVelocityArray = drive.pidController(odometryFusedX, odometryFusedY, odometryFusedTheta, currentTime, path, false);
     
     // create velocity vector and set desired theta change
     Vector velocityVector = new Vector();
