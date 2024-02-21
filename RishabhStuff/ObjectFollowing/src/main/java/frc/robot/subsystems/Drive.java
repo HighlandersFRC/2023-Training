@@ -930,7 +930,7 @@ public class Drive extends SubsystemBase {
         }
 
         if (pickupNote){
-          double angleToNote = -peripherals.getBackCamTargetTx();
+          double angleToNote = peripherals.getBackCamTargetTx();
           // noteFollowingPID.setSetPoint(0);
           // noteFollowingPID.updatePID(angleToNote);
           // double result = noteFollowingPID.getResult();
@@ -942,9 +942,9 @@ public class Drive extends SubsystemBase {
           // yDifference = targetSize * yDifference;
           // targetX = targetX - xDifference;
           // targetY = targetY + yDifference;
-          targetX = ((-targetY) * Math.cos(angleToNote)) - (targetX * Math.sin(angleToNote));
-          targetY = -(((-targetY) * Math.sin(angleToNote)) + (targetX * Math.cos(angleToNote)));
-          targetTheta = targetTheta + angleToNote;
+          targetX = (targetX * Math.cos(angleToNote)) - (targetY * Math.sin(angleToNote));
+          targetY = ((targetX * Math.sin(angleToNote)) + (targetY * Math.cos(angleToNote)));
+          targetTheta = targetTheta - angleToNote;
         }
 
         double feedForwardX = (targetX - currentPointX)/(targetTime - currentPointTime);
