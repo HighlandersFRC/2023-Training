@@ -20,6 +20,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.fasterxml.jackson.annotation.JsonAlias;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
@@ -930,21 +931,24 @@ public class Drive extends SubsystemBase {
         }
 
         if (pickupNote){
-          double angleToNote = peripherals.getBackCamTargetTx();
-          // noteFollowingPID.setSetPoint(0);
-          // noteFollowingPID.updatePID(angleToNote);
-          // double result = noteFollowingPID.getResult();
-          // double xDifferencePath = Math.abs(targetX - currentX);
-          // double yDifferencePath = Math.abs(targetY - currentY);
-          // double yDifference = xDifferencePath * Math.tan(angleToNote);
-          // double xDifference = yDifferencePath * (1 / Math.tan(angleToNote));
-          // xDifference = targetSize * xDifference;
-          // yDifference = targetSize * yDifference;
-          // targetX = targetX - xDifference;
-          // targetY = targetY + yDifference;
-          targetX = (targetX * Math.cos(angleToNote)) - (targetY * Math.sin(angleToNote));
-          targetY = ((targetX * Math.sin(angleToNote)) + (targetY * Math.cos(angleToNote)));
-          targetTheta = targetTheta - angleToNote;
+          double angleToNote =  (peripherals.getBackCamTargetTx());
+          double r = (Math.sqrt((targetX * targetX) + (targetY * targetY)));
+          targetX = r * (Math.abs(Math.cos((targetTheta + 180) - angleToNote)));
+          targetY = r * (Math.abs(Math.sin((targetTheta + 180) - angleToNote)));
+          // targetX = -(targetX + (distance * (Math.cos(angleToNote))));
+          // targetY = (targetY + (distance * (Math.sin(angleToNote))));
+          System.out.println("note: " + angleToNote);
+          // targetX = (targetX * Math.cos(angleToNote)) - (targetY * Math.sin(angleToNote));
+          // targetY = ((targetX * Math.sin(angleToNote)) + (targetY * Math.cos(angleToNote)));
+          System.out.println("x: " + targetX);
+          System.out.println("y: " + targetY);
+          // for (int i = 0; i < pathPoints.length() - 1; i++){
+          //   JSONArray point = pathPoints.getJSONArray(i);
+          //   double pointX = point.getDouble(1);
+          //   double pointY = point.getDouble(2);  
+          // }
+          // targetTheta = targetTheta - angleToNote;
+          System.out.println("theta: " + targetTheta);
         }
 
         double feedForwardX = (targetX - currentPointX)/(targetTime - currentPointTime);
