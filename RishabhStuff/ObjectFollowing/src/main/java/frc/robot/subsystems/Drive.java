@@ -932,9 +932,13 @@ public class Drive extends SubsystemBase {
 
         if (pickupNote){
           double angleToNote =  (peripherals.getBackCamTargetTx());
-          double r = (Math.sqrt((targetX * targetX) + (targetY * targetY)));
-          targetX = r * (Math.abs(Math.cos((targetTheta + 180) - angleToNote)));
-          targetY = r * (Math.abs(Math.sin((targetTheta + 180) - angleToNote)));
+          double differenceX = Math.abs(targetX - currentPointX);
+          double differenceY = Math.abs(targetY - currentPointY);
+          double r = (Math.sqrt((differenceX * differenceX) + (differenceY * differenceY)));
+          double adjustedX = r * (Math.cos((targetTheta + Math.PI) - angleToNote));
+          double adjustedY = r * (Math.sin((targetTheta + Math.PI) - angleToNote));
+          targetX = targetX + adjustedX;
+          targetY = targetY + (3 * adjustedY);
           // targetX = -(targetX + (distance * (Math.cos(angleToNote))));
           // targetY = (targetY + (distance * (Math.sin(angleToNote))));
           System.out.println("note: " + angleToNote);
@@ -947,7 +951,7 @@ public class Drive extends SubsystemBase {
           //   double pointX = point.getDouble(1);
           //   double pointY = point.getDouble(2);  
           // }
-          // targetTheta = targetTheta - angleToNote;
+          targetTheta = targetTheta - angleToNote;
           System.out.println("theta: " + targetTheta);
         }
 
