@@ -152,7 +152,7 @@ public class Drive extends SubsystemBase {
   private double kD = 0;
   private PID noteFollowingPID = new PID(kP, kI, kD);
 
-  private String fieldSide = "red";
+  private String fieldSide = "blue";
 
   private int lookAheadDistance = 5;
   
