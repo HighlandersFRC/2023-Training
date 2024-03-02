@@ -30,7 +30,7 @@ public class AutoNoteFollowing extends SequentialCommandGroup {
   /** Creates a new AutoNoteFollowing. */
   public AutoNoteFollowing(Drive drive, Peripherals peripherals) {
     try {
-      pathingFile = new File("/home/lvuser/deploy/4PieceClosePart3.json");
+      pathingFile = new File("/home/lvuser/deploy/AutoNoteFollowingTest.json");
       FileReader scanner = new FileReader(pathingFile);
       pathRead = new JSONObject(new JSONTokener(scanner));
       pathJSON = (JSONArray) pathRead.get("sampled_points");

@@ -116,7 +116,7 @@ public class Robot extends TimedRobot {
 
     //Creating jsons for all autos
     try {
-      fourPiecePart1PathingFile = new File("/home/lvuser/deploy/4PieceClosePart3.json");
+      fourPiecePart1PathingFile = new File("/home/lvuser/deploy/AutoNoteFollowingTest.json");
       FileReader fourPiecePart1Scanner = new FileReader(fourPiecePart1PathingFile);
       fourPiecePart1PathRead = new JSONObject(new JSONTokener(fourPiecePart1Scanner));
       fourPiecePart1PathJSON = (JSONArray) fourPiecePart1PathRead.get("sampled_points");
