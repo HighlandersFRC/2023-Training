@@ -246,7 +246,7 @@ public class Robot extends TimedRobot {
     // OI.driverLB.onTrue(new ToggleBrake(climber));
     // OI.driverY.whileTrue(new AutoShoot(drive, shooter, feeder, peripherals, lights, tof, 600));
     // OI.driverA.whileTrue(new RunFeeder(feeder, 600));
-    OI.driverA.whileTrue(new MoveToPiece(drive, peripherals));
+    OI.driverRT.whileTrue(new MoveToPiece(drive, peripherals));
     //Operator
   }
 
